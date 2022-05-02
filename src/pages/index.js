@@ -21,7 +21,7 @@ export default function IndexPage() {
   return (
     <ThemeProvider theme={theme}>
       <Layout>
-        <SEO title="Gardens of Paradise" />
+        <SEO title="حدائق الجنة" />
         <Banner />
         <KeyFeature />
         <Makkah />
