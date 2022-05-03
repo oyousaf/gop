@@ -61,7 +61,7 @@ export default function SEO({
 }
 
 SEO.defaultProps = {
-  url: "http://oyousaf.uk",
+  url: "https://oyousaf.uk",
   lang: `en-gb`,
   meta: [],
   charset: "utf-8",
