@@ -37,6 +37,10 @@ export default function SEO({
       content: `summary`,
     },
     {
+      name: `site`,
+      content: `oyousaf_`,
+    },
+    {
       name: `twitter:creator`,
       content: author,
     },
