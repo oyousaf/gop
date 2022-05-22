@@ -9,7 +9,7 @@ export default function Footer() {
     <footer sx={styles.footer}>
       <Container>
         <Box sx={styles.footer.footerBottomArea}>
-          <Link path='http://oyousaf.uk'>
+          <Link path='https://oyousaf.uk'>
             <Image src={FooterLogo} alt="Logo" />
           </Link>
           <Box sx={styles.footer.menus}>
