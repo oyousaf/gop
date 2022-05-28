@@ -3,20 +3,24 @@ import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 export default {
   menuItem: [
     {
-      path: "https://facebook.com/gop87",
       icon: <FaFacebookF />,
+      path: "https://facebook.com/gop87",
+      target: "_blank",
     },
     {
-      path: "https://www.instagram.com/oyousaf/",
       icon: <FaInstagram />,
+      path: "https://www.instagram.com/oyousaf/",
+      target: "_blank"
     },
     {
-      path: "https://twitter.com/oyousaf_",
       icon: <FaTwitter />,
+      path: "https://twitter.com/oyousaf_",
+      target: "_blank"
     },
     {
-      path: "https://www.youtube.com/channel/UCuQa5dlD54JqhBpUTH2TSpQ",
       icon: <FaYoutube />,
+      path: "https://www.youtube.com/channel/UCuQa5dlD54JqhBpUTH2TSpQ",
+      target: "_blank"
     },
   ],
 };

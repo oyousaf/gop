@@ -20,6 +20,7 @@ export default function Footer() {
                 key={i}
                 label={item.icon}
                 sx={styles.footer.link}
+                target={item.target}
               /> 
               ))}
             </nav>

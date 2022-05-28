@@ -4,27 +4,8 @@ import { Scrollbars } from "react-custom-scrollbars";
 import Drawer from "components/drawer";
 import { IoMdClose, IoMdMenu } from "react-icons/io";
 import { Link } from "react-scroll";
-import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
 import menuItems from "./header.data";
-
-const social = [
-  {
-    path: "https://facebook.com/gop87",
-    icon: <FaFacebookF />,
-  },
-  {
-    path: "https://www.instagram.com/oyousaf/",
-    icon: <FaInstagram />,
-  },
-  {
-    path: "https://twitter.com/oyousaf_",
-    icon: <FaTwitter />,
-  },
-  {
-    path: "https://www.youtube.com/channel/UCuQa5dlD54JqhBpUTH2TSpQ",
-    icon: <FaYoutube />,
-  },
-];
+import social from "./social.data"
 
 export default function MobileDrawer() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -65,7 +46,9 @@ export default function MobileDrawer() {
             <Box sx={styles.social}>
               {social.map((socialItem, i) => (
                 <Box as="span" key={i} sx={styles.social.icon}>
-                  <Link to={socialItem.path}>{socialItem.icon}</Link>
+                  <Link 
+                  onClick={() => setIsDrawerOpen(false)}
+                  to={socialItem.path}>{socialItem.icon}</Link>
                 </Box>
               ))}
             </Box>
