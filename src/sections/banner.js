@@ -10,10 +10,10 @@ export default function Banner() {
       <Container sx={styles.banner.container}>
         <Box sx={styles.banner.contentBox}>
           <Heading as="h1" variant="heroPrimary">
-            Uniting the Ummah with sacred knowledge of the Deen
+            توحيد الأمة بعلم الدين المقدس
           </Heading>
           <Text as="p" variant="heroSecondary">
-            توحيد الأمة بعلم الدين المقدس
+            Uniting the Ummah with sacred knowledge of the Deen
           </Text>
           <Link to="feature" spy={true} smooth={true} duration={500}>
             <Button variant="tealBtn">Explore</Button>
