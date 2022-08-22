@@ -30,7 +30,7 @@ export default function MobileDrawer() {
             {menuItems.map((menuItem, i) => (
               <Link
                 activeClass="active"
-                to={menuItem.path}
+                path={menuItem.path}
                 spy={true}
                 smooth={true}
                 offset={-70}

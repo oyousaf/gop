@@ -6,7 +6,7 @@ export default function TeamSection() {
     <section sx={{ variant: "section.testimonial" }} id="hadith">
       <Container sx={styles.containerBox}>
         <Box sx={styles.thumbnail}>
-          <div class="powr-rss-feed" id="4cccdec4_1650043664"></div>
+          <div className="powr-rss-feed" id="4cccdec4_1650043664"></div>
           <script src="https://www.powr.io/powr.js?platform=react"></script>
         </Box>
       </Container>
