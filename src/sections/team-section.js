@@ -3,7 +3,7 @@ import { jsx, Container, Box } from "theme-ui";
 
 export default function TeamSection() {
   return (
-    <section sx={{ variant: "section.services" }} id="hadith">
+    <section sx={{ variant: "section.testimonial" }} id="hadith">
       <Container sx={styles.containerBox}>
         <Box sx={styles.thumbnail}>
           <div class="powr-rss-feed" id="4cccdec4_1650043664"></div>

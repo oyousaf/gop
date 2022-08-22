@@ -3,7 +3,7 @@ import { jsx, Container, Box } from "theme-ui";
 
 export default function TestimonialCard() {
   return (
-    <section sx={{ variant: "section.services" }} id="news">
+    <section sx={{ variant: "section.testimonial" }} id="news">
       <Container sx={styles.containerBox}>
         <Box sx={styles.thumbnail}>
           <div class="powr-rss-feed" id="7598ef49_1650115410"></div>
