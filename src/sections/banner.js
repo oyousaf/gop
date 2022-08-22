@@ -1,6 +1,5 @@
 /** @jsx jsx */
-import { jsx } from "theme-ui";
-import { Container, Box, Heading, Image, Button, Text } from "theme-ui";
+import { jsx, Container, Box, Heading, Image, Button, Text } from "theme-ui";
 import { Link } from "react-scroll";
 import BannerImg from "assets/jordan.jpg";
 

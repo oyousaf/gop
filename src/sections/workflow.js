@@ -10,7 +10,7 @@ export default function WorkFlow() {
       <Container>
         <SectionHeader 
           title='طلب العلم من المهد إلى اللحد'
-          isWhite={false}
+          isWhite={true}
         />
       </Container>
     </section>

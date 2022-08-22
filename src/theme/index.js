@@ -12,7 +12,7 @@ export default {
     primary: "#F9FBFD", // primary button and link color
     secondary: "#F9FBFD", // secondary color - can be used for hover states
     muted: "#E4E4E4", // muted color
-    accent: "#609", // a contrast color for emphasizing UI
+    accent: "#546E74", // a contrast color for emphasizing UI
     teal: "#93bbcf", // custom teal
 
     // highlight	a background color for highlighting text
@@ -121,7 +121,6 @@ export default {
     marginBottom: ["50px", null, "60px", null, null, "65px", null, "80px"],
     mx: "auto",
     title: {
-      fontSize: ["24px", null, "28px", null, null, "32px", null, "36px"],
       color: "heading",
       lineHeight: [1.3, null, null, 1.25],
       textAlign: "center",
@@ -130,7 +129,7 @@ export default {
     },
 
     subTitle: {
-      fontSize: [0, "13px", null, "14px"],
+      fontSize: ["50px"],
       color: "primary",
       textAlign: "center",
       letterSpacing: ["1.5px", null, "2px"],

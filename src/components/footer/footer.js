@@ -57,7 +57,7 @@ const styles = {
     },
 
     link: {
-      fontSize: [1, '15px'],
+      fontSize: [1, '30px'],
       color: 'text',
       fontWeight: '400',
       mb: 2,
@@ -68,11 +68,11 @@ const styles = {
       lineHeight: [1.5, null, 1.8],
       px: [2, null, 4],
       ':hover': {
-        color: 'primary',
+        color: 'teal',
       },
     },
     copyright: {
-      fontSize: [1, '15px'],
+      fontSize: [1, '20px'],
       width: '100%',
     },
   },

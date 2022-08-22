@@ -5,7 +5,7 @@ import Drawer from "components/drawer";
 import { IoMdClose, IoMdMenu } from "react-icons/io";
 import { Link } from "react-scroll";
 import menuItems from "./header.data";
-import social from "./social.data"
+import social from "./social.data";
 
 export default function MobileDrawer() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -15,12 +15,12 @@ export default function MobileDrawer() {
       width="320px"
       drawerHandler={
         <Box sx={styles.handler}>
-          <IoMdMenu size="26px" />
+          <IoMdMenu size="30px" />
         </Box>
       }
       open={isDrawerOpen}
       toggleHandler={() => setIsDrawerOpen((prevState) => !prevState)}
-      closeButton={<IoMdClose size="24px" />}
+      closeButton={<IoMdClose size="30px" />}
       drawerStyle={styles.drawer}
       closeBtnStyle={styles.close}
     >
@@ -42,13 +42,17 @@ export default function MobileDrawer() {
               </Link>
             ))}
           </Box>
-          <Box sx={styles.menuFooter} >
+
+          <Box sx={styles.menuFooter}>
             <Box sx={styles.social}>
               {social.map((socialItem, i) => (
                 <Box as="span" key={i} sx={styles.social.icon}>
-                  <Link 
-                  onClick={() => setIsDrawerOpen(false)}
-                  to={socialItem.path}>{socialItem.icon}</Link>
+                  <Link
+                    onClick={() => setIsDrawerOpen(false)}
+                    path={socialItem.path}
+                  >
+                    {socialItem.icon}
+                  </Link>
                 </Box>
               ))}
             </Box>
@@ -65,7 +69,7 @@ const styles = {
     alignItems: "center",
     justifyContent: "center",
     flexShrink: "0",
-    width: "26px",
+    width: "30px",
 
     "@media screen and (min-width: 1024px)": {
       display: "none",
@@ -97,7 +101,7 @@ const styles = {
     pt: "100px",
     pb: "40px",
     px: "30px",
-    backgroundColor:"#bfa68b",
+    backgroundColor: "#bfa68b",
   },
 
   menu: {
@@ -116,7 +120,7 @@ const styles = {
         color: "teal",
       },
       "&.active": {
-        color: "primary",
+        color: "accent",
       },
     },
   },
@@ -140,7 +144,7 @@ const styles = {
       alignItems: "center",
       justifyContent: "center",
       color: "text",
-      fontSize: 14,
+      fontSize: 30,
       mr: "15px",
       transition: "all 0.25s",
       cursor: "pointer",
