@@ -57,7 +57,7 @@ const styles = {
     },
 
     link: {
-      fontSize: [1, '30px'],
+      fontSize: ['30px'],
       color: 'text',
       fontWeight: '400',
       mb: 2,
