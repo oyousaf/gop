@@ -26,6 +26,7 @@ const styles = {
     backgroundSize: 'cover',
     position: 'relative',
     py: [8, null, 9, null, null, 10],
+    textAlign: "center",
   },
   grid: {
     mb: -1,
