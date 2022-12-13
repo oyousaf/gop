@@ -1,12 +1,12 @@
 /** @jsx jsx */
 import { jsx, Container, Box, Button, Image } from 'theme-ui';
 import { keyframes } from '@emotion/core';
-import TextFeature from 'components/text-feature';
+import TextFeature from '../components/text-feature';
 import { useState } from 'react';
 import ModalVideo from 'react-modal-video';
 import { IoIosPlay } from 'react-icons/io';
 
-import madinah from 'assets/madinah.png';
+import madinah from '../assets/madinah.png';
 
 const data = {
   subTitle: 'Live From',

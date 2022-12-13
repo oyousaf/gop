@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box } from "theme-ui";
 import { Scrollbars } from "react-custom-scrollbars";
-import Drawer from "components/drawer";
+import Drawer from "../../components/drawer";
 import { IoMdClose, IoMdMenu } from "react-icons/io";
 import { Link } from "react-scroll";
 import menuItems from "./header.data";

@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 /** @jsx jsx */
 import { jsx, Container, Box, Button, Image } from 'theme-ui';
 import { keyframes } from '@emotion/core';
-import TextFeature from 'components/text-feature';
+import TextFeature from '../components/text-feature';
 import ModalVideo from 'react-modal-video';
 import { IoIosPlay } from 'react-icons/io';
 
-import makkah from 'assets/makkah.png'
+import makkah from '../assets/makkah.png'
 
 const data = {
   subTitle: 'live from',

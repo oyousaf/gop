@@ -1,14 +1,14 @@
 import React from "react";
 import { ThemeProvider } from "theme-ui";
-import theme from "theme";
+import theme from "../theme";
 import ReactGA from 'react-ga';
 
 const TRACKING_ID = "UA-110473979-1";
 
 ReactGA.initialize(TRACKING_ID);
 
-import SEO from "components/seo";
-import Layout from "components/layout";
+import SEO from "../components/seo";
+import Layout from "../components/layout";
 import Banner from "../sections/banner";
 import KeyFeature from "../sections/key-feature";
 import Makkah from "../sections/service-section";

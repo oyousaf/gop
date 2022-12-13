@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { jsx, Box, Container, Image, Text } from 'theme-ui';
-import { Link } from 'components/link';
+import { Link } from '../../components/link';
 import data from './footer.data';
-import FooterLogo from 'assets/logo.png';
+import FooterLogo from '../../assets/logo.png';
 
 export default function Footer() {
   return (

@@ -1,4 +1,5 @@
 import { FaFacebookF, FaInstagram, FaTwitter, FaYoutube } from "react-icons/fa";
+import { SiTiktok } from "react-icons/si"
 
 export default [
   {
@@ -9,6 +10,11 @@ export default [
   {
     icon: <FaInstagram />,
     path: "https://www.instagram.com/oyousaf/",
+    target: "_blank",
+  },
+  {
+    icon: <SiTiktok />,
+    path: "https://tiktok.com/@oyousaf_",
     target: "_blank",
   },
   {

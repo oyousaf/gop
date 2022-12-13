@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import { jsx, Container, Box, Heading, Image, Button, Text } from "theme-ui";
 import { Link } from "react-scroll";
-import BannerImg from "assets/jordan.jpg";
+import BannerImg from "../assets/jordan.jpg";
 
 export default function Banner() {
   return (

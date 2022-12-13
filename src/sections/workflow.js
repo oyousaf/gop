@@ -1,8 +1,8 @@
 /** @jsx jsx */
 import { jsx } from 'theme-ui';
 import { Container } from 'theme-ui';
-import SectionHeader from 'components/section-header';
-import PatternBG from 'assets/patternBG.png';
+import SectionHeader from '../components/section-header';
+import PatternBG from '../assets/patternBG.png';
 
 export default function WorkFlow() {
   return (
