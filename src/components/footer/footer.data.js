@@ -15,7 +15,7 @@ export default {
     },
     {
       icon: <SiTiktok />,
-      path: "https:tiktok.com/@oyousaf_",
+      path: "https://tiktok.com/@oyousaf_",
       target: "_blank"
     },
     {
