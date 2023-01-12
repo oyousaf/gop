@@ -6,7 +6,7 @@ export default function TestimonialCard() {
     <section sx={{ variant: "section.testimonial" }} id="news">
       <Container sx={styles.containerBox}>
         <Box sx={styles.thumbnail}>
-          <div class="powr-rss-feed" id="7598ef49_1650115410"></div>
+          <div className="powr-rss-feed" id="7598ef49_1650115410"></div>
           <script src="https://www.powr.io/powr.js?platform=react"></script>
         </Box>
       </Container>

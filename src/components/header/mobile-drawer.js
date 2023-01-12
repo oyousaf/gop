@@ -49,7 +49,7 @@ export default function MobileDrawer() {
                 <Box as="span" key={i} sx={styles.social.icon}>
                   <Link
                     onClick={() => setIsDrawerOpen(false)}
-                    path={socialItem.path}
+                    to={socialItem.path}
                   >
                     {socialItem.icon}
                   </Link>
