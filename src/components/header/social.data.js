@@ -24,7 +24,7 @@ export default [
   },
   {
     icon: <FaYoutube />,
-    path: "https://www.youtube.com/channel/UCuQa5dlD54JqhBpUTH2TSpQ",
+    path: "https://www.youtube.com/@oyousaf_",
     target: "_blank",
   },
 ];
