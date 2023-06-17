@@ -1,9 +1,9 @@
 import React from "react";
 import { ThemeProvider } from "theme-ui";
 import theme from "../theme";
-import ReactGA from 'react-ga';
+import ReactGA from 'react-ga4';
 
-const TRACKING_ID = "UA-110473979-1";
+const TRACKING_ID = "G-ZYK38288LH";
 
 ReactGA.initialize(TRACKING_ID);
 
