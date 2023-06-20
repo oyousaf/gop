@@ -50,6 +50,7 @@ export default function MobileDrawer() {
                   <Link
                     onClick={() => setIsDrawerOpen(false)}
                     to={socialItem.path}
+                    target={socialItem.target}
                   >
                     {socialItem.icon}
                   </Link>
