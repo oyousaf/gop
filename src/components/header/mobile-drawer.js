@@ -46,23 +46,24 @@ export default function MobileDrawer() {
 
           <Box sx={styles.menuFooter}>
             <Box sx={styles.social}>
-              <a href="https://twitter.com/oyousaf_" target="_blank">
-                <Box as="span" sx={styles.social.icon}>
+              <Box as="span" sx={styles.social.icon}>
+                <a href="https://twitter.com/oyousaf_" target="_blank">
                   <FaTwitter
                     style={styles.social.icon}
                     onClick={() => setIsDrawerOpen(false)}
                   />
-                </Box>
-              </a>
-              <a href="https://www.youtube.com/@oyousaf_" target="_blank">
-                <Box as="span">
+                </a>
+              </Box>
+
+              <Box as="span">
+                <a href="https://www.youtube.com/@oyousaf_" target="_blank">
                   <FaYoutube
                     style={styles.social.icon}
                     onClick={() => setIsDrawerOpen(false)}
                     target={social.target}
                   />
-                </Box>
-              </a>
+                </a>
+              </Box>
             </Box>
           </Box>
         </Box>
