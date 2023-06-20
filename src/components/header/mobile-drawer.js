@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { Box } from "theme-ui";
+import { Box, Image } from "theme-ui";
 import { Scrollbars } from "react-custom-scrollbars";
 import Drawer from "../../components/drawer";
 import { IoMdClose, IoMdMenu } from "react-icons/io";
 import { Link } from "react-scroll";
 import menuItems from "./header.data";
 import social from "./social.data";
+import { FaTwitter, FaYoutube } from "react-icons/fa";
 
 export default function MobileDrawer() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -45,17 +46,23 @@ export default function MobileDrawer() {
 
           <Box sx={styles.menuFooter}>
             <Box sx={styles.social}>
-              {social.map((socialItem, i) => (
-                <Box as="span" key={i} sx={styles.social.icon}>
-                  <Link
+              <Box as="span" sx={styles.social.icon}>
+                <a href="https://twitter.com/oyousaf_" target="_blank">
+                  <FaTwitter
+                    style={styles.social.icon}
                     onClick={() => setIsDrawerOpen(false)}
-                    to={socialItem.path}
-                    target={socialItem.target}
-                  >
-                    {socialItem.icon}
-                  </Link>
+                  />
+                </a>
+              </Box>
+              <a href="https://www.youtube.com/@oyousaf_" target="_blank">
+                <Box to="https://www.youtube.com/@oyousaf_" as="span">
+                  <FaYoutube
+                    style={styles.social.icon}
+                    onClick={() => setIsDrawerOpen(false)}
+                    target={social.target}
+                  />
                 </Box>
-              ))}
+              </a>
             </Box>
           </Box>
         </Box>
@@ -139,6 +146,15 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
+
+    a: {
+      color: "white",
+      cursor: "pointer",
+      transition: "all 0.25s",
+      "&:hover": {
+        color: "teal",
+      },
+    },
 
     icon: {
       display: "flex",
