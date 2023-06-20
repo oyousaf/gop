@@ -55,7 +55,7 @@ export default function MobileDrawer() {
                 </a>
               </Box>
               <a href="https://www.youtube.com/@oyousaf_" target="_blank">
-                <Box to="https://www.youtube.com/@oyousaf_" as="span">
+                <Box as="span">
                   <FaYoutube
                     style={styles.social.icon}
                     onClick={() => setIsDrawerOpen(false)}
