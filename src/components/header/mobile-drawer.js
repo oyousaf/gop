@@ -151,7 +151,6 @@ const styles = {
     a: {
       color: "white",
       cursor: "pointer",
-      transition: "all 0.25s",
       "&:hover": {
         color: "teal",
       },
