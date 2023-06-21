@@ -60,7 +60,6 @@ export default function MobileDrawer() {
                   <FaYoutube
                     style={styles.social.icon}
                     onClick={() => setIsDrawerOpen(false)}
-                    target={social.target}
                   />
                 </a>
               </Box>
