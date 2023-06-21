@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { Box, Image } from "theme-ui";
+import { Box } from "theme-ui";
 import { Scrollbars } from "react-custom-scrollbars";
 import Drawer from "../../components/drawer";
 import { IoMdClose, IoMdMenu } from "react-icons/io";
 import { Link } from "react-scroll";
 import menuItems from "./header.data";
-import social from "./social.data";
+//import social from "./social.data";
 import { FaTwitter, FaYoutube } from "react-icons/fa";
 
 export default function MobileDrawer() {
