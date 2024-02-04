@@ -2,7 +2,7 @@ import React from "react";
 import Head from "next/head";
 
 export default function SEO({
-  description = "Uniting the Ummah with sacred knowledge of the Deen",
+  description = "Reviving the Ummah with sacred knowledge of the Deen",
   author = "OYOUSAF,OYOUSAF87,OMAR YOUSAF,oyousaf_",
   meta,
   title = "Gardens of Paradise",
@@ -10,7 +10,7 @@ export default function SEO({
   const metaData = [
     {
       name: `description`,
-      content: "Uniting the Ummah with sacred knowledge of the Deen",
+      content: "Reviving the Ummah with sacred knowledge of the Deen",
     },
     {
       name: `title`,
