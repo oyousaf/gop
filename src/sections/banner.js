@@ -3,19 +3,23 @@ import { jsx, Container, Box, Heading, Image, Button, Text } from "theme-ui";
 import { Link } from "react-scroll";
 import BannerImg from "../assets/jordan.jpg";
 
+import { FiChevronDown } from "react-icons/fi";
+
 export default function Banner() {
   return (
     <section sx={styles.banner} id="home">
       <Container sx={styles.banner.container}>
         <Box sx={styles.banner.contentBox}>
           <Heading as="h1" variant="heroPrimary">
-            توحيد الأمة بعلم الدين المقدس
+            إحياء الأمة بعلم الدين المقدس{" "}
           </Heading>
           <Text as="p" variant="heroSecondary">
-            Uniting the Ummah with sacred knowledge of the Deen
+            Reviving the Ummah with sacred knowledge of the Deen
           </Text>
           <Link to="feature" spy={true} smooth={true} duration={500}>
-            <Button variant="tealBtn">Explore</Button>
+            <Button variant="tealBtn">
+              <FiChevronDown size={24} />
+            </Button>
           </Link>
         </Box>
         <Box sx={styles.banner.imageBox}>
