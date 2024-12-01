@@ -1,4 +1,4 @@
-import ReactGA from "react-ga4";
+import ReactGA from 'react-ga4';
 
 const TRACKING_ID = "G-ZYK38288LH";
 ReactGA.initialize(TRACKING_ID);
@@ -29,18 +29,13 @@ export default function RootLayout({ children }) {
         <meta name="author" content={metadata.author} />
         <meta name="title" content={metadata.title} />
         <meta property="og:title" content={metadata.openGraph.title} />
-        <meta
-          property="og:description"
-          content={metadata.openGraph.description}
-        />
+        <meta property="og:description" content={metadata.openGraph.description} />
         <meta property="og:type" content={metadata.openGraph.type} />
         <meta name="twitter:card" content={metadata.twitter.card} />
         <meta name="twitter:creator" content={metadata.twitter.creator} />
         <meta name="twitter:title" content={metadata.twitter.title} />
-        <meta
-          name="twitter:description"
-          content={metadata.twitter.description}
-        />
+        <meta name="twitter:description" content={metadata.twitter.description} />
+        <link rel="icon" href="/favicon.ico" />
       </head>
       <body>{children}</body>
     </html>
