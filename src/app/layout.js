@@ -8,7 +8,7 @@ export const metadata = {
   description: "Reviving the Ummah via sacred Islamic knowledge.",
   author: "OYOUSAF,OYOUSAF87,OMAR YOUSAF,oyousaf_",
   keywords:
-    "Islam,Islamic knowledge, Quran, Hadith, Islamic teachings, Deen, sacred knowledge, Islamic faith, learn Islam, Islamic scholars, Islamic history, Quranic studies, Arabic language, Islamic teachings online, Islamic education, spiritual growth, Islamic community, worldwide Islamic knowledge, Islam for beginners, understanding Islam",
+    "Islam, Islamic knowledge, Quran, Hadith, Islamic teachings, Deen, sacred knowledge, Islamic faith, learn Islam, Islamic scholars, Islamic history, Quranic studies, Arabic language, Islamic teachings online, Islamic education, spiritual growth, Islamic community, worldwide Islamic knowledge, Islam for beginners, understanding Islam",
   openGraph: {
     title: "حدائق الجنة",
     description: "Reviving the Ummah via sacred Islamic knowledge.",
