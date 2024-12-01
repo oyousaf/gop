@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Oleo+Script:wght@400;700');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    font-family: "Oleo Script", serif;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #9d8770;
+    color: #ffffff; 
+  }
+}
+
+:root {
+  --background: #9d8770;
+  --foreground: #ffffff;
+}
