@@ -1,7 +1,7 @@
 import Live from "./Live";
 
 export default function Madinah() {
-  const videoId = "jIuhunHK5SY";
+  const videoId = "Kt7hKHlArl8";
 
   return (
     <section className="relative py-12 h-screen" id="madinah">

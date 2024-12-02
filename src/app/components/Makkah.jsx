@@ -1,7 +1,7 @@
 import Live from "./Live";
 
 export default function Makkah() {
-  const videoId = "vpbiNC-KQVc";
+  const videoId = "ekpLvCcgv4U";
 
   return (
     <section className="relative py-12 h-screen" id="makkah">
