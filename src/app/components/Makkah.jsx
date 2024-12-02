@@ -4,7 +4,7 @@ import Live from "./Live";
 export default function Makkah() {
   const [videoId, setVideoId] = useState(null);
   const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
-  const channelId = "UCfBw_uwZb_oFLyVsjWk6owQ";
+  const channelId = "UCSs5mehC-g9qDmIZWFe0a6Q";
 
   useEffect(() => {
     const fetchVideoByTitleAndViewers = async () => {
@@ -44,7 +44,6 @@ export default function Makkah() {
           return;
         }
 
-        // Find the most viewed live stream
         const mostViewedVideo = detailsData.items.reduce((max, video) => {
           const viewers = parseInt(
             video.liveStreamingDetails.concurrentViewers || "0",
