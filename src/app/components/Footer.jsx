@@ -1,13 +1,10 @@
 import { useEffect, useState } from "react";
-import { HijriDate } from "hijri-date";
+import moment from "moment-hijri"; 
 import { socialLinks } from "../utils/constants";
 
 const getIslamicDate = () => {
-  const hijri = new HijriDate();
-  const day = hijri.getDate();
-  const month = hijri.getMonthName();
-  const year = hijri.getFullYear();
-  return `${day} ${month} ${year}`;
+  const islamicDate = moment().format('iD iMMMM iYYYY');
+  return islamicDate;
 };
 
 export default function Footer() {
