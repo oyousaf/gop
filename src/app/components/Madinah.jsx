@@ -39,7 +39,7 @@ async function fetchVideoDetails(videoIds, API_KEY) {
   }, {});
 }
 
-export default function Makkah() {
+export default function Madinah() {
   const [videoId, setVideoId] = useState(null);
 
   useEffect(() => {
