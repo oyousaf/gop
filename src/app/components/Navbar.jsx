@@ -72,14 +72,14 @@ export default function Navbar() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 100 }}
             transition={{ duration: 0.3 }}
-            className="fixed top-0 left-0 w-full h-screen bg-background bg-opacity-90 z-40 flex flex-col items-center justify-center space-y-8"
+            className="fixed top-0 left-0 w-full h-screen bg-background bg-opacity-90 z-40 flex flex-col justify-between"
           >
             <div className="absolute top-6 right-6 z-50" onClick={toggleMenu}>
               <AiOutlineClose className="text-3xl text-white" />
             </div>
 
             {/* Navigation Links for Mobile */}
-            <div className="flex flex-col items-center space-y-6">
+            <div className="flex flex-col items-center space-y-6 mt-auto mb-auto">
               {navLinks.map((item) => (
                 <button
                   key={item.name}
@@ -94,8 +94,8 @@ export default function Navbar() {
               ))}
             </div>
 
-            {/* Social Media Icons for Mobile */}
-            <div className="flex justify-center space-x-6 mt-8 mb-20">
+            {/* Social Media Icons at Bottom */}
+            <div className="flex justify-center space-x-6 mb-20">
               {socialLinks.map((item) => (
                 <a
                   key={item.name}

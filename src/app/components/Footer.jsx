@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
+import { HijriDate } from "hijri-date";
 import { socialLinks } from "../utils/constants";
 
 const getIslamicDate = () => {
-  const islamicDate = new Date().toLocaleDateString("en-GB-u-ca-islamic", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-  return islamicDate;
+  const hijri = new HijriDate();
+  const day = hijri.getDate();
+  const month = hijri.getMonthName();
+  const year = hijri.getFullYear();
+  return `${day} ${month} ${year}`;
 };
 
 export default function Footer() {
@@ -19,10 +19,11 @@ export default function Footer() {
 
   return (
     <footer className="py-8 bg-background text-white text-center">
-      <p className="text-lg mb-2">
-        &copy; {new Date().getFullYear()} حدائق الجنة - All Rights Reserved
+      <p className="text-2xl mb-2">
+        &copy; {new Date().getFullYear()} حدائق الجنة
       </p>
-      <p className="text-sm mb-6">{islamicDate}</p>
+      <p className="text-xl mb-2">All Rights Reserved</p>
+      <p className="text-2xl mb-6">{islamicDate}</p>
 
       <div className="flex justify-center space-x-6">
         {socialLinks.map((link) => (

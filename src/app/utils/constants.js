@@ -11,12 +11,12 @@ import { BsTwitterX, BsYoutube } from "react-icons/bs"
   export const socialLinks = [
     {
       name: "Twitter",
-      icon: <BsTwitterX />,
+      icon: <BsTwitterX size={30} />,
       url: "https://twitter.com/oyousaf_",
     },
     {
       name: "YouTube",
-      icon: <BsYoutube />,
+      icon: <BsYoutube size={30} />,
       url: "https://www.youtube.com/@oyousaf_",
     },
   ];

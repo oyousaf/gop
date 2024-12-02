@@ -45,7 +45,7 @@ export default function Hero() {
           transition={{ duration: 1, delay: 1 }}
         >
           <button
-            onClick={() => handleScroll("makkah")}
+            onClick={() => handleScroll("welcome")}
             className="text-background hover:text-white rounded-full transition duration-300 ease-in-out"
           >
             <FaArrowDown size={50} className="animate-bounce" />
