@@ -35,7 +35,7 @@ export default function Hadith() {
         <div className="flex justify-center items-center h-32">
           <p className="text-red-500 text-lg">{error}</p>
         </div>
-      ) : (  
+      ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
           {hadiths.map((hadith, index) => (
             <motion.div
@@ -46,7 +46,7 @@ export default function Hadith() {
               transition={{ delay: index * 0.1 }}
               whileHover={{ scale: 1.05 }}
             >
-              <h3 className="text-xl text-gray-200 font-semibold mb-4 text-center">
+              <h3 className="text-xl text-[#b9e1d4] font-semibold mb-4 text-center">
                 {hadith.title}
               </h3>
               <p className="mb-4 text-center pt-3 flex-grow">
@@ -57,7 +57,7 @@ export default function Hadith() {
                   href={hadith.link}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block mt-4 px-4 py-2 bg-neutral-200 text-background hover:text-black rounded hover:bg-neutral-300 transition-colors duration-200 text-center"
+                  className="inline-block mt-4 px-4 py-2 bg-neutral-200 text-background hover:text-[#6c857d] rounded hover:bg-neutral-300 transition-colors duration-200 text-center"
                 >
                   Read More
                 </a>

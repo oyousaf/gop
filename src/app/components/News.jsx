@@ -46,7 +46,7 @@ export default function News() {
               transition={{ delay: index * 0.1 }}
               whileHover={{ scale: 1.05 }}
             >
-              <h3 className="text-xl text-gray-200 font-semibold mb-4 text-center">
+              <h3 className="text-xl text-[#b9e1d4] font-semibold mb-4 text-center">
                 {article.title}
               </h3>
               <p className="mb-4 text-center pt-3 flex-grow">
@@ -57,7 +57,7 @@ export default function News() {
                   href={article.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-block mt-4 px-4 py-2 bg-neutral-200 text-background hover:text-black rounded hover:bg-neutral-300 transition-colors duration-200 text-center"
+                  className="inline-block mt-4 px-4 py-2 bg-neutral-200 text-background hover:text-[#6c857d] rounded hover:bg-neutral-300 transition-colors duration-200 text-center"
                 >
                   Read More
                 </a>
