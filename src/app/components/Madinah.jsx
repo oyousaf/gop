@@ -7,10 +7,8 @@ const CHANNEL_ID = "UCfBw_uwZb_oFLyVsjWk6owQ";
 export default function Madinah() {
   const [videoId, setVideoId] = useState(null);
 
-  // Fetch the most-viewed live stream video by title
   const fetchMostViewedLiveVideo = async () => {
     try {
-      // Fetch live streams for the given channel
       const searchResponse = await fetch(
         `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&key=${API_KEY}`
       );
@@ -21,7 +19,6 @@ export default function Madinah() {
         return null;
       }
 
-      // Filter videos with titles containing "makka"
       const filteredVideos = searchData.items.filter((item) =>
         item.snippet.title.toLowerCase().includes("madina")
       );
@@ -31,7 +28,6 @@ export default function Madinah() {
         return null;
       }
 
-      // Get video details including live streaming data
       const videoIds = filteredVideos.map((item) => item.id.videoId).join(",");
       const detailsResponse = await fetch(
         `https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id=${videoIds}&key=${API_KEY}`
@@ -43,15 +39,12 @@ export default function Madinah() {
         return null;
       }
 
-      // Find the most-viewed live video
       const mostViewedVideo = detailsData.items.reduce((max, video) => {
         const viewers = parseInt(
           video.liveStreamingDetails.concurrentViewers || "0",
           10
         );
-        return viewers > (max.viewers || 0)
-          ? { id: video.id, viewers }
-          : max;
+        return viewers > (max.viewers || 0) ? { id: video.id, viewers } : max;
       }, {});
 
       return mostViewedVideo.id || null;
@@ -75,7 +68,7 @@ export default function Madinah() {
       <div className="max-w-5xl mx-auto flex justify-center items-center h-full z-10">
         <div className="text-center">
           <h2 className="md:text-4xl text-2xl font-bold mb-6 p-3">
-          Live From Madinah al-Munawwarah
+            Live From Madinah al-Munawwarah
           </h2>
           {videoId ? (
             <Live videoId={videoId} />
