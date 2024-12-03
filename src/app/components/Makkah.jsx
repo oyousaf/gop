@@ -1,66 +1,74 @@
 import { useState, useEffect } from "react";
 import Live from "./Live";
 
+const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
+const CHANNEL_ID = "UCSs5mehC-g9qDmIZWFe0a6Q";
+
 export default function Makkah() {
   const [videoId, setVideoId] = useState(null);
-  const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
-  const channelId = "UCSs5mehC-g9qDmIZWFe0a6Q";
+
+  // Fetch the most-viewed live stream video by title
+  const fetchMostViewedLiveVideo = async () => {
+    try {
+      // Fetch live streams for the given channel
+      const searchResponse = await fetch(
+        `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&key=${API_KEY}`
+      );
+      const searchData = await searchResponse.json();
+
+      if (!searchData.items?.length) {
+        console.warn("No active live streams found.");
+        return null;
+      }
+
+      // Filter videos with titles containing "makka"
+      const filteredVideos = searchData.items.filter((item) =>
+        item.snippet.title.toLowerCase().includes("makka")
+      );
+
+      if (!filteredVideos.length) {
+        console.warn("No Makkah live stream available.");
+        return null;
+      }
+
+      // Get video details including live streaming data
+      const videoIds = filteredVideos.map((item) => item.id.videoId).join(",");
+      const detailsResponse = await fetch(
+        `https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id=${videoIds}&key=${API_KEY}`
+      );
+      const detailsData = await detailsResponse.json();
+
+      if (!detailsData.items?.length) {
+        console.error("Error fetching live stream details.");
+        return null;
+      }
+
+      // Find the most-viewed live video
+      const mostViewedVideo = detailsData.items.reduce((max, video) => {
+        const viewers = parseInt(
+          video.liveStreamingDetails.concurrentViewers || "0",
+          10
+        );
+        return viewers > (max.viewers || 0)
+          ? { id: video.id, viewers }
+          : max;
+      }, {});
+
+      return mostViewedVideo.id || null;
+    } catch (error) {
+      console.error("Error fetching live stream data:", error);
+      return null;
+    }
+  };
 
   useEffect(() => {
-    const fetchVideoByTitleAndViewers = async () => {
-      try {
-        const searchResponse = await fetch(
-          `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&eventType=live&type=video&key=${API_KEY}`
-        );
-        const searchData = await searchResponse.json();
-
-        if (!searchData.items?.length) {
-          console.error("No active live streams found.");
-          setVideoId(null);
-          return;
-        }
-
-        const filteredVideos = searchData.items.filter((item) =>
-          item.snippet.title.toLowerCase().includes("makka")
-        );
-
-        if (!filteredVideos.length) {
-          console.error("No Makkah live stream available.");
-          setVideoId(null);
-          return;
-        }
-
-        const videoIds = filteredVideos
-          .map((item) => item.id.videoId)
-          .join(",");
-        const detailsResponse = await fetch(
-          `https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id=${videoIds}&key=${API_KEY}`
-        );
-        const detailsData = await detailsResponse.json();
-
-        if (!detailsData.items?.length) {
-          console.error("Error fetching live stream details.");
-          setVideoId(null);
-          return;
-        }
-
-        const mostViewedVideo = detailsData.items.reduce((max, video) => {
-          const viewers = parseInt(
-            video.liveStreamingDetails.concurrentViewers || "0",
-            10
-          );
-          return viewers > (max.viewers || 0) ? { id: video.id, viewers } : max;
-        }, {});
-
-        setVideoId(mostViewedVideo.id || null);
-      } catch (error) {
-        console.error("Error fetching live stream data:", error);
-        setVideoId(null);
-      }
+    const loadLiveStream = async () => {
+      const mostViewedVideoId = await fetchMostViewedLiveVideo();
+      setVideoId(mostViewedVideoId);
     };
 
-    fetchVideoByTitleAndViewers();
-  }, [API_KEY, channelId]);
+    loadLiveStream();
+  }, []);
 
   return (
     <section className="relative py-12 h-screen" id="makkah">
