@@ -7,60 +7,25 @@ const CHANNEL_ID = "UCfBw_uwZb_oFLyVsjWk6owQ";
 export default function Madinah() {
   const [videoId, setVideoId] = useState(null);
 
-  const fetchMostViewedLiveVideo = async () => {
-    try {
-      const searchResponse = await fetch(
-        `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&key=${API_KEY}`
-      );
-      const searchData = await searchResponse.json();
-
-      if (!searchData.items?.length) {
-        console.warn("No active live streams found.");
-        return null;
-      }
-
-      const filteredVideos = searchData.items.filter((item) =>
-        item.snippet.title.toLowerCase().includes("madina")
-      );
-
-      if (!filteredVideos.length) {
-        console.warn("No Madinah live stream available.");
-        return null;
-      }
-
-      const videoIds = filteredVideos.map((item) => item.id.videoId).join(",");
-      const detailsResponse = await fetch(
-        `https://www.googleapis.com/youtube/v3/videos?part=liveStreamingDetails&id=${videoIds}&key=${API_KEY}`
-      );
-      const detailsData = await detailsResponse.json();
-
-      if (!detailsData.items?.length) {
-        console.error("Error fetching live stream details.");
-        return null;
-      }
-
-      const mostViewedVideo = detailsData.items.reduce((max, video) => {
-        const viewers = parseInt(
-          video.liveStreamingDetails.concurrentViewers || "0",
-          10
-        );
-        return viewers > (max.viewers || 0) ? { id: video.id, viewers } : max;
-      }, {});
-
-      return mostViewedVideo.id || null;
-    } catch (error) {
-      console.error("Error fetching live stream data:", error);
-      return null;
-    }
-  };
-
   useEffect(() => {
-    const loadLiveStream = async () => {
-      const mostViewedVideoId = await fetchMostViewedLiveVideo();
-      setVideoId(mostViewedVideoId);
+    const fetchLiveStream = async () => {
+      try {
+        const response = await fetch(
+          `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&q=madina&type=video&key=${API_KEY}`
+        );
+        const data = await response.json();
+
+        if (data.items?.length) {
+          setVideoId(data.items[0].id.videoId);
+        } else {
+          console.warn("No Madinah live stream available.");
+        }
+      } catch (error) {
+        console.error("Error fetching live stream data:", error);
+      }
     };
 
-    loadLiveStream();
+    fetchLiveStream();
   }, []);
 
   return (
