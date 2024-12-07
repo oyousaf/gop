@@ -34,7 +34,9 @@ export default function Navbar() {
             <button
               key={item.name}
               onClick={() => handleScroll(item.href.slice(1))}
-              className="text-gray-200 hover:text-white cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-105"
+              rel="noopener noreferrer"
+              aria-label={`Follow us on ${item.name}`}
+              className="text-gray-200 hover:text-white cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-110"
             >
               {item.name}
             </button>
@@ -48,7 +50,7 @@ export default function Navbar() {
               key={item.name}
               href={item.url}
               target="_blank"
-              className="text-gray-200 hover:text-white cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-105"
+              className="text-gray-200 hover:text-white cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-110"
             >
               {item.icon}
             </a>
@@ -88,7 +90,7 @@ export default function Navbar() {
                     handleScroll(item.href.slice(1));
                     toggleMenu();
                   }}
-                  className="text-3xl uppercase text-gray-200 hover:text-white cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-105"
+                  className="text-3xl uppercase text-gray-200 hover:text-white cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-110"
                 >
                   {item.name}
                 </button>
@@ -101,7 +103,7 @@ export default function Navbar() {
                 <a
                   key={item.name}
                   href={item.href}
-                  className="text-3xl text-gray-200 hover:text-white cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-105"
+                  className="text-3xl text-gray-200 hover:text-white cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-110"
                 >
                   {item.icon}
                 </a>
