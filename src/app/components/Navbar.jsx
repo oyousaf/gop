@@ -46,7 +46,8 @@ export default function Navbar() {
           {socialLinks.map((item) => (
             <a
               key={item.name}
-              href={item.href}
+              href={item.url}
+              target="_blank"
               className="text-gray-200 hover:text-white cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-105"
             >
               {item.icon}
