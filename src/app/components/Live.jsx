@@ -5,6 +5,7 @@ export default function Live({ videoId }) {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    const currentRef = liveStreamRef.current;
     const observer = new IntersectionObserver(
       ([entry]) => {
         setIsVisible(entry.isIntersecting);
@@ -12,13 +13,13 @@ export default function Live({ videoId }) {
       { root: null, threshold: 0.1 }
     );
 
-    if (liveStreamRef.current) {
-      observer.observe(liveStreamRef.current);
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
     return () => {
-      if (liveStreamRef.current) {
-        observer.unobserve(liveStreamRef.current);
+      if (currentRef) {
+        observer.unobserve(currentRef);
       }
     };
   }, []);

@@ -3,6 +3,7 @@ import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import { navLinks, socialLinks } from "../utils/constants";
 import { handleScroll } from "../utils/scroll";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -20,10 +21,12 @@ export default function Navbar() {
         {/* Logo */}
         <div className="text-3xl font-bold cursor-pointer">
           <button onClick={() => handleScroll("hero")}>
-            <img
+            <Image
               src="/logo.png"
               alt="logo"
-              className="w-[200px] h-auto object-contain"
+              width={200}
+              height={100}
+              className="object-contain"
             />
           </button>
         </div>
