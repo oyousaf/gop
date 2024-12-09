@@ -2,11 +2,6 @@ import { useEffect, useState } from "react";
 import moment from "moment-hijri"; 
 import { socialLinks } from "../utils/constants";
 
-moment.locale("ar", {
-  ...moment.locales["ar"],
-  numerals: true,
-});
-
 const getIslamicDate = () => {
   const islamicDate = moment().format('iD iMMMM iYYYY');
   return islamicDate;
