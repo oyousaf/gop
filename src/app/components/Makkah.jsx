@@ -38,7 +38,7 @@ export default function Makkah() {
           {videoId ? (
             <Live videoId={videoId} />
           ) : (
-            <p>No live stream available at the moment.</p>
+            <p>No Makkah live stream available at the moment.</p>
           )}
         </div>
       </div>

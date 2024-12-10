@@ -38,7 +38,7 @@ export default function Madinah() {
           {videoId ? (
             <Live videoId={videoId} />
           ) : (
-            <p>No live stream available at the moment.</p>
+            <p>No Madinah live stream available at the moment.</p>
           )}
         </div>
       </div>
