@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
-import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
 import { navLinks, socialLinks } from "../utils/constants";
 import { handleScroll } from "../utils/scroll";
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,31 +16,30 @@ export default function Navbar() {
   }, [isMenuOpen]);
 
   return (
-    <nav className="fixed w-full bg-background text-white text-2xl p-3 z-50 shadow-md">
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
+    <nav className="max-w-7xl mx-auto fixed w-full bg-background text-2xl text-white p-3 z-50 border-b border-background shadow-md shadow-background">
+      <div className="flex justify-between items-center">
         {/* Logo */}
-        <button
-          onClick={() => handleScroll("hero")}
-          aria-label="Scroll to Hero Section"
-          className="text-3xl font-bold cursor-pointer"
-        >
-          <Image
-            src="/logo.png"
-            alt="Logo"
-            width={200}
-            height={100}
-            className="object-contain"
-          />
-        </button>
+        <div className="text-3xl font-bold cursor-pointer">
+          <button onClick={() => handleScroll("hero")}>
+            <Image
+              src="/logo.png"
+              alt="logo"
+              width={200}
+              height={100}
+              className="object-contain"
+            />
+          </button>
+        </div>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex space-x-8">
+        <div className="hidden md:flex space-x-8 flex-grow justify-center">
           {navLinks.map((item) => (
             <button
               key={item.name}
               onClick={() => handleScroll(item.href.slice(1))}
-              className="hover:text-white text-gray-200 transition-transform duration-300 ease-in-out hover:scale-110"
-              aria-label={`Navigate to ${item.name}`}
+              rel="noopener noreferrer"
+              aria-label={`Follow us on ${item.name}`}
+              className="text-gray-200 hover:text-white cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-110"
             >
               {item.name}
             </button>
@@ -54,22 +53,19 @@ export default function Navbar() {
               key={item.name}
               href={item.url}
               target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white text-gray-200 transition-transform duration-300 ease-in-out hover:scale-110"
-              aria-label={`Follow us on ${item.name}`}
+              className="text-gray-200 hover:text-white cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-110"
             >
               {item.icon}
             </a>
           ))}
         </div>
 
-        {/* Mobile Menu Toggle */}
+        {/* Mobile Menu Button */}
         <div className="md:hidden" onClick={toggleMenu}>
-          {isMenuOpen ? null : (
-            <AiOutlineMenu
-              className="text-5xl text-white"
-              aria-label="Open Menu"
-            />
+          {isMenuOpen ? (
+            <AiOutlineClose className="text-5xl text-white" />
+          ) : (
+            <AiOutlineMenu className="text-5xl text-white" />
           )}
         </div>
       </div>

@@ -32,13 +32,12 @@ export default function Live({ videoId }) {
       {isVisible ? (
         <iframe
           width="100%"
-          height="315"
           src={`https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&hq=1&vq=hd1080`}
           title="YouTube Live Stream"
           frameBorder="0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowFullScreen
-          className="rounded-md shadow-md"
+          className="rounded-md shadow-md w-full md:h-[400px] h-[250px]"
         ></iframe>
       ) : (
         <div className="placeholder flex flex-col items-center justify-center h-80 text-center border-2 border-dashed border-gray-400 rounded-md">

@@ -32,7 +32,7 @@ export default function Madinah() {
     <section className="relative py-12 h-screen" id="madinah">
       <div className="max-w-5xl mx-auto flex justify-center items-center h-full z-10">
         <div className="text-center">
-          <h2 className="md:text-4xl text-2xl font-bold mb-6 p-3">
+          <h2 className="md:text-5xl text-3xl font-bold mb-6 p-3">
             Live From Madinah al-Munawwarah
           </h2>
           {videoId ? (
