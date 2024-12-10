@@ -30,16 +30,18 @@ export default function Live({ videoId }) {
       className="live-stream-container mx-auto flex flex-col items-center justify-center p-4"
     >
       {isVisible ? (
-        <iframe
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&hq=1&vq=hd1080`}
-          title="YouTube Live Stream"
-          frameBorder="0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          className="rounded-md shadow-md w-full md:h-[400px] h-[250px]"
-        ></iframe>
+        <div className="w-full max-w-4xl aspect-video rounded-md overflow-hidden shadow-md">
+          <iframe
+            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&hq=1&vq=hd1080`}
+            title="YouTube Live Stream"
+            frameBorder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            className="w-full h-full"
+          ></iframe>
+        </div>
       ) : (
-        <div className="placeholder flex flex-col items-center justify-center h-80 text-center border-2 border-dashed border-gray-400 rounded-md">
+        <div className="placeholder flex flex-col items-center justify-center w-full max-w-4xl aspect-video border-2 border-dashed border-gray-400 rounded-md">
           <p>Loading live stream...</p>
         </div>
       )}
