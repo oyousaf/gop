@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
-import { navLinks, socialLinks } from "../utils/constants";
-import { handleScroll } from "../utils/scroll";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { navLinks, socialLinks } from "../utils/constants";
+import { handleScroll } from "../utils/scroll";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -16,30 +16,31 @@ export default function Navbar() {
   }, [isMenuOpen]);
 
   return (
-    <nav className="max-w-7xl mx-auto fixed w-full bg-background text-2xl text-white p-3 z-50 border-b border-background shadow-md shadow-background">
-      <div className="flex justify-between items-center">
+    <nav className="fixed w-full bg-background text-white text-2xl p-3 z-50 shadow-md">
+      <div className="max-w-7xl mx-auto flex justify-between items-center">
         {/* Logo */}
-        <div className="text-3xl font-bold cursor-pointer">
-          <button onClick={() => handleScroll("hero")}>
-            <Image
-              src="/logo.png"
-              alt="logo"
-              width={200}
-              height={100}
-              className="object-contain"
-            />
-          </button>
-        </div>
+        <button
+          onClick={() => handleScroll("hero")}
+          aria-label="Scroll to Hero Section"
+          className="text-3xl font-bold cursor-pointer"
+        >
+          <Image
+            src="/logo.png"
+            alt="Logo"
+            width={200}
+            height={100}
+            className="object-contain"
+          />
+        </button>
 
         {/* Desktop Menu */}
-        <div className="hidden md:flex space-x-8 flex-grow justify-center">
+        <div className="hidden md:flex space-x-8">
           {navLinks.map((item) => (
             <button
               key={item.name}
               onClick={() => handleScroll(item.href.slice(1))}
-              rel="noopener noreferrer"
-              aria-label={`Follow us on ${item.name}`}
-              className="text-gray-200 hover:text-white cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-110"
+              className="hover:text-white text-gray-200 transition-transform duration-300 ease-in-out hover:scale-110"
+              aria-label={`Navigate to ${item.name}`}
             >
               {item.name}
             </button>
@@ -53,19 +54,22 @@ export default function Navbar() {
               key={item.name}
               href={item.url}
               target="_blank"
-              className="text-gray-200 hover:text-white cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-110"
+              rel="noopener noreferrer"
+              className="hover:text-white text-gray-200 transition-transform duration-300 ease-in-out hover:scale-110"
+              aria-label={`Follow us on ${item.name}`}
             >
               {item.icon}
             </a>
           ))}
         </div>
 
-        {/* Mobile Menu Button */}
+        {/* Mobile Menu Toggle */}
         <div className="md:hidden" onClick={toggleMenu}>
-          {isMenuOpen ? (
-            <AiOutlineClose className="text-3xl text-white" />
-          ) : (
-            <AiOutlineMenu className="text-3xl text-white" />
+          {isMenuOpen ? null : (
+            <AiOutlineMenu
+              className="text-5xl text-white"
+              aria-label="Open Menu"
+            />
           )}
         </div>
       </div>
@@ -81,7 +85,7 @@ export default function Navbar() {
             className="fixed top-0 left-0 w-full h-screen bg-background bg-opacity-90 z-40 flex flex-col justify-between"
           >
             <div className="absolute top-6 right-6 z-50" onClick={toggleMenu}>
-              <AiOutlineClose className="text-3xl text-white" />
+              <AiOutlineClose className="text-5xl text-white" />
             </div>
 
             {/* Navigation Links for Mobile */}
