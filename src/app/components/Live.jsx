@@ -31,7 +31,6 @@ export default function Live({ videoId }) {
     >
       {isVisible ? (
         <iframe
-          width="100%"
           src={`https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&hq=1&vq=hd1080`}
           title="YouTube Live Stream"
           frameBorder="0"
