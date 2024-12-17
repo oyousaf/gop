@@ -11,6 +11,7 @@ import Hadith from "./components/Hadith";
 import News from "./components/News";
 
 import "./styles/globals.css";
+import ScrollToTop from "./components/ScrollToTop";
 
 export default function Home() {
   return (
@@ -24,6 +25,7 @@ export default function Home() {
       <Hadith />
       <News />
       <Footer />
+      <ScrollToTop />
     </div>
   );
 }
