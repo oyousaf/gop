@@ -27,7 +27,7 @@ const ScrollToTop = () => {
     showButton && (
       <button
         onClick={scrollToTop}
-        className="fixed z-50 text-3xl md:text-xl bottom-8 right-8 bg-[#bba58d] hover:text-black hover:bg-[#e7ccaf] transition duration-200 cursor-pointer p-3 rounded-full shadow-lg"
+        className="fixed z-40 text-3xl md:text-xl bottom-8 right-8 bg-[#bba58d] hover:text-black hover:bg-[#e7ccaf] transition duration-200 cursor-pointer p-3 rounded-full shadow-lg"
       >
         <FaArrowUp />
       </button>
