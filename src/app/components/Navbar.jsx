@@ -61,13 +61,14 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Menu Button */}
-        <div className="md:hidden" onClick={toggleMenu}>
-          {isMenuOpen ? (
-            <AiOutlineClose className="text-5xl text-white" />
-          ) : (
-            <AiOutlineMenu className="text-5xl text-white" />
-          )}
-        </div>
+        <button
+          className="md:hidden"
+          onClick={toggleMenu}
+          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+          role="button"
+        >
+          {!isMenuOpen && <AiOutlineMenu className="text-5xl text-white" />}
+        </button>
       </div>
 
       {/* Mobile Menu */}
@@ -80,9 +81,9 @@ export default function Navbar() {
             transition={{ duration: 0.3 }}
             className="fixed top-0 left-0 w-full h-screen bg-background bg-opacity-90 z-40 flex flex-col justify-between"
           >
-            <div className="absolute top-6 right-6 z-50" onClick={toggleMenu}>
+            <button className="absolute top-6 right-6" onClick={toggleMenu}>
               <AiOutlineClose className="text-5xl text-white" />
-            </div>
+            </button>
 
             {/* Navigation Links for Mobile */}
             <div className="flex flex-col items-center space-y-6 mt-auto mb-auto">
