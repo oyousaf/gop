@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import Live from "./Live";
 
 const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
-const CHANNEL_ID = "UCfBw_uwZb_oFLyVsjWk6owQ";
+const CHANNEL_ID = "UC2l1w7FCuff2-h429sAUSXQ";
 
-export default function Madinah() {
+export default function Aqsa() {
   const [videoId, setVideoId] = useState(null);
   const [fallbackVideoId, setFallbackVideoId] = useState(null);
 
@@ -12,7 +12,7 @@ export default function Madinah() {
     const fetchLiveStream = async () => {
       try {
         const response = await fetch(
-          `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&q=madina&key=${API_KEY}`
+          `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&key=${API_KEY}`
         );
         const data = await response.json();
 
@@ -20,7 +20,7 @@ export default function Madinah() {
           setVideoId(data.items[0].id.videoId);
         } else {
           console.warn(
-            "No Madinah live stream available. Fetching the latest video..."
+            "No Bayt al-Maqdis live stream available. Fetching the latest video..."
           );
           fetchFallbackVideo();
         }
@@ -51,11 +51,11 @@ export default function Madinah() {
   }, []);
 
   return (
-    <section className="relative py-12 h-screen" id="madinah">
+    <section className="relative py-12 h-screen" id="aqsa">
       <div className="max-w-5xl mx-auto flex flex-col justify-center items-center h-full z-10">
         <div className="text-center">
           <h2 className="md:text-5xl text-3xl font-bold mb-6 p-3">
-            Live From Madinah al-Munawwarah
+            Live From Bayt al-Maqdis
           </h2>
         </div>
         <div className="w-full relative aspect-video text-center">

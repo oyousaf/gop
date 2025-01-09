@@ -12,6 +12,7 @@ import News from "./components/News";
 
 import "./styles/globals.css";
 import ScrollToTop from "./components/ScrollToTop";
+import Aqsa from "./components/Aqsa";
 
 export default function Home() {
   return (
@@ -21,6 +22,7 @@ export default function Home() {
       <Banner />
       <Makkah />
       <Madinah />
+      <Aqsa />
       <Knowledge />
       <Hadith />
       <News />

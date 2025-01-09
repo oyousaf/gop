@@ -6,6 +6,7 @@ const CHANNEL_ID = "UCSs5mehC-g9qDmIZWFe0a6Q";
 
 export default function Makkah() {
   const [videoId, setVideoId] = useState(null);
+  const [fallbackVideoId, setFallbackVideoId] = useState(null);
 
   useEffect(() => {
     const fetchLiveStream = async () => {
@@ -18,10 +19,31 @@ export default function Makkah() {
         if (data.items?.length) {
           setVideoId(data.items[0].id.videoId);
         } else {
-          console.warn("No Makkah live stream available.");
+          console.warn(
+            "No Makkah live stream available. Fetching the latest video..."
+          );
+          fetchFallbackVideo();
         }
       } catch (error) {
         console.error("Error fetching live stream data:", error);
+        fetchFallbackVideo();
+      }
+    };
+
+    const fetchFallbackVideo = async () => {
+      try {
+        const response = await fetch(
+          `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&order=date&type=video&key=${API_KEY}`
+        );
+        const data = await response.json();
+
+        if (data.items?.length) {
+          setFallbackVideoId(data.items[0].id.videoId);
+        } else {
+          console.warn("No fallback video available.");
+        }
+      } catch (error) {
+        console.error("Error fetching fallback video data:", error);
       }
     };
 
@@ -30,15 +52,19 @@ export default function Makkah() {
 
   return (
     <section className="relative py-12 h-screen" id="makkah">
-      <div className="max-w-5xl mx-auto flex justify-center items-center h-full z-10">
+      <div className="max-w-5xl mx-auto flex flex-col justify-center items-center h-full z-10">
         <div className="text-center">
           <h2 className="md:text-5xl text-3xl font-bold mb-6 p-3">
             Live from Makkah al-Mukarramah
           </h2>
+        </div>
+        <div className="w-full relative aspect-video text-center">
           {videoId ? (
             <Live videoId={videoId} />
+          ) : fallbackVideoId ? (
+            <Live videoId={fallbackVideoId} />
           ) : (
-            <p>No Makkah live stream available at the moment.</p>
+            <p>No videos available at the moment.</p>
           )}
         </div>
       </div>

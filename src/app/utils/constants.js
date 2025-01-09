@@ -1,7 +1,10 @@
+import { PiMosqueFill } from "react-icons/pi";
+
 export const navLinks = [
     { name: "Home", href: "/hero" },
     { name: "🕋", href: "/makkah" },
     { name: "🕌", href: "/madinah" },
+    { name: <PiMosqueFill />, href: "/aqsa" },
     { name: "Hadith", href: "/hadith" },
     { name: "News", href: "/news" },
   ];
