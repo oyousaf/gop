@@ -19,7 +19,7 @@ export default function Footer() {
       <p className="text-2xl mb-2">
         &copy; {new Date().getFullYear()} حدائق الجنة
       </p>
-      <p className="text-xl mb-2">All Rights Reserved</p>
+      <p className="text-xl mb-2">🍉 Free Palestine 🍉</p>
       <p className="text-2xl mb-6">{islamicDate}</p>
 
       <div className="flex justify-center space-x-6">
