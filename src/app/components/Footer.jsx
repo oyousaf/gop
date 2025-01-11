@@ -39,7 +39,7 @@ export default function Footer() {
             href={link.url}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-2xl transition-transform transform hover:scale-110"
+            className="text-2xl transform transition-all duration-300 ease-in-out hover:scale-110"
             aria-label={`Follow us on ${link.name}`}
           >
             {link.icon}
