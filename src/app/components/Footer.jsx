@@ -26,7 +26,7 @@ export default function Footer() {
           alt="Palestine flag"
           width={30}
           height={30}
-          className="inline-block"
+          className="object-contain w-auto h-auto"
         />
         <span>Free Palestine 🍉</span>
       </p>

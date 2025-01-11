@@ -26,7 +26,7 @@ export default function Navbar() {
               alt="logo"
               width={200}
               height={100}
-              className="object-contain"
+              className="object-contain w-auto h-auto"
             />
           </button>
         </div>
