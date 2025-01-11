@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import moment from "moment-hijri"; 
+import Image from "next/image";
+import moment from "moment-hijri";
 import { socialLinks } from "../utils/constants";
 
 const getIslamicDate = () => {
-  const islamicDate = moment().format('iD iMMMM iYYYY');
+  const islamicDate = moment().format("iD iMMMM iYYYY");
   return islamicDate;
 };
 
@@ -19,7 +20,16 @@ export default function Footer() {
       <p className="text-2xl mb-2">
         &copy; {new Date().getFullYear()} حدائق الجنة
       </p>
-      <p className="text-xl mb-2">🍉 Free Palestine 🍉</p>
+      <p className="text-xl mb-2 flex items-center justify-center space-x-2">
+        <Image
+          src="/images/palestineflag.png"
+          alt="Palestine flag"
+          width={30}
+          height={30}
+          className="inline-block"
+        />
+        <span>Free Palestine 🍉</span>
+      </p>
       <p className="text-2xl mb-6">{islamicDate}</p>
 
       <div className="flex justify-center space-x-6">
