@@ -24,8 +24,8 @@ export default function Footer() {
         <Image
           src="/images/palestineflag.png"
           alt="Palestine flag"
-          width={30}
-          height={30}
+          width={24}
+          height={24}
           className="object-contain w-auto h-auto"
         />
         <span>Free Palestine 🍉</span>
