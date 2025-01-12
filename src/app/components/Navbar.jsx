@@ -27,6 +27,7 @@ export default function Navbar() {
               width={200}
               height={100}
               className="object-contain w-auto h-auto"
+              priority
             />
           </button>
         </div>
