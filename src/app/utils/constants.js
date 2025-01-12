@@ -16,6 +16,7 @@ export const navLinks = [
         alt="Palestine Flag"
         width={30}
         height={30}
+        className="object-contain w-auto h-auto"
       />
     ),
     href: "/divestment",
