@@ -49,7 +49,7 @@ export default function News() {
               <h3 className="text-2xl text-[#b9e1d4] font-semibold mb-4 text-center">
                 {article.title}
               </h3>
-              <p className="text-xl mb-4 text-center flex-grow">
+              <p className="text-xl mb-4 pt-3 text-center flex-grow">
                 {article.description || "No description available."}
               </p>
               <div className="flex justify-center mt-auto">
