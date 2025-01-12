@@ -46,10 +46,10 @@ export default function Hadith() {
               transition={{ delay: index * 0.1 }}
               whileHover={{ scale: 1.05 }}
             >
-              <h3 className="text-xl text-[#b9e1d4] font-semibold mb-4 text-center">
+              <h3 className="text-2xl text-[#b9e1d4] font-semibold mb-4 text-center">
                 {hadith.title}
               </h3>
-              <p className="mb-4 text-center pt-3 flex-grow">
+              <p className="text-xl mb-4 text-center flex-grow">
                 {hadith.content}
               </p>
               <div className="flex justify-center mt-auto">

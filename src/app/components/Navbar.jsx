@@ -35,7 +35,7 @@ export default function Navbar() {
         <div className="hidden md:flex space-x-8 flex-grow justify-center">
           {navLinks.map((item) => (
             <button
-              key={item.name}
+              key={item.id}
               onClick={() => handleScroll(item.href.slice(1))}
               rel="noopener noreferrer"
               aria-label={`Follow us on ${item.name}`}
@@ -89,7 +89,7 @@ export default function Navbar() {
             <div className="flex flex-col items-center space-y-6 mt-auto mb-auto">
               {navLinks.map((item) => (
                 <button
-                  key={item.name}
+                  key={item.id}
                   onClick={() => {
                     handleScroll(item.href.slice(1));
                     toggleMenu();

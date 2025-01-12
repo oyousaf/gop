@@ -6,13 +6,14 @@ import Footer from "./components/Footer";
 import Banner from "./components/Banner";
 import Makkah from "./components/Makkah";
 import Madinah from "./components/Madinah";
+import Aqsa from "./components/Aqsa";
 import Knowledge from "./components/Knowledge";
 import Hadith from "./components/Hadith";
 import News from "./components/News";
+import Divestment from "./components/Divestment";
+import ScrollToTop from "./components/ScrollToTop";
 
 import "./styles/globals.css";
-import ScrollToTop from "./components/ScrollToTop";
-import Aqsa from "./components/Aqsa";
 
 export default function Home() {
   return (
@@ -26,6 +27,7 @@ export default function Home() {
       <Knowledge />
       <Hadith />
       <News />
+      <Divestment />
       <Footer />
       <ScrollToTop />
     </div>

@@ -55,7 +55,7 @@ export default function Aqsa() {
       <div className="max-w-5xl mx-auto flex flex-col justify-center items-center h-full z-10">
         <div className="text-center">
           <h2 className="md:text-5xl text-3xl font-bold mb-6 p-3">
-            Live From Bayt al-Maqdis
+            Live from Bayt al-Maqdis
           </h2>
         </div>
         <div className="w-full relative aspect-video text-center">
