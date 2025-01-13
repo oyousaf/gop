@@ -20,7 +20,7 @@ export default function Footer() {
       <p className="text-2xl mb-2">
         &copy; {new Date().getFullYear()} حدائق الجنة
       </p>
-      <p className="text-xl mb-2 flex items-center justify-center space-x-2">
+      <p className="text-2xl mb-2 flex items-center justify-center space-x-2">
         <Image
           src="/images/palestineflag.png"
           alt="Palestine flag"
@@ -28,7 +28,7 @@ export default function Footer() {
           height={24}
           className="object-contain w-auto h-auto"
         />
-        <span className="text-2xl">Free Palestine 🍉</span>
+        <span>Free Palestine 🍉</span>
       </p>
       <p className="text-2xl mb-6">{islamicDate}</p>
 
