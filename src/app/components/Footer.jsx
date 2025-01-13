@@ -28,7 +28,7 @@ export default function Footer() {
           height={24}
           className="object-contain w-auto h-auto"
         />
-        <span className="text-3xl">Free Palestine 🍉</span>
+        <span className="text-2xl">Free Palestine 🍉</span>
       </p>
       <p className="text-2xl mb-6">{islamicDate}</p>
 
