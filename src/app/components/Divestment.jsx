@@ -64,7 +64,7 @@ export default function Divestment() {
               <h3 className="md:text-3xl text-2xl text-red-300 font-semibold mb-4 text-center">
                 {brand.brandName}
               </h3>
-              <p className="md:text-2xl text-xl pt-3 text-center flex-grow">
+              <p className="md:text-2xl text-lg pt-3 text-center flex-grow">
                 {brand.reason}
               </p>
             </motion.div>
