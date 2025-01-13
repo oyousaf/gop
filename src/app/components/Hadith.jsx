@@ -49,7 +49,7 @@ export default function Hadith() {
               <h3 className="text-2xl text-[#b9e1d4] font-semibold mb-4 text-center">
                 {hadith.title}
               </h3>
-              <p className="text-xl mb-4 pt-3 text-center flex-grow">
+              <p className="text-lg mb-4 pt-3 text-center flex-grow">
                 {hadith.content}
               </p>
               <div className="flex justify-center mt-auto">
