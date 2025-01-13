@@ -7,7 +7,7 @@ export default async function handler(req, res) {
 
   try {
     const response = await fetch(
-      `https://newsapi.org/v2/everything?q=islamic&pageSize=9&sortBy=publishedAt&apiKey=${API_KEY}`
+      `https://newsapi.org/v2/everything?q=islamic&pageSize=9&sortBy=publishedAt&language=en&apiKey=${API_KEY}`
     );
 
     if (!response.ok) {
@@ -15,7 +15,27 @@ export default async function handler(req, res) {
     }
 
     const data = await response.json();
-    res.status(200).json(data.articles);
+
+    // Filter duplicates and validate necessary fields
+    const seenUrls = new Set();
+    const filteredArticles = data.articles.filter((article) => {
+      const isValid =
+        article.title &&
+        article.url &&
+        article.description &&
+        article.urlToImage;
+
+      if (!isValid) return false; // Exclude articles missing important fields
+
+      const isDuplicate = seenUrls.has(article.url);
+      if (!isDuplicate) {
+        seenUrls.add(article.url);
+        return true;
+      }
+      return false;
+    });
+
+    res.status(200).json(filteredArticles);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
