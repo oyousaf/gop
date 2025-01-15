@@ -25,6 +25,9 @@ export default async function handler(req, res) {
       );
     }
 
+    // Sort brands
+    brands.sort((a, b) => a.brandName.localeCompare(b.brandName));
+
     res.status(200).json(brands);
   } catch (error) {
     console.error(error);
