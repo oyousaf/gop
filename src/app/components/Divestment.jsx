@@ -53,13 +53,9 @@ export default function Divestment() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
           {brands.map((brand, index) => (
-            <motion.div
+            <div
               key={index}
               className="bg-background shadow-md rounded-lg p-6 border border-gray-200 flex flex-col"
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              whileHover={{ scale: 1.05 }}
             >
               <h3 className="md:text-3xl text-2xl text-red-300 font-semibold mb-4 text-center">
                 {brand.brandName}
@@ -67,7 +63,7 @@ export default function Divestment() {
               <p className="md:text-2xl text-lg pt-3 text-center flex-grow">
                 {brand.reason}
               </p>
-            </motion.div>
+            </div>
           ))}
         </div>
       )}
