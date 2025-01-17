@@ -20,7 +20,7 @@ export default function Madinah() {
           setVideoId(data.items[0].id.videoId);
         } else {
           console.warn(
-            "No Makkah live stream available. Fetching the latest video..."
+            "No Madinah live stream available. Fetching the latest video..."
           );
           fetchFallbackVideo();
         }
@@ -55,7 +55,7 @@ export default function Madinah() {
       <div className="max-w-5xl mx-auto flex flex-col justify-center items-center h-full z-10">
         <div className="text-center">
           <h2 className="md:text-5xl text-3xl font-bold mb-6 p-3">
-            Live from Makkah al-Mukarramah
+            Live from Madinah al-Munawwarah
           </h2>
         </div>
         <div className="w-full relative aspect-video text-center">
