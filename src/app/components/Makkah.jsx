@@ -1,27 +1,53 @@
 import { useState, useEffect } from "react";
 import Live from "./Live";
 
+const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
+const CHANNEL_ID = "UCSs5mehC-g9qDmIZWFe0a6Q";
+
 export default function Makkah() {
   const [videoId, setVideoId] = useState(null);
   const [fallbackVideoId, setFallbackVideoId] = useState(null);
 
   useEffect(() => {
-    const fetchVideoData = async () => {
+    const fetchLiveStream = async () => {
       try {
-        const response = await fetch("/api/makkah");
+        const response = await fetch(
+          `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&q=makka&key=${API_KEY}`
+        );
         const data = await response.json();
 
-        if (data.videoId) {
-          setVideoId(data.videoId);
-        } else if (data.fallbackVideoId) {
-          setFallbackVideoId(data.fallbackVideoId);
+        if (data.items?.length) {
+          setVideoId(data.items[0].id.videoId);
+        } else {
+          console.warn(
+            "No Makkah live stream available. Fetching the latest video..."
+          );
+          fetchFallbackVideo();
         }
       } catch (error) {
-        console.error("Error fetching video data:", error);
+        console.error("Error fetching live stream data:", error);
+        fetchFallbackVideo();
       }
     };
 
-    fetchVideoData();
+    const fetchFallbackVideo = async () => {
+      try {
+        const response = await fetch(
+          `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&order=date&type=video&key=${API_KEY}`
+        );
+        const data = await response.json();
+
+        if (data.items?.length) {
+          setFallbackVideoId(data.items[0].id.videoId);
+        } else {
+          console.warn("No fallback video available.");
+        }
+      } catch (error) {
+        console.error("Error fetching fallback video data:", error);
+      }
+    };
+
+    fetchLiveStream();
   }, []);
 
   return (
