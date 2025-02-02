@@ -27,6 +27,7 @@ export default function Navbar() {
               width={200}
               height={200}
               priority
+              // do not add w-auto and h-auto as it makes the logo look weird on small devices
             />
           </button>
         </div>
