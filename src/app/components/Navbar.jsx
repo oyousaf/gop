@@ -19,15 +19,15 @@ export default function Navbar() {
     <nav className="max-w-7xl mx-auto fixed w-full bg-background text-2xl text-white p-3 z-50 border-b border-background shadow-md shadow-background">
       <div className="flex justify-between items-center">
         {/* Logo */}
-        <div className="text-3xl font-bold cursor-pointer">
+        <div className="font-bold cursor-pointer">
           <button onClick={() => handleScroll("hero")}>
             <Image
               src="/logo.png"
               alt="logo"
               width={200}
               height={100}
-              className="object-contain w-auto h-auto"
               priority
+              // do not add w-auto and h-auto as it makes the logo look weird on small devices
             />
           </button>
         </div>
