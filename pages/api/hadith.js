@@ -7,9 +7,9 @@ export default async function handler(req, res) {
   try {
     const feed = await parser.parseURL(feedUrl);
 
-    // Process the items in the feed
-    const hadiths = feed.items.slice(0, 9).map((item) => {
-      // Remove unwanted text using a regex or string replacement
+    // Fetch hadiths
+    const hadiths = feed.items.slice(0, 20).map((item) => {
+      // Remove unwanted text using regex
       const cleanedContent = item.contentSnippet.replace(
         /The post .*? appeared first on .*?\./gi,
         ""
@@ -23,7 +23,10 @@ export default async function handler(req, res) {
       };
     });
 
-    res.status(200).json(hadiths);
+    // Keep only 9 valid ones
+    const filteredHadiths = hadiths.filter((hadith) => hadith.title && hadith.content).slice(0, 9);
+
+    res.status(200).json(filteredHadiths);
   } catch (error) {
     res.status(500).json({ error: "Error fetching Hadiths" });
   }

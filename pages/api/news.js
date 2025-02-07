@@ -6,8 +6,9 @@ export default async function handler(req, res) {
   }
 
   try {
+    // Fetch news articles
     const response = await fetch(
-      `https://newsapi.org/v2/everything?q=islamic&pageSize=9&sortBy=publishedAt&language=en&apiKey=${API_KEY}`
+      `https://newsapi.org/v2/everything?q=islamic&pageSize=20&sortBy=publishedAt&language=en&apiKey=${API_KEY}`
     );
 
     if (!response.ok) {
@@ -35,7 +36,8 @@ export default async function handler(req, res) {
       return false;
     });
 
-    res.status(200).json(filteredArticles);
+    // Return only the first 9 articles
+    res.status(200).json(filteredArticles.slice(0, 9));
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
