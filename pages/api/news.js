@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   try {
     // Fetch news articles
     const response = await fetch(
-      `https://newsapi.org/v2/everything?q=islamic&pageSize=20&sortBy=publishedAt&language=en&apiKey=${API_KEY}`
+      `https://newsapi.org/v2/everything?q=islamic&pageSize=18&sortBy=publishedAt&language=en&apiKey=${API_KEY}`
     );
 
     if (!response.ok) {

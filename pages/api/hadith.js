@@ -8,7 +8,7 @@ export default async function handler(req, res) {
     const feed = await parser.parseURL(feedUrl);
 
     // Fetch hadiths
-    const hadiths = feed.items.slice(0, 20).map((item) => {
+    const hadiths = feed.items.slice(0, 18).map((item) => {
       // Remove unwanted text using regex
       const cleanedContent = item.contentSnippet.replace(
         /The post .*? appeared first on .*?\./gi,
