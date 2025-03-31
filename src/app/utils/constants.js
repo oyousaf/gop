@@ -126,7 +126,7 @@ export const boycott = [
   { name: "Comcast", reason: "Donated over $2 million of aid to the IDF." },
   { name: "Conde Nast", reason: "CEO Stan Duncan supported openly, as mentioned in NYT." },
   { name: "Converse", reason: "Owned by Nike." },
-  { name: "Costa Coffee", reason: "Posted social media support for Israel." }
+  { name: "Costa Coffee", reason: "Posted social media support for Israel." },
   { name: "Crowne Plaza", reason: "Connections with Israel and a cessation of weapons and defense trading." },
   { name: "Curseforge", reason: "Overwolf, the parent company of CurseForge, funds the revenue generated from mods to the Israeli Defense Forces." },
   { name: "CyberArk", reason: "Owned by Israeli founders." },
@@ -165,7 +165,7 @@ export const boycott = [
   { name: "Fanta", reason: "Owned by Coca-Cola." },
   { name: "Fairlife", reason: "Owned by Coca-Cola." },
   { name: "Facebook (Meta)", reason: "Has been censoring neutral content." },
-  { name: "Ferrero Rocher", reason: "Has based its headquarters for Asia in Holon, Israel." }
+  { name: "Ferrero Rocher", reason: "Has based its headquarters for Asia in Holon, Israel." },
   { name: "Fanta", reason: "Owned by Coca-Cola." },
   { name: "First International Bank of Israel", reason: "Headquartered in Israel." },
   { name: "Gatorade", reason: "Owned by PepsiCo with no direct ties to Israel." },
@@ -201,7 +201,7 @@ export const boycott = [
   { name: "Innocent Smoothies", reason: "Owned by Coca-Cola company." },
   { name: "Insight Partners", reason: "Venture capital firm with investments in Israeli tech companies." },
   { name: "Intel", reason: "Significant investments in Israel, totaling more than $50 billion." },
-  { name: "IT Cosmetics", reason: "Owned by L’Oréal." }
+  { name: "IT Cosmetics", reason: "Owned by L’Oréal." },
   { name: "J Street", reason: "Lobbying for Israel." },
   { name: "Jaguar", reason: "Partners with TCS to open Innovation Programme in Israel." },
   { name: "Jazwares", reason: "Donated to Magen David Adom in Israel." },
@@ -275,7 +275,7 @@ export const boycott = [
   { name: "Milkybar", reason: "Owned by Nestlé." },
   { name: "Maybelline", reason: "Owned by L’Oréal." },
   { name: "Mount Franklin", reason: "Owned by Coca-Cola." },
-  { name: "Meta", reason: "Runs Facebook and Instagram." }
+  { name: "Meta", reason: "Runs Facebook and Instagram." },
   { name: "Monday.com", reason: "Headquartered in Tel Aviv, Israel." },
   { name: "Microsoft", reason: "Collaborates with Israeli tech companies." },
   { name: "Munchies", reason: "Owned by Frito-Lay, a part of PepsiCo." },
@@ -358,7 +358,6 @@ export const boycott = [
   { name: "Reebok", reason: "Sponsors Israeli team." },
   { name: "Revlon", reason: "Owner Ronald Perelman is a trustee of The Simon Wiesenthal Center." },
   { name: "Ralph Lauren", reason: "Is a brand of L’Oreal." },
-  { name: "Ritz", reason: "Owned by Mondelez." }
   { name: "Ritz", reason: "Owned by Mondelez." },
   { name: "Royal Canin", reason: "Owned by Mars." },
   { name: "Rapunzel Dates", reason: "Dates brand owned by Israel." },
@@ -426,5 +425,5 @@ export const boycott = [
   { name: "Toblerone", reason: "Owned by Mondelez International." },
   { name: "Tostitos", reason: "Owned by PepsiCo." },
   { name: "Timberland", reason: "CEO Jeffrey Swartz went on a ‘solidarity visit’ to Israel." },
-  { name: "Topo Chico", reason: "Owned by Coca-Cola." }
+  { name: "Topo Chico", reason: "Owned by Coca-Cola." },
 ]
