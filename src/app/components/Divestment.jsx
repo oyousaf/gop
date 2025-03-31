@@ -21,7 +21,9 @@ export default function Divestment() {
       </p>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-        {boycott.map((brand, index) => (
+        {boycott
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map((brand, index) => (
           <div
             key={index}
             className="bg-background shadow-md rounded-lg p-6 border border-gray-200 flex flex-col"
