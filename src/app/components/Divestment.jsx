@@ -1,29 +1,6 @@
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { boycott } from "../utils/constants";
 
 export default function Divestment() {
-  const [brands, setBrands] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    async function loadBrands() {
-      try {
-        const res = await fetch("/api/divestment");
-        if (!res.ok) {
-          throw new Error("Failed to fetch data");
-        }
-        const data = await res.json();
-        setBrands(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-    loadBrands();
-  }, []);
-
   return (
     <section className="max-w-7xl mx-auto p-6 py-12" id="divestment">
       <h2 className="text-5xl font-bold text-center mb-8">Divestment</h2>
@@ -42,31 +19,22 @@ export default function Divestment() {
         The following brands are known to either provide significant support to
         Israel or receive funding from Israeli sources.
       </p>
-      {loading ? (
-        <div className="flex justify-center items-center h-32">
-          <p className="text-white text-lg animate-pulse">Loading...</p>
-        </div>
-      ) : error ? (
-        <div className="flex justify-center items-center h-32">
-          <p className="text-red-500 text-lg">{error}</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {brands.map((brand, index) => (
-            <div
-              key={index}
-              className="bg-background shadow-md rounded-lg p-6 border border-gray-200 flex flex-col"
-            >
-              <h3 className="md:text-3xl text-2xl text-red-300 font-semibold mb-4 text-center">
-                {brand.brandName}
-              </h3>
-              <p className="md:text-2xl text-lg pt-3 text-center flex-grow">
-                {brand.reason}
-              </p>
-            </div>
-          ))}
-        </div>
-      )}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+        {boycott.map((brand, index) => (
+          <div
+            key={index}
+            className="bg-background shadow-md rounded-lg p-6 border border-gray-200 flex flex-col"
+          >
+            <h3 className="md:text-3xl text-2xl text-red-300 font-semibold mb-4 text-center">
+              {brand.name}
+            </h3>
+            <p className="md:text-2xl text-lg pt-3 text-center flex-grow">
+              {brand.reason}
+            </p>
+          </div>
+        ))}
+      </div>
     </section>
   );
 }
