@@ -137,7 +137,7 @@ export const boycott = [
   { name: "Del Valle", reason: "Owned by Coca-Cola." },
   { name: "Delilah", reason: "Is an Israeli dates brand." },
   { name: "Dell", reason: "Founder of Dell is a member of the Friends of the IDF." },
-  { name: "Delta Galil Industries", reason: "Purely Israeli" },
+  { name: "Delta Galil Industries", reason: "Israeli-based company" },
   { name: "Dettol", reason: "Is a brand of Reckitt Benckiser (RB)." },
   { name: "Deutsche Telekom", reason: "Invests in Israeli software company Teridion." },
   { name: "DHL Group", reason: "Company with operations in Israel." },
