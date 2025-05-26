@@ -1,5 +1,12 @@
 import GA from "./components/GA";
 
+export const themeColor = "#9d8770";
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1.0,
+};
+
 export const metadata = {
   metadataBase: new URL("https://oyousaf.uk"),
   title: "حدائق الجنة – Reviving the Ummah through Sacred Islamic Knowledge",
@@ -101,8 +108,6 @@ export const metadata = {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
-  themeColor: "#9d8770",
-  viewport: "width=device-width, initial-scale=1.0",
 };
 
 export default function RootLayout({ children }) {
