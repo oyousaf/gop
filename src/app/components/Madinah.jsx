@@ -1,73 +1,59 @@
+"use client";
+
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import Live from "./Live";
 
-const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
 const CHANNEL_ID = "UCfBw_uwZb_oFLyVsjWk6owQ";
 
 export default function Madinah() {
   const [videoId, setVideoId] = useState(null);
-  const [fallbackVideoId, setFallbackVideoId] = useState(null);
 
   useEffect(() => {
-    const fetchLiveStream = async () => {
+    const fetchLive = async () => {
       try {
-        const response = await fetch(
-          `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&eventType=live&type=video&q=madina&key=${API_KEY}`
+        const res = await fetch(
+          `/api/youtube?channelId=${CHANNEL_ID}&query=madinah`
         );
-        const data = await response.json();
-
-        if (data.items?.length) {
-          setVideoId(data.items[0].id.videoId);
-        } else {
-          console.warn(
-            "No Madinah live stream available. Fetching the latest video..."
-          );
-          fetchFallbackVideo();
-        }
-      } catch (error) {
-        console.error("Error fetching live stream data:", error);
-        fetchFallbackVideo();
+        const data = await res.json();
+        if (data.videoId) setVideoId(data.videoId);
+      } catch (err) {
+        console.error("Madinah video fetch error:", err);
       }
     };
-
-    const fetchFallbackVideo = async () => {
-      try {
-        const response = await fetch(
-          `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${CHANNEL_ID}&order=date&type=video&key=${API_KEY}`
-        );
-        const data = await response.json();
-
-        if (data.items?.length) {
-          setFallbackVideoId(data.items[0].id.videoId);
-        } else {
-          console.warn("No fallback video available.");
-        }
-      } catch (error) {
-        console.error("Error fetching fallback video data:", error);
-      }
-    };
-
-    fetchLiveStream();
+    fetchLive();
   }, []);
 
   return (
-    <section className="relative py-12 h-screen" id="madinah">
-      <div className="max-w-5xl mx-auto flex flex-col justify-center items-center h-full z-10">
-        <div className="text-center">
-          <h2 className="md:text-5xl text-3xl font-bold mb-6 p-3">
-            Live from Madinah al-Munawwarah
-          </h2>
-        </div>
-        <div className="w-full relative aspect-video text-center">
+    <section id="madinah" className="relative py-16 min-h-screen">
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7 }}
+        className="max-w-5xl mx-auto flex flex-col justify-center items-center h-full z-10 px-4 text-center"
+      >
+        <motion.h2
+          className="md:text-5xl text-3xl font-bold mb-6 p-3 text-white"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          viewport={{ once: true }}
+        >
+          Live from Madinah al-Munawwarah
+        </motion.h2>
+
+        <div className="w-full aspect-video relative mb-8 rounded-xl overflow-hidden shadow-xl backdrop-blur-md bg-white/10">
           {videoId ? (
             <Live videoId={videoId} />
-          ) : fallbackVideoId ? (
-            <Live videoId={fallbackVideoId} />
           ) : (
-            <p>No videos available at the moment.</p>
+            <div className="flex justify-center items-center w-full h-full">
+              <p className="text-white/80 text-lg animate-pulse">
+                No video available at the moment.
+              </p>
+            </div>
           )}
         </div>
-      </div>
+      </motion.div>
     </section>
   );
 }
