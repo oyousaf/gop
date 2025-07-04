@@ -1,15 +1,16 @@
-// pages/api/youtube.js
 export default async function handler(req, res) {
   const API_KEY = process.env.YOUTUBE_API_KEY;
   const { channelId } = req.query;
 
   if (!API_KEY || !channelId) {
+    console.warn("Missing API key or channelId", { API_KEY, channelId });
     return res.status(400).json({ error: "Missing API key or channelId" });
   }
 
   const fetchVideoId = async (url) => {
     const response = await fetch(url);
     const data = await response.json();
+    console.log("YouTube API response:", JSON.stringify(data, null, 2)); 
     return data?.items?.[0]?.id?.videoId || null;
   };
 

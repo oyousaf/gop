@@ -15,6 +15,7 @@ export default function Makkah() {
         );
         const data = await res.json();
         if (data.videoId) setVideoId(data.videoId);
+        else console.warn("No videoId returned:", data);
       } catch (err) {
         console.error("Fetch failed:", err);
       }
