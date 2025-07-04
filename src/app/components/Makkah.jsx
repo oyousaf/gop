@@ -127,14 +127,30 @@ export default function Makkah() {
           <p className="text-white mb-4 text-lg font-mono">{formattedClock}</p>
 
           {prayerTimes ? (
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+            <motion.div
+              className="grid grid-cols-2 sm:grid-cols-3 gap-4"
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              variants={{
+                visible: {
+                  transition: {
+                    staggerChildren: 0.12,
+                  },
+                },
+              }}
+            >
               {["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"].map(
                 (name) => (
                   <motion.div
                     key={name}
-                    whileHover={{ scale: 1.03 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                    className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 shadow hover:shadow-lg transition-all"
+                    variants={{
+                      hidden: { opacity: 0, y: 20 },
+                      visible: { opacity: 1, y: 0 },
+                    }}
+                    whileHover={{ scale: 1.04 }}
+                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+                    className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 shadow-md hover:shadow-lg transition-all"
                   >
                     <p className="text-sm text-white/70 tracking-wide">
                       {name}
@@ -147,7 +163,7 @@ export default function Makkah() {
                   </motion.div>
                 )
               )}
-            </div>
+            </motion.div>
           ) : (
             <p className="text-white/60 italic animate-pulse">
               Loading prayer times...
