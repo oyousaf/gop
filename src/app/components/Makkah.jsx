@@ -55,7 +55,7 @@ export default function Makkah() {
           className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl shadow p-6 w-full max-w-2xl"
         >
           <h3 className="text-xl font-semibold mb-3 text-white">
-            Today's Prayer Times
+            Today&apos;s Prayer Times
           </h3>
           <p className="text-sm text-white/60 italic mb-4">
             (Prayer time integration coming soon)
@@ -63,6 +63,7 @@ export default function Makkah() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-left text-base text-white/90">
             {[
               { name: "Fajr", time: "--:--" },
+              { name: "Shurooq", time: "--:--" },
               { name: "Dhuhr", time: "--:--" },
               { name: "Asr", time: "--:--" },
               { name: "Maghrib", time: "--:--" },
