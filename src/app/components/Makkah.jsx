@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Live from "./Live";
 
-const API_KEY = process.env.NEXT_PUBLIC_YOUTUBE_API_KEY;
+const API_KEY = process.env.YOUTUBE_API_KEY;
 const CHANNEL_ID = "UCqtGJe9AnRfq5wwjk27VsoQ";
 
 export default function Makkah() {

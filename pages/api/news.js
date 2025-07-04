@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-  const API_KEY = process.env.NEXT_PUBLIC_NEWS_API_KEY;
+  const API_KEY = process.env.NEWS_API_KEY;
 
   if (!API_KEY) {
     return res.status(500).json({ error: "API key is missing" });

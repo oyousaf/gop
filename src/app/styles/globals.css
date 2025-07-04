@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Oleo+Script:wght@400;700');
+@import url("https://fonts.googleapis.com/css2?family=Oleo+Script:wght@400;700");
 
 @tailwind base;
 @tailwind components;
@@ -11,8 +11,14 @@
   }
 
   body {
-    background-color: #9d8770;
-    color: #ffffff; 
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+    -khtml-user-select: none; /* Konqueror */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE/Edge */
+    user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: auto; /* keep body interactive */
   }
 }
 
@@ -21,6 +27,7 @@
   --foreground: #ffffff;
 }
 
+/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 12px;
   height: 12px;
@@ -37,4 +44,17 @@
 
 ::-webkit-scrollbar-track {
   background-color: #6c857d;
+}
+
+/* Disable right-click and image dragging for basic protection */
+img,
+picture,
+video,
+canvas {
+  user-select: none;
+  pointer-events: none;
+}
+
+img {
+  -webkit-user-drag: none;
 }
