@@ -14,6 +14,11 @@ export default function Makkah() {
     country: "Saudi Arabia",
   });
   const [is24Hour, setIs24Hour] = useState(true);
+  const [hasMounted, setHasMounted] = useState(false);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
 
   // Live clock
   useEffect(() => {
@@ -65,6 +70,8 @@ export default function Makkah() {
 
     fetchLocationAndTimes();
   }, []);
+
+  if (!hasMounted) return null;
 
   const gregorian = moment(clock).locale("en").format("dddd, Do MMMM YYYY");
   const hijri = moment(clock).locale("ar-SA").format("iD iMMMM iYYYY");
