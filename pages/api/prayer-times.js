@@ -1,5 +1,3 @@
-// pages/api/prayer-times.js
-
 export default async function handler(req, res) {
   const { city = "Makkah" } = req.query;
 
