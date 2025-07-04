@@ -112,7 +112,7 @@ export default function Makkah() {
         >
           <div className="flex justify-between items-center mb-3">
             <h3 className="text-xl font-semibold text-white">
-              Today's Prayer Times
+              Today&apos;s Prayer Times
             </h3>
             <button
               onClick={() => setIs24Hour(!is24Hour)}
