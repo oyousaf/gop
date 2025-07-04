@@ -11,6 +11,8 @@
   }
 
   body {
+    background-color: #9d8770;
+    color: #ffffff;
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Chrome/Safari/Opera */
     -khtml-user-select: none; /* Konqueror */
