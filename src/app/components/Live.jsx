@@ -27,22 +27,20 @@ export default function Live({ videoId }) {
   return (
     <div
       ref={liveStreamRef}
-      className="live-stream-container mx-auto flex flex-col items-center justify-center p-4"
+      className="live-stream-container aspect-video rounded-xl overflow-hidden shadow-xl backdrop-blur-md bg-white/10 mx-auto flex items-center justify-center"
     >
       {isVisible ? (
-        <div className="w-full aspect-video rounded-md overflow-hidden shadow-md">
-          <iframe
-            src={`https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&hq=1&vq=hd1080`}
-            title="YouTube Live Stream"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-            className="w-full h-full"
-          />
-        </div>
+        <iframe
+          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&controls=0&modestbranding=1&hq=1&vq=hd1080`}
+          title="YouTube Live Stream"
+          frameBorder="0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          className="w-full h-full"
+        />
       ) : (
-        <div className="placeholder flex flex-col items-center justify-center w-full max-w-4xl aspect-video border-2 border-dashed border-gray-400 rounded-md">
-          <p>Loading live stream...</p>
+        <div className="flex flex-col items-center justify-center w-full h-full border-2 border-dashed border-gray-400">
+          <p className="text-white/80">Loading live stream...</p>
         </div>
       )}
     </div>
