@@ -30,7 +30,7 @@ export default function News() {
     document.body.classList.toggle("overflow-hidden", !!activeArticle);
   }, [activeArticle]);
 
-  const truncate = (text, limit = 400) => {
+  const truncate = (text, limit = 5000) => {
     if (!text) return "No preview available.";
     return text.length > limit ? `${text.slice(0, limit)}...` : text;
   };
@@ -121,7 +121,6 @@ export default function News() {
               <p className="text-lg leading-relaxed text-center whitespace-pre-wrap">
                 {cleanContent(
                   activeArticle.content ||
-                    activeArticle.description ||
                     "No full content available."
                 )}
               </p>
