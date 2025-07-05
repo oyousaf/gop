@@ -27,6 +27,7 @@ export default function Navbar() {
               width={200}
               height={100}
               priority
+              aria-label="Scroll to hero"
               // do not add w-auto and h-auto as it makes the logo look weird
             />
           </button>
@@ -107,7 +108,8 @@ export default function Navbar() {
               {socialLinks.map((item) => (
                 <a
                   key={item.name}
-                  href={item.href}
+                  href={item.url}
+                  target="_blank"
                   className="text-3xl text-gray-200 hover:text-white cursor-pointer transform transition-all duration-300 ease-in-out hover:scale-110"
                 >
                   {item.icon}
