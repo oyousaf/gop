@@ -26,6 +26,10 @@ export default function Hadith() {
     loadHadiths();
   }, []);
 
+  useEffect(() => {
+    document.body.classList.toggle("overflow-hidden", !!activeHadith);
+  }, [activeHadith]);
+
   const truncate = (text, limit = 220) =>
     text.length > limit ? `${text.slice(0, limit)}...` : text;
 
@@ -96,7 +100,6 @@ export default function Hadith() {
               transition={{ duration: 0.3 }}
               onClick={(e) => e.stopPropagation()}
             >
-              {/* X Button in top-right on its own row */}
               <div className="w-full flex justify-end mb-4">
                 <button
                   onClick={() => setActiveHadith(null)}
