@@ -171,29 +171,75 @@ export default function Makkah() {
               }}
             >
               {["Fajr", "Sunrise", "Dhuhr", "'Asr", "Maghrib", "Isha"].map(
-                (name) => (
-                  <motion.div
-                    key={name}
-                    variants={{
-                      hidden: { opacity: 0, y: 20 },
-                      visible: { opacity: 1, y: 0 },
-                    }}
-                    whileHover={{ scale: 1.04 }}
-                    transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                    className={`relative px-4 py-3 rounded-xl border shadow-md backdrop-blur-sm transition-all ${
-                      name === upcomingPrayer
-                        ? "bg-white/20 border-white/30 shadow-lg animate-pulse ring-2 ring-white/50"
-                        : "bg-white/10 border-white/10"
-                    }`}
-                  >
-                    <p className="text-white/70 tracking-wide">{name}</p>
-                    <p className="font-semibold text-white mt-1">
-                      {is24Hour
-                        ? convertTo24(prayerTimes[name])
-                        : prayerTimes[name]}
-                    </p>
-                  </motion.div>
-                )
+                (name) => {
+                  const isNext = name === upcomingPrayer;
+
+                  // Calculate countdown (if this is the next prayer)
+                  let countdown = "";
+                  if (isNext) {
+                    try {
+                      const now = new Date();
+                      const [h, m] = convertTo24(prayerTimes[name])
+                        .split(":")
+                        .map(Number);
+                      const target = new Date();
+                      target.setHours(h, m, 0, 0);
+                      const diff = Math.max(
+                        0,
+                        target.getTime() - now.getTime()
+                      );
+                      const mins = Math.floor(diff / (1000 * 60));
+                      const hrs = Math.floor(mins / 60);
+                      const remMins = mins % 60;
+                      countdown =
+                        hrs > 0
+                          ? `in ${hrs}h ${remMins}m`
+                          : remMins > 0
+                          ? `in ${remMins} minutes`
+                          : "soon";
+                    } catch {
+                      countdown = "";
+                    }
+                  }
+
+                  return (
+                    <motion.div
+                      key={name}
+                      variants={{
+                        hidden: { opacity: 0, y: 20 },
+                        visible: { opacity: 1, y: 0 },
+                      }}
+                      whileHover={{ scale: 1.05 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 400,
+                        damping: 15,
+                      }}
+                      className={`relative px-4 py-4 rounded-xl border shadow-md backdrop-blur-sm transition-all flex flex-col justify-center items-center ${
+                        isNext
+                          ? "bg-amber-500/20 border-amber-400 shadow-lg ring-2 ring-amber-400/60"
+                          : "bg-white/10 border-white/10"
+                      }`}
+                    >
+                      {isNext && (
+                        <span className="absolute top-1 right-2 bg-amber-400 text-black text-xs font-bold px-2 py-0.5 rounded">
+                          Next
+                        </span>
+                      )}
+                      <p className="text-white/70 tracking-wide">{name}</p>
+                      <p className="font-semibold text-white mt-1 text-3xl md:text-4xl">
+                        {is24Hour
+                          ? convertTo24(prayerTimes[name])
+                          : prayerTimes[name]}
+                      </p>
+                      {isNext && countdown && (
+                        <p className="text-lg md:text-xl text-amber-300 mt-1 animate-pulse">
+                          {countdown}
+                        </p>
+                      )}
+                    </motion.div>
+                  );
+                }
               )}
             </motion.div>
           ) : (
