@@ -62,10 +62,10 @@ export default function Hadith() {
               className="cursor-pointer bg-white/5 backdrop-blur-md rounded-xl border border-white/10 p-6 flex flex-col shadow-md hover:shadow-lg transition-shadow"
               onClick={() => setActiveHadith(hadith)}
             >
-              <h3 className="text-xl font-semibold text-[#b9e1d4] mb-4 text-center">
+              <h3 className="text-2xl font-semibold text-[#b9e1d4] mb-4 text-center">
                 {hadith.title}
               </h3>
-              <p className="text-white/90 text-base mb-6 text-center">
+              <p className="text-white/90 text-lg mb-6 text-center">
                 {truncate(hadith.content)}
               </p>
               <div className="mt-auto text-center">
@@ -107,10 +107,10 @@ export default function Hadith() {
                 </button>
               </div>
 
-              <h3 className="text-xl sm:text-2xl font-bold text-center mb-4">
+              <h3 className="text-2xl font-bold text-center mb-4">
                 {activeHadith.title}
               </h3>
-              <p className="text-base leading-relaxed text-center whitespace-pre-wrap">
+              <p className="text-lg leading-relaxed text-center whitespace-pre-wrap">
                 {activeHadith.content}
               </p>
               <div className="text-center mt-6">
