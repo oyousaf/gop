@@ -440,6 +440,7 @@ export const boycott = [
   { name: "Kleenex", reason: "Owned by Kimberly Clark." },
   { name: "KKR", reason: "Made three investments in Israeli tech companies." },
   { name: "KKW Cosmetics", reason: "Owned by Kim Kardashian." },
+  { name: "Kinley Water", reason: "A brand of bottled water owned by Coca-Cola." },
   { name: "Kitkat", reason: "Owned by Nestle." },
   { name: "Knorr", reason: "Owned by Unilever." },
   { name: "Kolynos", reason: "Owned by Colgate-Palmolive." },
