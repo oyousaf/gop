@@ -52,11 +52,6 @@ export const metadata = {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
-  themeColor: "#9d8770",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-  },
   robots: {
     index: true,
     follow: true,
@@ -65,6 +60,14 @@ export const metadata = {
   alternates: {
     canonical: "https://oyousaf.uk",
   },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: "#9d8770",
 };
 
 export default function RootLayout({ children }) {
