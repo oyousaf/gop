@@ -15,18 +15,17 @@ export default function Makkah() {
   });
   const [is24Hour, setIs24Hour] = useState(true);
   const [hasMounted, setHasMounted] = useState(false);
+  const [upcomingPrayer, setUpcomingPrayer] = useState("");
 
   useEffect(() => {
     setHasMounted(true);
   }, []);
 
-  // Live clock
   useEffect(() => {
     const interval = setInterval(() => setClock(new Date()), 1000);
     return () => clearInterval(interval);
   }, []);
 
-  // Fetch live stream
   useEffect(() => {
     const fetchVideo = async () => {
       try {
@@ -42,7 +41,6 @@ export default function Makkah() {
     fetchVideo();
   }, []);
 
-  // Auto-location and prayer time fetch
   useEffect(() => {
     const fetchLocationAndTimes = async () => {
       try {
@@ -70,6 +68,28 @@ export default function Makkah() {
 
     fetchLocationAndTimes();
   }, []);
+
+  // Detect upcoming prayer time
+  useEffect(() => {
+    if (!prayerTimes) return;
+
+    const ordered = ["Fajr", "Sunrise", "Dhuhr", "'Asr", "Maghrib", "Isha"];
+    const now = new Date();
+
+    for (let name of ordered) {
+      const timeStr = convertTo24(prayerTimes[name]);
+      const [h, m] = timeStr.split(":").map(Number);
+      const time = new Date();
+      time.setHours(h, m, 0, 0);
+
+      if (time > now) {
+        setUpcomingPrayer(name);
+        return;
+      }
+    }
+    // If all times passed, fallback to first of next day
+    setUpcomingPrayer("Fajr");
+  }, [prayerTimes, clock]);
 
   if (!hasMounted) return null;
 
@@ -115,27 +135,30 @@ export default function Makkah() {
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.2 }}
           viewport={{ once: true }}
-          className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl shadow p-6 w-full max-w-2xl"
+          className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl shadow p-6 w-full max-w-3xl"
         >
-          <div className="flex justify-between items-center mb-3">
-            <h3 className="text-xl font-semibold text-white">
+          <div className="flex justify-between items-center mb-3 text-xl">
+            <h3 className="text-2xl md:text-4xl font-semibold text-white">
               Today&apos;s Prayer Times
             </h3>
             <button
               onClick={() => setIs24Hour(!is24Hour)}
-              className="text-white/70 text-sm border px-3 py-1 rounded hover:bg-white/10 transition"
+              className="text-white/70 border px-3 py-1 rounded hover:bg-white/10 transition"
             >
               {is24Hour ? "12H" : "24H"}
             </button>
           </div>
 
-          <p className="text-white/60 text-sm italic mb-2">{gregorian}</p>
-          <p className="text-white/80 text-base font-medium mb-2">{hijri}</p>
-          <p className="text-white mb-4 text-lg font-mono">{formattedClock}</p>
+          {/* Date & Time */}
+          <motion.div className="text-xl md:text-2xl">
+            <p className="text-white/60 italic mb-2">{gregorian}</p>
+            <p className="text-white/80 font-medium mb-2">{hijri}</p>
+            <p className="text-white mb-4 font-mono">{formattedClock}</p>
+          </motion.div>
 
           {prayerTimes ? (
             <motion.div
-              className="grid grid-cols-2 sm:grid-cols-3 gap-4"
+              className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-2xl md:text-3xl"
               initial="hidden"
               whileInView="visible"
               viewport={{ once: true }}
@@ -147,7 +170,7 @@ export default function Makkah() {
                 },
               }}
             >
-              {["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"].map(
+              {["Fajr", "Sunrise", "Dhuhr", "'Asr", "Maghrib", "Isha"].map(
                 (name) => (
                   <motion.div
                     key={name}
@@ -157,12 +180,14 @@ export default function Makkah() {
                     }}
                     whileHover={{ scale: 1.04 }}
                     transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                    className="bg-white/10 backdrop-blur-sm border border-white/10 rounded-xl px-4 py-3 shadow-md hover:shadow-lg transition-all"
+                    className={`relative px-4 py-3 rounded-xl border shadow-md backdrop-blur-sm transition-all ${
+                      name === upcomingPrayer
+                        ? "bg-white/20 border-white/30 shadow-lg animate-pulse ring-2 ring-white/50"
+                        : "bg-white/10 border-white/10"
+                    }`}
                   >
-                    <p className="text-sm text-white/70 tracking-wide">
-                      {name}
-                    </p>
-                    <p className="text-lg font-semibold text-white mt-1">
+                    <p className="text-white/70 tracking-wide">{name}</p>
+                    <p className="font-semibold text-white mt-1">
                       {is24Hour
                         ? convertTo24(prayerTimes[name])
                         : prayerTimes[name]}

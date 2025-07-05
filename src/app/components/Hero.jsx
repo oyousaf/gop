@@ -6,7 +6,7 @@ export default function Hero() {
   return (
     <section
       id="hero"
-      className="relative h-screen bg-cover bg-center flex items-center justify-center text-white"
+      className="relative h-screen bg-cover bg-center flex items-center justify-center text-white p-2"
       style={{ backgroundImage: "url('/images/hero-bg.jpg')" }}
     >
       {/* Glassmorphism Overlay */}
@@ -45,7 +45,7 @@ export default function Hero() {
           <button
             onClick={() => handleScroll("welcome")}
             aria-label="Scroll to Welcome section"
-            className="text-background hover:text-white/80 transition duration-300"
+            className="text-white hover:text-white/80 transition duration-300"
           >
             <FaArrowDown size={40} className="animate-bounce" />
           </button>
