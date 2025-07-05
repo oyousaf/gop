@@ -117,11 +117,11 @@ export default function Makkah() {
           Live from Makkah al-Mukarramah
         </motion.h2>
 
-        <div className="w-full aspect-video relative mb-8 rounded-xl overflow-hidden shadow-xl backdrop-blur-md bg-white/10">
+        <div className="w-full mb-8">
           {videoId ? (
             <Live videoId={videoId} />
           ) : (
-            <div className="flex justify-center items-center w-full h-full">
+            <div className="flex justify-center items-center w-full aspect-video rounded-xl overflow-hidden shadow-xl backdrop-blur-md bg-white/10">
               <p className="text-white/80 text-lg animate-pulse">
                 No video available at the moment.
               </p>
