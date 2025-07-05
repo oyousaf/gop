@@ -1,12 +1,5 @@
 import GA from "./components/GA";
 
-export const themeColor = "#9d8770";
-
-export const viewport = {
-  width: "device-width",
-  initialScale: 1.0,
-};
-
 export const metadata = {
   metadataBase: new URL("https://oyousaf.uk"),
   title: "حدائق الجنة – Reviving the Ummah through Sacred Islamic Knowledge",
@@ -20,67 +13,18 @@ export const metadata = {
   ],
   keywords: [
     "Islamic knowledge",
-    "Quran",
-    "Hadith",
-    "Tafsir",
-    "Fiqh",
-    "Seerah",
-    "Ilm",
-    "Deen",
-    "Makkah",
-    "Madinah",
-    "Masjid Aqsa",
-    "Sacred knowledge",
-    "Islamic faith",
-    "Learn Islam",
-    "Learn islam from home",
-    "Revive the Ummah",
-    "Daily Quranic reflection",
-    "Understanding Tawheed",
-    "Islamic teachings",
-    "Dawah resources",
-    "Islamic scholars",
-    "Islamic history",
-    "Quranic studies",
-    "Arabic language",
-    "Islamic education",
-    "Spiritual growth",
-    "Islamic spirituality",
-    "Tazkiyah",
-    "Islamic community",
-    "Global Ummah",
-    "Islamic values",
-    "Islamic heritage",
-    "Islamic philosophy",
-    "Muslim lifestyle",
-    "Islamic parenting",
-    "Islamic beliefs",
-    "Islamic culture",
-    "Quran memorisation",
-    "Islamic sermons",
-    "Islamic books",
-    "Islamic wisdom",
-    "Islamic resources",
-    "Understanding Islam",
-    "Islamic lectures",
-    "Islam for beginners",
-    "Islamic jurisprudence",
-    "Islamic ethics",
-    "Islamic devotion",
-    "Islamic learning",
-    "Islam worldwide",
-    "Islamic reminders",
-    "Islamic motivation",
-    "Sunnah",
-    "Zakah",
-    "Salah",
-    "Hajj",
-    "Umrah",
-    "Ramadan",
-    "Ramadhan",
-    "Islamic unity",
     "Quran and Sunnah",
-    "Islamic teachings online",
+    "Hadith and Tafsir",
+    "Islamic spirituality",
+    "Fiqh and Seerah",
+    "Learn Islam online",
+    "Daily Quran reflection",
+    "Islamic education",
+    "Revive the Ummah",
+    "Muslim lifestyle",
+    "Tazkiyah and Tawheed",
+    "Sacred Islamic teachings",
+    "Islamic unity and values",
   ],
   openGraph: {
     title: "حدائق الجنة",
@@ -108,11 +52,24 @@ export const metadata = {
     icon: "/favicon.ico",
     apple: "/apple-touch-icon.png",
   },
+  themeColor: "#9d8770",
+  viewport: {
+    width: "device-width",
+    initialScale: 1,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+  },
+  alternates: {
+    canonical: "https://oyousaf.uk",
+  },
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en-gb">
+    <html lang="en-gb" dir="ltr">
       <head />
       <body>
         <GA />
