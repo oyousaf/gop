@@ -157,24 +157,12 @@ export default function Makkah() {
           </motion.div>
 
           {prayerTimes ? (
-            <motion.div
-              className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-2xl md:text-3xl"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true }}
-              variants={{
-                visible: {
-                  transition: {
-                    staggerChildren: 0.12,
-                  },
-                },
-              }}
-            >
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-2xl md:text-3xl">
               {["Fajr", "Sunrise", "Dhuhr", "'Asr", "Maghrib", "Isha"].map(
                 (name) => {
                   const isNext = name === upcomingPrayer;
 
-                  // Calculate countdown (if this is the next prayer)
+                  // Calculate countdown
                   let countdown = "";
                   if (isNext) {
                     try {
@@ -205,15 +193,11 @@ export default function Makkah() {
                   return (
                     <motion.div
                       key={name}
-                      variants={{
-                        hidden: { opacity: 0, y: 20 },
-                        visible: { opacity: 1, y: 0 },
-                      }}
                       whileHover={{ scale: 1.05 }}
                       transition={{
                         type: "spring",
                         stiffness: 400,
-                        damping: 15,
+                        damping: 18,
                       }}
                       className={`relative px-4 py-4 rounded-xl border shadow-md backdrop-blur-sm transition-all flex flex-col justify-center items-center ${
                         isNext
@@ -233,7 +217,7 @@ export default function Makkah() {
                           : prayerTimes[name]}
                       </p>
                       {isNext && countdown && (
-                        <p className="text-lg md:text-xl text-amber-300 mt-1 animate-pulse">
+                        <p className="text-lg md:text-xl text-amber-300 mt-1">
                           {countdown}
                         </p>
                       )}
@@ -241,7 +225,7 @@ export default function Makkah() {
                   );
                 }
               )}
-            </motion.div>
+            </div>
           ) : (
             <p className="text-white/60 italic animate-pulse">
               Loading prayer times...
