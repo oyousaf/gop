@@ -40,7 +40,7 @@ export default async function handler(req, res) {
       Fajr: item.fajr,
       Sunrise: item.shurooq,
       Dhuhr: item.dhuhr,
-      "'Asr": item.asr,
+      Asr: item.asr,
       Maghrib: item.maghrib,
       Isha: item.isha,
     });

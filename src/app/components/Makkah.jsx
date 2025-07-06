@@ -158,7 +158,7 @@ export default function Makkah() {
 
           {prayerTimes ? (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-2xl md:text-3xl">
-              {["Fajr", "Sunrise", "Dhuhr", "'Asr", "Maghrib", "Isha"].map(
+              {["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"].map(
                 (name) => {
                   const isNext = name === upcomingPrayer;
 
