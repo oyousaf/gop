@@ -111,7 +111,7 @@ export default function News() {
                   className="text-white hover:text-red-400 transition"
                   aria-label="Close"
                 >
-                  <FiX className="w-6 h-6" />
+                  <FiX className="w-10 h-10" />
                 </button>
               </div>
 
