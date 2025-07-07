@@ -73,7 +73,7 @@ export default function Makkah() {
   useEffect(() => {
     if (!prayerTimes) return;
 
-    const ordered = ["Fajr", "Sunrise", "Dhuhr", "'Asr", "Maghrib", "Isha"];
+    const ordered = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"];
     const now = new Date();
 
     for (let name of ordered) {
