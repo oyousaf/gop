@@ -11,7 +11,6 @@ export default async function handler(req, res) {
     try {
       const response = await fetch(url);
       const data = await response.json();
-      console.log("YouTube API response:", JSON.stringify(data, null, 2));
       return data?.items?.[0]?.id?.videoId || null;
     } catch (err) {
       console.error("Failed to fetch from YouTube:", err);
