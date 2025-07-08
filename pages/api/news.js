@@ -6,7 +6,6 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Concise, effective multi-keyword Islamic news query
     const query = encodeURIComponent(
       `islam OR palestine OR gaza OR "middle east" OR islamic OR aqsa OR "masjid al aqsa" OR quran OR makkah OR sunnah OR madinah OR hijab OR ummah`
     );
@@ -18,7 +17,10 @@ export default async function handler(req, res) {
 
     const { articles = [] } = await response.json();
 
+    // Track duplicates by normalized URL and title
     const seenUrls = new Set();
+    const seenTitles = new Set();
+
     const filtered = articles.filter((article) => {
       const isValid =
         article.title &&
@@ -26,9 +28,19 @@ export default async function handler(req, res) {
         article.description &&
         article.urlToImage;
 
-      if (!isValid || seenUrls.has(article.url)) return false;
+      if (!isValid) return false;
 
-      seenUrls.add(article.url);
+      // Normalize URL (remove query params, if needed)
+      const cleanUrl = article.url.split("?")[0].trim();
+      const title = article.title.trim().toLowerCase();
+
+      const isDuplicate = seenUrls.has(cleanUrl) || seenTitles.has(title);
+
+      if (isDuplicate) return false;
+
+      seenUrls.add(cleanUrl);
+      seenTitles.add(title);
+
       return true;
     });
 
