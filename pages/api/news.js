@@ -6,39 +6,35 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Fetch news articles
-    const response = await fetch(
-      `https://newsapi.org/v2/everything?q=islamic&pageSize=18&sortBy=publishedAt&language=en&apiKey=${API_KEY}`
+    // Concise, effective multi-keyword Islamic news query
+    const query = encodeURIComponent(
+      `islam OR palestine OR gaza OR "middle east" OR islamic OR aqsa OR "masjid al aqsa" OR quran OR makkah OR sunnah OR madinah OR hijab OR ummah`
     );
 
-    if (!response.ok) {
-      throw new Error("Failed to fetch news data");
-    }
+    const url = `https://newsapi.org/v2/everything?q=${query}&pageSize=20&sortBy=publishedAt&language=en&apiKey=${API_KEY}`;
 
-    const data = await response.json();
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Failed to fetch news data");
 
-    // Filter duplicates and validate necessary fields
+    const { articles = [] } = await response.json();
+
     const seenUrls = new Set();
-    const filteredArticles = data.articles.filter((article) => {
+    const filtered = articles.filter((article) => {
       const isValid =
         article.title &&
         article.url &&
         article.description &&
         article.urlToImage;
 
-      if (!isValid) return false; // Exclude articles missing important fields
+      if (!isValid || seenUrls.has(article.url)) return false;
 
-      const isDuplicate = seenUrls.has(article.url);
-      if (!isDuplicate) {
-        seenUrls.add(article.url);
-        return true;
-      }
-      return false;
+      seenUrls.add(article.url);
+      return true;
     });
 
-    // Return only the first 9 articles
-    res.status(200).json(filteredArticles.slice(0, 9));
+    res.status(200).json(filtered.slice(0, 12));
   } catch (error) {
+    console.error("News fetch error:", error);
     res.status(500).json({ error: error.message });
   }
 }
