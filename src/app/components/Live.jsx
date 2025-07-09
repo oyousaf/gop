@@ -18,14 +18,17 @@ export default function Live({ videoId }) {
 
   // Track visibility with IntersectionObserver
   useEffect(() => {
+    const node = containerRef.current;
+
     const observer = new IntersectionObserver(
       ([entry]) => setIsVisible(entry.isIntersecting),
       { threshold: 0.25 }
     );
 
-    if (containerRef.current) observer.observe(containerRef.current);
+    if (node) observer.observe(node);
+
     return () => {
-      if (containerRef.current) observer.unobserve(containerRef.current);
+      if (node) observer.unobserve(node);
     };
   }, []);
 
