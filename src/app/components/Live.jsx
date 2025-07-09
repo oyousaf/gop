@@ -1,53 +1,98 @@
 import { useEffect, useRef, useState } from "react";
 
 export default function Live({ videoId }) {
-  const liveStreamRef = useRef(null);
-  const [shouldRender, setShouldRender] = useState(false);
+  const containerRef = useRef(null);
+  const playerRef = useRef(null);
+  const [isVisible, setIsVisible] = useState(false);
+  const [playerReady, setPlayerReady] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
 
+  // Load YouTube API once
   useEffect(() => {
-    const currentRef = liveStreamRef.current;
+    if (!window.YT) {
+      const tag = document.createElement("script");
+      tag.src = "https://www.youtube.com/iframe_api";
+      document.body.appendChild(tag);
+    }
+  }, []);
 
+  // Track visibility with IntersectionObserver
+  useEffect(() => {
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => {
-            setShouldRender(true);
-          }, 200); 
-        }
-      },
-      {
-        root: null,
-        threshold: 0.25,
-      }
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.25 }
     );
 
-    if (currentRef) {
-      observer.observe(currentRef);
-    }
-
+    if (containerRef.current) observer.observe(containerRef.current);
     return () => {
-      if (currentRef) observer.unobserve(currentRef);
+      if (containerRef.current) observer.unobserve(containerRef.current);
     };
   }, []);
 
+  // Init player only once
+  useEffect(() => {
+    if (!window.YT || playerRef.current || !isVisible) return;
+
+    const interval = setInterval(() => {
+      if (window.YT && window.YT.Player) {
+        clearInterval(interval);
+
+        playerRef.current = new window.YT.Player(`yt-player-${videoId}`, {
+          height: "100%",
+          width: "100%",
+          videoId,
+          playerVars: {
+            autoplay: 1,
+            mute: 1,
+            controls: 0,
+            modestbranding: 1,
+            rel: 0,
+            playsinline: 1,
+          },
+          events: {
+            onReady: (event) => {
+              setPlayerReady(true);
+              event.target.playVideo();
+            },
+          },
+        });
+      }
+    }, 100);
+  }, [isVisible, videoId]);
+
+  // Pause/resume based on scroll
+  useEffect(() => {
+    const player = playerRef.current;
+    if (!player || !playerReady) return;
+
+    if (isVisible) {
+      player.playVideo();
+      if (!isMuted) player.unMute();
+    } else {
+      player.pauseVideo();
+    }
+  }, [isVisible, playerReady, isMuted]);
+
+  const handleUnmute = () => {
+    if (playerRef.current) {
+      playerRef.current.unMute();
+      setIsMuted(false);
+    }
+  };
+
   return (
     <div
-      ref={liveStreamRef}
-      className="live-stream-container aspect-video rounded-xl overflow-hidden shadow-xl backdrop-blur-md bg-white/10 mx-auto flex items-center justify-center"
+      ref={containerRef}
+      className="relative aspect-video rounded-xl overflow-hidden shadow-xl backdrop-blur-md bg-white/10 mx-auto flex items-center justify-center"
     >
-      {shouldRender ? (
-        <iframe
-          src={`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&controls=0&modestbranding=1&hq=1&vq=hd1080`}
-          title="YouTube Live Stream"
-          frameBorder="0"
-          allow="autoplay; encrypted-media"
-          allowFullScreen
-          className="w-full h-full"
-        />
-      ) : (
-        <div className="flex flex-col items-center justify-center w-full h-full border-2 border-dashed border-gray-400">
-          <p className="text-white/80">Loading live stream...</p>
-        </div>
+      <div id={`yt-player-${videoId}`} className="w-full h-full" />
+      {isMuted && isVisible && playerReady && (
+        <button
+          onClick={handleUnmute}
+          className="absolute bottom-4 right-4 px-4 py-2 text-sm font-semibold rounded-lg bg-white/80 text-background backdrop-blur-md hover:bg-white transition"
+        >
+          🔈 Unmute
+        </button>
       )}
     </div>
   );
