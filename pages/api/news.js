@@ -17,7 +17,7 @@ export default async function handler(req, res) {
 
     const { articles = [] } = await response.json();
 
-    // Track duplicates by normalized URL and title
+    // Track duplicates by normalised URL and title
     const seenUrls = new Set();
     const seenTitles = new Set();
 
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
 
       if (!isValid) return false;
 
-      // Normalize URL (remove query params, if needed)
+      // Normalise URL (remove query params, if needed)
       const cleanUrl = article.url.split("?")[0].trim();
       const title = article.title.trim().toLowerCase();
 
