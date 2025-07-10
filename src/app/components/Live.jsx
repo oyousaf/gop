@@ -3,11 +3,10 @@ import { useEffect, useRef, useState } from "react";
 export default function Live({ videoId }) {
   const containerRef = useRef(null);
   const playerRef = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
   const [playerReady, setPlayerReady] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isUnmuted, setIsUnmuted] = useState(false);
 
-  // Load YouTube API once
+  // Load YouTube Iframe API
   useEffect(() => {
     if (!window.YT) {
       const tag = document.createElement("script");
@@ -16,30 +15,10 @@ export default function Live({ videoId }) {
     }
   }, []);
 
-  // Track visibility with IntersectionObserver
+  // Initialize YouTube player when API is ready
   useEffect(() => {
-    const node = containerRef.current;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => setIsVisible(entry.isIntersecting),
-      { threshold: 0.25 }
-    );
-
-    if (node) observer.observe(node);
-
-    return () => {
-      if (node) observer.unobserve(node);
-    };
-  }, []);
-
-  // Init player only once
-  useEffect(() => {
-    if (!window.YT || playerRef.current || !isVisible) return;
-
-    const interval = setInterval(() => {
-      if (window.YT && window.YT.Player) {
-        clearInterval(interval);
-
+    const checkYTReady = setInterval(() => {
+      if (window.YT?.Player && !playerRef.current) {
         playerRef.current = new window.YT.Player(`yt-player-${videoId}`, {
           height: "100%",
           width: "100%",
@@ -53,34 +32,68 @@ export default function Live({ videoId }) {
             playsinline: 1,
           },
           events: {
-            onReady: (event) => {
+            onReady: () => {
               setPlayerReady(true);
-              event.target.playVideo();
+              playerRef.current?.playVideo();
             },
           },
         });
+        clearInterval(checkYTReady);
       }
     }, 100);
-  }, [isVisible, videoId]);
 
-  // Pause/resume based on scroll
+    return () => clearInterval(checkYTReady);
+  }, [videoId]);
+
+  // Handle scroll visibility: unmute & fade in audio on scroll in, pause on scroll out
   useEffect(() => {
-    const player = playerRef.current;
-    if (!player || !playerReady) return;
+    const node = containerRef.current;
+    if (!node) return;
 
-    if (isVisible) {
-      player.playVideo();
-      if (!isMuted) player.unMute();
-    } else {
-      player.pauseVideo();
-    }
-  }, [isVisible, playerReady, isMuted]);
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!playerRef.current || !playerReady) return;
 
-  const handleUnmute = () => {
-    if (playerRef.current) {
-      playerRef.current.unMute();
-      setIsMuted(false);
-    }
+        const ratio = entry.intersectionRatio;
+
+        if (ratio > 0.6) {
+          // In view: play & fade in audio
+          playerRef.current.playVideo();
+
+          if (!isUnmuted) {
+            fadeInAudio(playerRef.current);
+            setIsUnmuted(true);
+          }
+        } else {
+          // Out of view: pause
+          playerRef.current.pauseVideo();
+        }
+      },
+      {
+        threshold: Array.from({ length: 11 }, (_, i) => i / 10),
+      }
+    );
+
+    observer.observe(node);
+    return () => observer.unobserve(node);
+  }, [playerReady, isUnmuted]);
+
+  // Smooth audio fade-in from 0 to 100
+  const fadeInAudio = (player) => {
+    if (!player?.unMute || !player?.setVolume) return;
+
+    player.unMute();
+    player.setVolume(0);
+
+    let volume = 0;
+    const fade = setInterval(() => {
+      if (volume < 100) {
+        volume += 5;
+        player.setVolume(volume);
+      } else {
+        clearInterval(fade);
+      }
+    }, 75);
   };
 
   return (
@@ -89,14 +102,6 @@ export default function Live({ videoId }) {
       className="relative aspect-video rounded-xl overflow-hidden shadow-xl backdrop-blur-md bg-white/10 mx-auto flex items-center justify-center"
     >
       <div id={`yt-player-${videoId}`} className="w-full h-full" />
-      {isMuted && isVisible && playerReady && (
-        <button
-          onClick={handleUnmute}
-          className="absolute bottom-4 right-4 px-4 py-2 text-sm font-semibold rounded-lg bg-white/80 text-background backdrop-blur-md hover:bg-white transition"
-        >
-          🔈 Unmute
-        </button>
-      )}
     </div>
   );
 }
