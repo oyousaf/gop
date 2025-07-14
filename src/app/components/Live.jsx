@@ -68,7 +68,7 @@ export default function Live({ sourceType, source, videoId, onError }) {
         onError?.();
       }
     }
-  }, [sourceType, source, fallback]);
+  }, [sourceType, source, fallback, onError]);
 
   // Scroll observer to play/pause and handle mute state
   useEffect(() => {
