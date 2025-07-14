@@ -11,14 +11,14 @@ export default function Madinah() {
   const [useFallback, setUseFallback] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
 
-  useEffect(() => {
-    setHasMounted(true);
-  }, []);
+  // Mount check
+  useEffect(() => setHasMounted(true), []);
 
+  // Fetch fallback only when needed
   useEffect(() => {
     if (!useFallback) return;
 
-    const fetchYouTube = async () => {
+    const fetchFallbackStream = async () => {
       try {
         const res = await fetch(
           `/api/youtube?channelId=${CHANNEL_ID}&query=madinah`
@@ -26,15 +26,15 @@ export default function Madinah() {
         const data = await res.json();
         if (data.videoId) setVideoId(data.videoId);
       } catch (err) {
-        console.error("Madinah YouTube fetch error:", err);
+        console.error("YouTube fallback fetch failed:", err);
       }
     };
 
-    fetchYouTube();
+    fetchFallbackStream();
   }, [useFallback]);
 
   const handleStreamError = () => {
-    console.warn("⚠️ Madinah HLS stream failed. Falling back to YouTube.");
+    console.warn("⚠️ Madinah HLS stream failed. Switching to YouTube.");
     setUseFallback(true);
   };
 
@@ -44,7 +44,7 @@ export default function Madinah() {
         id="madinah"
         className="relative py-16 min-h-screen flex justify-center items-center"
       >
-        <p className="text-white/70 animate-pulse">Loading live stream...</p>
+        <p className="text-white/70 animate-pulse">Loading Madinah stream...</p>
       </section>
     );
   }
@@ -68,14 +68,19 @@ export default function Madinah() {
         </motion.h2>
 
         <div className="w-full mb-8">
-          {useFallback && videoId ? (
-            <Live sourceType="youtube" videoId={videoId} />
+          {useFallback ? (
+            videoId ? (
+              <Live sourceType="youtube" videoId={videoId} />
+            ) : (
+              <p className="text-white/60 italic animate-pulse">
+                Loading fallback video...
+              </p>
+            )
           ) : (
             <Live
               sourceType="hls"
               source="/api/stream/madinah"
               onError={handleStreamError}
-              videoId={videoId} 
             />
           )}
         </div>
