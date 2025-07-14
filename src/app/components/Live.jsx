@@ -1,28 +1,27 @@
+"use client";
 import { useEffect, useRef, useState } from "react";
+import Hls from "hls.js";
 
-export default function Live({ videoId }) {
+export default function Live({ sourceType, source, videoId, onError }) {
+  const videoRef = useRef(null);
   const containerRef = useRef(null);
-  const playerRef = useRef(null);
-  const [playerReady, setPlayerReady] = useState(false);
+  const [fallback, setFallback] = useState(false);
   const [isUnmuted, setIsUnmuted] = useState(false);
+  const [playerReady, setPlayerReady] = useState(false);
+  const ytPlayerRef = useRef(null);
 
-  // Load YouTube Iframe API
+  // Load YouTube player if fallback is active
   useEffect(() => {
-    if (!window.YT) {
-      const tag = document.createElement("script");
-      tag.src = "https://www.youtube.com/iframe_api";
-      document.body.appendChild(tag);
-    }
-  }, []);
+    if ((fallback || sourceType === "youtube") && videoId) {
+      const script = document.createElement("script");
+      script.src = "https://www.youtube.com/iframe_api";
+      document.body.appendChild(script);
 
-  // Initialize YouTube player when API is ready
-  useEffect(() => {
-    const checkYTReady = setInterval(() => {
-      if (window.YT?.Player && !playerRef.current) {
-        playerRef.current = new window.YT.Player(`yt-player-${videoId}`, {
-          height: "100%",
-          width: "100%",
+      window.onYouTubeIframeAPIReady = () => {
+        ytPlayerRef.current = new window.YT.Player(`yt-player-${videoId}`, {
           videoId,
+          width: "100%",
+          height: "100%",
           playerVars: {
             autoplay: 1,
             mute: 1,
@@ -34,39 +33,73 @@ export default function Live({ videoId }) {
           events: {
             onReady: () => {
               setPlayerReady(true);
-              playerRef.current?.playVideo();
+              ytPlayerRef.current.playVideo();
             },
           },
         });
-        clearInterval(checkYTReady);
+      };
+
+      return () => {
+        delete window.onYouTubeIframeAPIReady;
+      };
+    }
+  }, [fallback, sourceType, videoId]);
+
+  // Attach and manage HLS
+  useEffect(() => {
+    if (sourceType === "hls" && !fallback && videoRef.current) {
+      const video = videoRef.current;
+
+      if (video.canPlayType("application/vnd.apple.mpegurl")) {
+        video.src = source;
+      } else if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(source);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.ERROR, (_, { fatal }) => {
+          if (fatal) {
+            hls.destroy();
+            setFallback(true);
+            onError?.();
+          }
+        });
+      } else {
+        setFallback(true);
+        onError?.();
       }
-    }, 100);
+    }
+  }, [sourceType, source, fallback]);
 
-    return () => clearInterval(checkYTReady);
-  }, [videoId]);
-
-  // Handle scroll visibility: unmute & fade in audio on scroll in, pause on scroll out
+  // Scroll observer to play/pause and handle mute state
   useEffect(() => {
     const node = containerRef.current;
+    const video = videoRef.current;
+    const ytPlayer = ytPlayerRef.current;
+
     if (!node) return;
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (!playerRef.current || !playerReady) return;
+        const inView = entry.intersectionRatio > 0.6;
 
-        const ratio = entry.intersectionRatio;
-
-        if (ratio > 0.6) {
-          // In view: play & fade in audio
-          playerRef.current.playVideo();
-
-          if (!isUnmuted) {
-            fadeInAudio(playerRef.current);
-            setIsUnmuted(true);
+        // HLS video
+        if (sourceType === "hls" && video) {
+          if (inView) {
+            video.play();
+            if (!isUnmuted) fadeInAudio(video);
+          } else {
+            video.pause();
           }
-        } else {
-          // Out of view: pause
-          playerRef.current.pauseVideo();
+        }
+
+        // YouTube video
+        if ((fallback || sourceType === "youtube") && ytPlayer && playerReady) {
+          if (inView) {
+            ytPlayer.playVideo();
+            if (!isUnmuted) fadeInAudio(ytPlayer);
+          } else {
+            ytPlayer.pauseVideo();
+          }
         }
       },
       {
@@ -75,33 +108,62 @@ export default function Live({ videoId }) {
     );
 
     observer.observe(node);
-    return () => observer.unobserve(node);
-  }, [playerReady, isUnmuted]);
+    return () => observer.disconnect();
+  }, [sourceType, fallback, isUnmuted, playerReady]);
 
-  // Smooth audio fade-in from 0 to 100
-  const fadeInAudio = (player) => {
-    if (!player?.unMute || !player?.setVolume) return;
+  const fadeInAudio = (media) => {
+    setIsUnmuted(true);
 
-    player.unMute();
-    player.setVolume(0);
-
-    let volume = 0;
-    const fade = setInterval(() => {
-      if (volume < 100) {
-        volume += 5;
-        player.setVolume(volume);
-      } else {
-        clearInterval(fade);
-      }
-    }, 75);
+    if (media.unMute && media.setVolume) {
+      media.unMute();
+      media.setVolume(0);
+      let volume = 0;
+      const fade = setInterval(() => {
+        volume = Math.min(100, volume + 5);
+        media.setVolume(volume);
+        if (volume >= 100) clearInterval(fade);
+      }, 75);
+    } else if (media.volume !== undefined) {
+      media.muted = false;
+      media.volume = 0;
+      let volume = 0;
+      const fade = setInterval(() => {
+        volume = Math.min(1, volume + 0.05);
+        media.volume = volume;
+        if (volume >= 1) clearInterval(fade);
+      }, 75);
+    }
   };
+
+  if (fallback || sourceType === "youtube") {
+    if (!videoId) return null;
+    return (
+      <div
+        ref={containerRef}
+        className="relative aspect-video rounded-xl overflow-hidden shadow-xl backdrop-blur-md bg-white/10 mx-auto flex items-center justify-center"
+      >
+        <div id={`yt-player-${videoId}`} className="w-full h-full" />
+      </div>
+    );
+  }
 
   return (
     <div
       ref={containerRef}
       className="relative aspect-video rounded-xl overflow-hidden shadow-xl backdrop-blur-md bg-white/10 mx-auto flex items-center justify-center"
     >
-      <div id={`yt-player-${videoId}`} className="w-full h-full" />
+      <video
+        ref={videoRef}
+        className="w-full h-full"
+        autoPlay
+        muted
+        playsInline
+        onError={() => {
+          console.warn("Native stream error; falling back");
+          setFallback(true);
+          onError?.();
+        }}
+      />
     </div>
   );
 }

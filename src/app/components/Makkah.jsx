@@ -8,15 +8,17 @@ import Live from "./Live";
 export default function Makkah() {
   const [videoId, setVideoId] = useState(null);
   const [prayerTimes, setPrayerTimes] = useState(null);
-  const [clock, setClock] = useState(new Date());
+  const [clock, setClock] = useState(null);
   const [location, setLocation] = useState({
     city: "Makkah",
     country: "Saudi Arabia",
   });
   const [is24Hour, setIs24Hour] = useState(true);
-  const [hasMounted, setHasMounted] = useState(false);
   const [upcomingPrayer, setUpcomingPrayer] = useState("");
+  const [useFallback, setUseFallback] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
 
+  // Prevent hydration mismatch
   useEffect(() => {
     setHasMounted(true);
   }, []);
@@ -48,33 +50,25 @@ export default function Makkah() {
         const ipData = await ipRes.json();
         const city = ipData.city || "Makkah";
         const country = ipData.country_name || "Saudi Arabia";
-
         setLocation({ city, country });
 
         const prayerRes = await fetch(
           `/api/prayer-times?city=${city}&country=${country}`
         );
         const timings = await prayerRes.json();
-
-        if (timings && !timings.error) {
-          setPrayerTimes(timings);
-        } else {
-          console.warn("Prayer timing error:", timings);
-        }
+        if (!timings.error) setPrayerTimes(timings);
+        else console.warn("Prayer timing error:", timings);
       } catch (err) {
         console.error("Location/Prayer fetch error:", err);
       }
     };
-
     fetchLocationAndTimes();
   }, []);
 
-  // Detect upcoming prayer time
   useEffect(() => {
-    if (!prayerTimes) return;
-
+    if (!prayerTimes || !clock) return;
     const ordered = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"];
-    const now = new Date();
+    const now = clock;
 
     for (let name of ordered) {
       const timeStr = convertTo24(prayerTimes[name]);
@@ -87,11 +81,24 @@ export default function Makkah() {
         return;
       }
     }
-    // If all times passed, fallback to first of next day
     setUpcomingPrayer("Fajr");
   }, [prayerTimes, clock]);
 
-  if (!hasMounted) return null;
+  const handleStreamError = () => {
+    console.warn("⚠️ HLS stream failed. Falling back to YouTube.");
+    setUseFallback(true);
+  };
+
+  if (!hasMounted || !clock) {
+    return (
+      <section
+        id="makkah"
+        className="relative py-16 min-h-screen flex justify-center items-center"
+      >
+        <p className="text-white/70 animate-pulse">Loading live stream...</p>
+      </section>
+    );
+  }
 
   const gregorian = moment(clock).locale("en").format("dddd, Do MMMM YYYY");
   const hijri = moment(clock).locale("ar-SA").format("iD iMMMM iYYYY");
@@ -118,18 +125,14 @@ export default function Makkah() {
         </motion.h2>
 
         <div className="w-full mb-8">
-          {videoId ? (
+          {useFallback && videoId ? (
             <Live videoId={videoId} />
           ) : (
-            <div className="flex justify-center items-center w-full aspect-video rounded-xl overflow-hidden shadow-xl backdrop-blur-md bg-white/10">
-              <p className="text-white/80 text-lg animate-pulse">
-                No video available at the moment.
-              </p>
-            </div>
+            <Live sourceType="hls" source="/api/stream/makkah" />
           )}
         </div>
 
-        {/* Prayer Times */}
+        {/* Prayer Times UI */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -149,7 +152,6 @@ export default function Makkah() {
             </button>
           </div>
 
-          {/* Date & Time */}
           <motion.div className="text-xl md:text-2xl">
             <p className="text-white/60 italic mb-2">{gregorian}</p>
             <p className="text-white/80 font-medium mb-2">{hijri}</p>
@@ -161,12 +163,10 @@ export default function Makkah() {
               {["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"].map(
                 (name) => {
                   const isNext = name === upcomingPrayer;
-
-                  // Calculate countdown
                   let countdown = "";
+
                   if (isNext) {
                     try {
-                      const now = new Date();
                       const [h, m] = convertTo24(prayerTimes[name])
                         .split(":")
                         .map(Number);
@@ -174,16 +174,15 @@ export default function Makkah() {
                       target.setHours(h, m, 0, 0);
                       const diff = Math.max(
                         0,
-                        target.getTime() - now.getTime()
+                        target.getTime() - clock.getTime()
                       );
                       const mins = Math.floor(diff / (1000 * 60));
                       const hrs = Math.floor(mins / 60);
-                      const remMins = mins % 60;
                       countdown =
                         hrs > 0
-                          ? `in ${hrs}h ${remMins}m`
-                          : remMins > 0
-                          ? `in ${remMins} minutes`
+                          ? `in ${hrs}h ${mins % 60}m`
+                          : mins > 0
+                          ? `in ${mins} minutes`
                           : "soon";
                     } catch {
                       countdown = "";
@@ -237,18 +236,17 @@ export default function Makkah() {
   );
 }
 
-// Convert 12h time string to 24h format
+// Helper: Convert 12h format to 24h
 function convertTo24(timeStr) {
   try {
     const [time, modifier] = timeStr.split(" ");
     let [hours, minutes] = time.split(":").map(Number);
-
     if (modifier?.toLowerCase() === "pm" && hours !== 12) hours += 12;
     if (modifier?.toLowerCase() === "am" && hours === 12) hours = 0;
-
-    return `${String(hours).padStart(2, "0")}:${minutes
-      .toString()
-      .padStart(2, "0")}`;
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(
+      2,
+      "0"
+    )}`;
   } catch {
     return timeStr;
   }

@@ -14,9 +14,11 @@
     "axios": "^1.7.9",
     "cheerio": "^1.0.0",
     "framer-motion": "^11.12.0",
+    "hls.js": "^1.6.7",
     "moment-hijri": "^3.0.0",
     "next": "15.0.3",
     "next-sitemap": "^4.2.3",
+    "node-fetch": "^3.3.2",
     "puppeteer": "^24.4.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
@@ -26,6 +28,7 @@
     "rss-parser": "^3.13.0"
   },
   "devDependencies": {
+    "@types/react": "19.1.8",
     "eslint": "^8",
     "eslint-config-next": "15.0.3",
     "postcss": "^8",

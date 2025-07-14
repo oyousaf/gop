@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Live from "./Live";
 
@@ -8,9 +8,17 @@ const CHANNEL_ID = "UCfBw_uwZb_oFLyVsjWk6owQ";
 
 export default function Madinah() {
   const [videoId, setVideoId] = useState(null);
+  const [useFallback, setUseFallback] = useState(false);
+  const [hasMounted, setHasMounted] = useState(false);
 
   useEffect(() => {
-    const fetchLive = async () => {
+    setHasMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!useFallback) return;
+
+    const fetchYouTube = async () => {
       try {
         const res = await fetch(
           `/api/youtube?channelId=${CHANNEL_ID}&query=madinah`
@@ -18,11 +26,28 @@ export default function Madinah() {
         const data = await res.json();
         if (data.videoId) setVideoId(data.videoId);
       } catch (err) {
-        console.error("Madinah video fetch error:", err);
+        console.error("Madinah YouTube fetch error:", err);
       }
     };
-    fetchLive();
-  }, []);
+
+    fetchYouTube();
+  }, [useFallback]);
+
+  const handleStreamError = () => {
+    console.warn("⚠️ Madinah HLS stream failed. Falling back to YouTube.");
+    setUseFallback(true);
+  };
+
+  if (!hasMounted) {
+    return (
+      <section
+        id="madinah"
+        className="relative py-16 min-h-screen flex justify-center items-center"
+      >
+        <p className="text-white/70 animate-pulse">Loading live stream...</p>
+      </section>
+    );
+  }
 
   return (
     <section id="madinah" className="relative py-16 min-h-screen">
@@ -43,14 +68,15 @@ export default function Madinah() {
         </motion.h2>
 
         <div className="w-full mb-8">
-          {videoId ? (
-            <Live videoId={videoId} />
+          {useFallback && videoId ? (
+            <Live sourceType="youtube" videoId={videoId} />
           ) : (
-            <div className="flex justify-center items-center w-full aspect-video rounded-xl overflow-hidden shadow-xl backdrop-blur-md bg-white/10">
-              <p className="text-white/80 text-lg animate-pulse">
-                No video available at the moment.
-              </p>
-            </div>
+            <Live
+              sourceType="hls"
+              source="/api/stream/madinah"
+              onError={handleStreamError}
+              videoId={videoId} 
+            />
           )}
         </div>
       </motion.div>
