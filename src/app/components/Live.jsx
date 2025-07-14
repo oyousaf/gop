@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import Hls from "hls.js";
 
-export default function Live({ sourceType, source, videoId, onError }) {
+export default function Live({ sourceType = "hls", source, videoId, onError }) {
   const videoRef = useRef(null);
   const containerRef = useRef(null);
   const ytPlayerRef = useRef(null);
@@ -13,7 +13,7 @@ export default function Live({ sourceType, source, videoId, onError }) {
   const [isVisible, setIsVisible] = useState(false);
   const [isUnmuted, setIsUnmuted] = useState(false);
 
-  // YouTube API setup
+  // Setup YouTube script if needed
   useEffect(() => {
     if ((fallback || sourceType === "youtube") && videoId && !window.YT) {
       const tag = document.createElement("script");
@@ -43,7 +43,7 @@ export default function Live({ sourceType, source, videoId, onError }) {
     };
   }, [fallback, sourceType, videoId]);
 
-  // HLS setup
+  // Handle HLS stream
   useEffect(() => {
     if (sourceType !== "hls" || fallback || !videoRef.current) return;
 
@@ -58,33 +58,27 @@ export default function Live({ sourceType, source, videoId, onError }) {
       hls.on(Hls.Events.ERROR, (_, data) => {
         if (data.fatal) {
           hls.destroy();
-          setFallback(true);
-          onError?.();
+          fallbackToYoutube();
         }
       });
 
       return () => hls.destroy();
     } else {
-      setFallback(true);
-      onError?.();
+      fallbackToYoutube();
     }
-  }, [sourceType, source, fallback, onError]);
+  }, [sourceType, source, fallback]);
 
-  // Visibility detection
+  // Detect visibility
   useEffect(() => {
-    const node = containerRef.current;
-    if (!node) return;
-
     const observer = new IntersectionObserver(
       ([entry]) => setIsVisible(entry.isIntersecting),
       { threshold: 0.6 }
     );
-
-    observer.observe(node);
+    if (containerRef.current) observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
 
-  // Playback controller
+  // Handle playback when visible
   useEffect(() => {
     const video = videoRef.current;
     const yt = ytPlayerRef.current;
@@ -106,58 +100,48 @@ export default function Live({ sourceType, source, videoId, onError }) {
     }
   }, [isVisible, fallback, sourceType, playerReady, isUnmuted]);
 
-  const fadeInAudio = (media) => {
+  function fadeInAudio(media) {
     setIsUnmuted(true);
+    const step = media.setVolume ? 5 : 0.05;
+    let volume = 0;
 
-    if (media.unMute && media.setVolume) {
-      media.unMute();
-      media.setVolume(0);
-      let volume = 0;
-      const fade = setInterval(() => {
-        volume = Math.min(100, volume + 5);
+    const fade = setInterval(() => {
+      volume = Math.min(media.setVolume ? 100 : 1, volume + step);
+      if (media.setVolume) {
+        media.unMute();
         media.setVolume(volume);
-        if (volume >= 100) clearInterval(fade);
-      }, 75);
-    } else if (media.volume !== undefined) {
-      media.muted = false;
-      media.volume = 0;
-      let volume = 0;
-      const fade = setInterval(() => {
-        volume = Math.min(1, volume + 0.05);
+      } else {
+        media.muted = false;
         media.volume = volume;
-        if (volume >= 1) clearInterval(fade);
-      }, 75);
-    }
-  };
-
-  if ((fallback || sourceType === "youtube") && videoId) {
-    return (
-      <div
-        ref={containerRef}
-        className="relative aspect-video rounded-xl overflow-hidden shadow-xl backdrop-blur-md bg-white/10"
-      >
-        <div id={`yt-player-${videoId}`} className="w-full h-full" />
-      </div>
-    );
+      }
+      if (volume >= (media.setVolume ? 100 : 1)) clearInterval(fade);
+    }, 75);
   }
+
+  function fallbackToYoutube() {
+    setFallback(true);
+    onError?.();
+  }
+
+  const isYoutube = fallback || sourceType === "youtube";
 
   return (
     <div
       ref={containerRef}
       className="relative aspect-video rounded-xl overflow-hidden shadow-xl backdrop-blur-md bg-white/10"
     >
-      <video
-        ref={videoRef}
-        className="w-full h-full"
-        autoPlay
-        muted
-        playsInline
-        onError={() => {
-          console.warn("Native HLS error, switching to fallback.");
-          setFallback(true);
-          onError?.();
-        }}
-      />
+      {isYoutube && videoId ? (
+        <div id={`yt-player-${videoId}`} className="w-full h-full" />
+      ) : (
+        <video
+          ref={videoRef}
+          className="w-full h-full"
+          autoPlay
+          muted
+          playsInline
+          onError={fallbackToYoutube}
+        />
+      )}
     </div>
   );
 }

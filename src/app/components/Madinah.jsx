@@ -11,14 +11,14 @@ export default function Madinah() {
   const [useFallback, setUseFallback] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
 
-  // Mount check
+  // Handle hydration mismatch
   useEffect(() => setHasMounted(true), []);
 
-  // Fetch fallback only when needed
+  // YouTube fallback fetch
   useEffect(() => {
     if (!useFallback) return;
 
-    const fetchFallbackStream = async () => {
+    (async () => {
       try {
         const res = await fetch(
           `/api/youtube?channelId=${CHANNEL_ID}&query=madinah`
@@ -28,9 +28,7 @@ export default function Madinah() {
       } catch (err) {
         console.error("YouTube fallback fetch failed:", err);
       }
-    };
-
-    fetchFallbackStream();
+    })();
   }, [useFallback]);
 
   const handleStreamError = () => {
@@ -40,12 +38,9 @@ export default function Madinah() {
 
   if (!hasMounted) {
     return (
-      <section
-        id="madinah"
-        className="relative py-16 min-h-screen flex justify-center items-center"
-      >
+      <SectionWrapper>
         <p className="text-white/70 animate-pulse">Loading Madinah stream...</p>
-      </section>
+      </SectionWrapper>
     );
   }
 
@@ -68,16 +63,28 @@ export default function Madinah() {
         </motion.h2>
 
         <div className="w-full mb-8">
-          <Live
-            sourceType="hls"
-            source="/api/stream/madinah"
-            onError={() => setUseFallback(true)}
-          />
-          {useFallback && videoId && (
+          {useFallback && videoId ? (
             <Live sourceType="youtube" videoId={videoId} />
+          ) : (
+            <Live
+              sourceType="hls"
+              source="/api/stream/madinah"
+              onError={handleStreamError}
+            />
           )}
         </div>
       </motion.div>
+    </section>
+  );
+}
+
+function SectionWrapper({ children }) {
+  return (
+    <section
+      id="madinah"
+      className="relative py-16 min-h-screen flex justify-center items-center"
+    >
+      {children}
     </section>
   );
 }

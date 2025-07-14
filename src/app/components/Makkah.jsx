@@ -5,46 +5,41 @@ import { motion } from "framer-motion";
 import moment from "moment-hijri";
 import Live from "./Live";
 
+// Constants
+const CHANNEL_ID = "UCqtGJe9AnRfq5wwjk27VsoQ";
+const PRAYER_ORDER = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"];
+
 export default function Makkah() {
   const [videoId, setVideoId] = useState(null);
   const [prayerTimes, setPrayerTimes] = useState(null);
   const [clock, setClock] = useState(null);
-  const [location, setLocation] = useState({
-    city: "Makkah",
-    country: "Saudi Arabia",
-  });
   const [is24Hour, setIs24Hour] = useState(true);
   const [upcomingPrayer, setUpcomingPrayer] = useState("");
   const [useFallback, setUseFallback] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
+  const [location, setLocation] = useState({
+    city: "Makkah",
+    country: "Saudi Arabia",
+  });
 
-  // Prevent hydration mismatch
+  // Mount & clock update
   useEffect(() => {
     setHasMounted(true);
-  }, []);
-
-  useEffect(() => {
     const interval = setInterval(() => setClock(new Date()), 1000);
     return () => clearInterval(interval);
   }, []);
 
+  // Fetch stream fallback video
   useEffect(() => {
-    const fetchVideo = async () => {
-      try {
-        const res = await fetch(
-          "/api/youtube?channelId=UCqtGJe9AnRfq5wwjk27VsoQ"
-        );
-        const data = await res.json();
-        if (data.videoId) setVideoId(data.videoId);
-      } catch (err) {
-        console.error("Fetch failed:", err);
-      }
-    };
-    fetchVideo();
+    fetch(`/api/youtube?channelId=${CHANNEL_ID}`)
+      .then((res) => res.json())
+      .then((data) => data.videoId && setVideoId(data.videoId))
+      .catch((err) => console.error("Fetch failed:", err));
   }, []);
 
+  // Fetch IP-based location & prayer times
   useEffect(() => {
-    const fetchLocationAndTimes = async () => {
+    (async () => {
       try {
         const ipRes = await fetch("https://ipapi.co/json/");
         const ipData = await ipRes.json();
@@ -61,22 +56,19 @@ export default function Makkah() {
       } catch (err) {
         console.error("Location/Prayer fetch error:", err);
       }
-    };
-    fetchLocationAndTimes();
+    })();
   }, []);
 
+  // Determine upcoming prayer
   useEffect(() => {
     if (!prayerTimes || !clock) return;
-    const ordered = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"];
+
     const now = clock;
-
-    for (let name of ordered) {
-      const timeStr = convertTo24(prayerTimes[name]);
-      const [h, m] = timeStr.split(":").map(Number);
-      const time = new Date();
-      time.setHours(h, m, 0, 0);
-
-      if (time > now) {
+    for (let name of PRAYER_ORDER) {
+      const [h, m] = convertTo24(prayerTimes[name]).split(":").map(Number);
+      const prayerTime = new Date();
+      prayerTime.setHours(h, m, 0, 0);
+      if (prayerTime > now) {
         setUpcomingPrayer(name);
         return;
       }
@@ -89,22 +81,19 @@ export default function Makkah() {
     setUseFallback(true);
   };
 
-  if (!hasMounted || !clock) {
-    return (
-      <section
-        id="makkah"
-        className="relative py-16 min-h-screen flex justify-center items-center"
-      >
-        <p className="text-white/70 animate-pulse">Loading live stream...</p>
-      </section>
-    );
-  }
-
   const gregorian = moment(clock).locale("en").format("dddd, Do MMMM YYYY");
   const hijri = moment(clock).locale("ar-SA").format("iD iMMMM iYYYY");
   const formattedClock = is24Hour
-    ? clock.toLocaleTimeString("en-GB")
-    : clock.toLocaleTimeString("en-US");
+    ? clock?.toLocaleTimeString("en-GB")
+    : clock?.toLocaleTimeString("en-US");
+
+  if (!hasMounted || !clock) {
+    return (
+      <SectionWrapper>
+        <p className="text-white/70 animate-pulse">Loading live stream...</p>
+      </SectionWrapper>
+    );
+  }
 
   return (
     <section id="makkah" className="relative py-16 min-h-screen">
@@ -128,115 +117,126 @@ export default function Makkah() {
           {useFallback && videoId ? (
             <Live videoId={videoId} />
           ) : (
-            <Live sourceType="hls" source="/api/stream/makkah" />
+            <Live
+              sourceType="hls"
+              source="/api/stream/makkah"
+              onError={handleStreamError}
+            />
           )}
         </div>
 
-        {/* Prayer Times UI */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.2 }}
-          viewport={{ once: true }}
-          className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl shadow p-6 w-full max-w-3xl"
-        >
-          <div className="flex justify-between items-center mb-3 text-xl">
-            <h3 className="text-2xl md:text-4xl font-semibold text-white">
-              Today&apos;s Prayer Times
-            </h3>
-            <button
-              onClick={() => setIs24Hour(!is24Hour)}
-              className="text-white/70 border px-3 py-1 rounded hover:bg-white/10 transition"
-            >
-              {is24Hour ? "12H" : "24H"}
-            </button>
-          </div>
-
-          <motion.div className="text-xl md:text-2xl">
-            <p className="text-white/60 italic mb-2">{gregorian}</p>
-            <p className="text-white/80 font-medium mb-2">{hijri}</p>
-            <p className="text-white mb-4 font-mono">{formattedClock}</p>
-          </motion.div>
-
-          {prayerTimes ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-2xl md:text-3xl">
-              {["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"].map(
-                (name) => {
-                  const isNext = name === upcomingPrayer;
-                  let countdown = "";
-
-                  if (isNext) {
-                    try {
-                      const [h, m] = convertTo24(prayerTimes[name])
-                        .split(":")
-                        .map(Number);
-                      const target = new Date();
-                      target.setHours(h, m, 0, 0);
-                      const diff = Math.max(
-                        0,
-                        target.getTime() - clock.getTime()
-                      );
-                      const mins = Math.floor(diff / (1000 * 60));
-                      const hrs = Math.floor(mins / 60);
-                      countdown =
-                        hrs > 0
-                          ? `in ${hrs}h ${mins % 60}m`
-                          : mins > 0
-                          ? `in ${mins} minutes`
-                          : "soon";
-                    } catch {
-                      countdown = "";
-                    }
-                  }
-
-                  return (
-                    <motion.div
-                      key={name}
-                      whileHover={{ scale: 1.05 }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 400,
-                        damping: 18,
-                      }}
-                      className={`relative px-4 py-4 rounded-xl border shadow-md backdrop-blur-sm transition-all flex flex-col justify-center items-center ${
-                        isNext
-                          ? "bg-amber-500/20 border-amber-400 shadow-lg ring-2 ring-amber-400/60"
-                          : "bg-white/10 border-white/10"
-                      }`}
-                    >
-                      {isNext && (
-                        <span className="absolute top-1 right-2 bg-amber-400 text-black text-xs font-bold px-2 py-0.5 rounded">
-                          Next
-                        </span>
-                      )}
-                      <p className="text-white/70 tracking-wide">{name}</p>
-                      <p className="font-semibold text-white mt-1 text-3xl md:text-4xl">
-                        {is24Hour
-                          ? convertTo24(prayerTimes[name])
-                          : prayerTimes[name]}
-                      </p>
-                      {isNext && countdown && (
-                        <p className="text-lg md:text-xl text-amber-300 mt-1">
-                          {countdown}
-                        </p>
-                      )}
-                    </motion.div>
-                  );
-                }
-              )}
-            </div>
-          ) : (
-            <p className="text-white/60 italic animate-pulse">
-              Loading prayer times...
-            </p>
-          )}
-        </motion.div>
+        <PrayerTimesCard
+          prayerTimes={prayerTimes}
+          upcomingPrayer={upcomingPrayer}
+          clock={clock}
+          is24Hour={is24Hour}
+          setIs24Hour={setIs24Hour}
+          gregorian={gregorian}
+          hijri={hijri}
+          formattedClock={formattedClock}
+        />
       </motion.div>
     </section>
   );
 }
 
-// Helper: Convert 12h format to 24h
+// Extracted reusable UI components/helpers
+function SectionWrapper({ children }) {
+  return (
+    <section
+      id="makkah"
+      className="relative py-16 min-h-screen flex justify-center items-center"
+    >
+      {children}
+    </section>
+  );
+}
+
+function PrayerTimesCard({
+  prayerTimes,
+  upcomingPrayer,
+  clock,
+  is24Hour,
+  setIs24Hour,
+  gregorian,
+  hijri,
+  formattedClock,
+}) {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      transition={{ delay: 0.2 }}
+      viewport={{ once: true }}
+      className="bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl shadow p-6 w-full max-w-3xl"
+    >
+      <div className="flex justify-between items-center mb-3 text-xl">
+        <h3 className="text-2xl md:text-4xl font-semibold text-white">
+          Today&apos;s Prayer Times
+        </h3>
+        <button
+          onClick={() => setIs24Hour(!is24Hour)}
+          className="text-white/70 border px-3 py-1 rounded hover:bg-white/10 transition"
+        >
+          {is24Hour ? "12H" : "24H"}
+        </button>
+      </div>
+
+      <motion.div className="text-xl md:text-2xl">
+        <p className="text-white/60 italic mb-2">{gregorian}</p>
+        <p className="text-white/80 font-medium mb-2">{hijri}</p>
+        <p className="text-white mb-4 font-mono">{formattedClock}</p>
+      </motion.div>
+
+      {prayerTimes ? (
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-2xl md:text-3xl">
+          {PRAYER_ORDER.map((name) => {
+            const isNext = name === upcomingPrayer;
+            const countdown = isNext
+              ? getCountdown(prayerTimes[name], clock)
+              : "";
+
+            return (
+              <motion.div
+                key={name}
+                whileHover={{ scale: 1.05 }}
+                transition={{ type: "spring", stiffness: 400, damping: 18 }}
+                className={`relative px-4 py-4 rounded-xl border shadow-md backdrop-blur-sm flex flex-col justify-center items-center ${
+                  isNext
+                    ? "bg-amber-500/20 border-amber-400 shadow-lg ring-2 ring-amber-400/60"
+                    : "bg-white/10 border-white/10"
+                }`}
+              >
+                {isNext && (
+                  <span className="absolute top-1 right-2 bg-amber-400 text-black text-xs font-bold px-2 py-0.5 rounded">
+                    Next
+                  </span>
+                )}
+                <p className="text-white/70 tracking-wide">{name}</p>
+                <p className="font-semibold text-white mt-1 text-3xl md:text-4xl">
+                  {is24Hour
+                    ? convertTo24(prayerTimes[name])
+                    : prayerTimes[name]}
+                </p>
+                {isNext && countdown && (
+                  <p className="text-lg md:text-xl text-amber-300 mt-1">
+                    {countdown}
+                  </p>
+                )}
+              </motion.div>
+            );
+          })}
+        </div>
+      ) : (
+        <p className="text-white/60 italic animate-pulse">
+          Loading prayer times...
+        </p>
+      )}
+    </motion.div>
+  );
+}
+
+// Utility: Convert 12h to 24h
 function convertTo24(timeStr) {
   try {
     const [time, modifier] = timeStr.split(" ");
@@ -249,5 +249,25 @@ function convertTo24(timeStr) {
     )}`;
   } catch {
     return timeStr;
+  }
+}
+
+// Utility: Get countdown string
+function getCountdown(timeStr, now) {
+  try {
+    const [h, m] = convertTo24(timeStr).split(":").map(Number);
+    const target = new Date();
+    target.setHours(h, m, 0, 0);
+    const diff = Math.max(0, target.getTime() - now.getTime());
+    const mins = Math.floor(diff / (1000 * 60));
+    const hrs = Math.floor(mins / 60);
+
+    return hrs > 0
+      ? `in ${hrs}h ${mins % 60}m`
+      : mins > 0
+      ? `in ${mins} minutes`
+      : "soon";
+  } catch {
+    return "";
   }
 }
