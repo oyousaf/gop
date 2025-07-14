@@ -68,20 +68,13 @@ export default function Madinah() {
         </motion.h2>
 
         <div className="w-full mb-8">
-          {useFallback ? (
-            videoId ? (
-              <Live sourceType="youtube" videoId={videoId} />
-            ) : (
-              <p className="text-white/60 italic animate-pulse">
-                Loading fallback video...
-              </p>
-            )
-          ) : (
-            <Live
-              sourceType="hls"
-              source="/api/stream/madinah"
-              onError={handleStreamError}
-            />
+          <Live
+            sourceType="hls"
+            source="/api/stream/madinah"
+            onError={() => setUseFallback(true)}
+          />
+          {useFallback && videoId && (
+            <Live sourceType="youtube" videoId={videoId} />
           )}
         </div>
       </motion.div>

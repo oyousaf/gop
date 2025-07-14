@@ -9,110 +9,89 @@ export default function Live({ sourceType, source, videoId, onError }) {
   const ytPlayerRef = useRef(null);
 
   const [fallback, setFallback] = useState(false);
-  const [isUnmuted, setIsUnmuted] = useState(false);
   const [playerReady, setPlayerReady] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [isUnmuted, setIsUnmuted] = useState(false);
 
-  // YouTube Player Setup
+  // YouTube API setup
   useEffect(() => {
-    if ((fallback || sourceType === "youtube") && videoId) {
-      if (!window.YT) {
-        const script = document.createElement("script");
-        script.src = "https://www.youtube.com/iframe_api";
-        document.body.appendChild(script);
-      }
-
-      window.onYouTubeIframeAPIReady = () => {
-        ytPlayerRef.current = new window.YT.Player(`yt-player-${videoId}`, {
-          videoId,
-          width: "100%",
-          height: "100%",
-          playerVars: {
-            autoplay: 0,
-            mute: 1,
-            controls: 0,
-            modestbranding: 1,
-            rel: 0,
-            playsinline: 1,
-          },
-          events: {
-            onReady: () => setPlayerReady(true),
-          },
-        });
-      };
-
-      return () => {
-        delete window.onYouTubeIframeAPIReady;
-      };
+    if ((fallback || sourceType === "youtube") && videoId && !window.YT) {
+      const tag = document.createElement("script");
+      tag.src = "https://www.youtube.com/iframe_api";
+      document.body.appendChild(tag);
     }
+
+    window.onYouTubeIframeAPIReady = () => {
+      ytPlayerRef.current = new window.YT.Player(`yt-player-${videoId}`, {
+        videoId,
+        playerVars: {
+          autoplay: 0,
+          mute: 1,
+          controls: 0,
+          modestbranding: 1,
+          rel: 0,
+          playsinline: 1,
+        },
+        events: {
+          onReady: () => setPlayerReady(true),
+        },
+      });
+    };
+
+    return () => {
+      delete window.onYouTubeIframeAPIReady;
+    };
   }, [fallback, sourceType, videoId]);
 
-  // HLS Setup
+  // HLS setup
   useEffect(() => {
-    if (sourceType === "hls" && !fallback && videoRef.current) {
-      const video = videoRef.current;
+    if (sourceType !== "hls" || fallback || !videoRef.current) return;
 
-      if (video.canPlayType("application/vnd.apple.mpegurl")) {
-        video.src = source;
-      } else if (Hls.isSupported()) {
-        const hls = new Hls();
-        hls.loadSource(source);
-        hls.attachMedia(video);
+    const video = videoRef.current;
+    if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      video.src = source;
+    } else if (Hls.isSupported()) {
+      const hls = new Hls();
+      hls.loadSource(source);
+      hls.attachMedia(video);
 
-        hls.on(Hls.Events.MANIFEST_PARSED, () => {
-          // Only keep 720p+ levels
-          const minHeight = 720;
-          const levels = hls.levels.filter((lvl) => lvl.height >= minHeight);
+      hls.on(Hls.Events.ERROR, (_, data) => {
+        if (data.fatal) {
+          hls.destroy();
+          setFallback(true);
+          onError?.();
+        }
+      });
 
-          if (levels.length) {
-            const index = hls.levels.findIndex((lvl) => levels.includes(lvl));
-            hls.startLevel = index;
-            hls.currentLevel = index;
-            hls.autoLevelEnabled = true;
-          } else {
-            console.warn("⚠️ No 720p+ stream available");
-          }
-        });
-
-        hls.on(Hls.Events.ERROR, (_, data) => {
-          if (data.fatal) {
-            hls.destroy();
-            setFallback(true);
-            onError?.();
-          }
-        });
-      } else {
-        setFallback(true);
-        onError?.();
-      }
+      return () => hls.destroy();
+    } else {
+      setFallback(true);
+      onError?.();
     }
   }, [sourceType, source, fallback, onError]);
 
-  // Visibility Observer
+  // Visibility detection
   useEffect(() => {
     const node = containerRef.current;
     if (!node) return;
 
     const observer = new IntersectionObserver(
-      ([entry]) => setIsVisible(entry.intersectionRatio > 0.6),
-      {
-        threshold: Array.from({ length: 11 }, (_, i) => i / 10),
-      }
+      ([entry]) => setIsVisible(entry.isIntersecting),
+      { threshold: 0.6 }
     );
 
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
 
-  // Playback Controller
+  // Playback controller
   useEffect(() => {
     const video = videoRef.current;
-    const ytPlayer = ytPlayerRef.current;
+    const yt = ytPlayerRef.current;
 
     if (!isVisible) {
-      if (sourceType === "hls" && video) video.pause();
-      if ((fallback || sourceType === "youtube") && ytPlayer?.pauseVideo)
-        ytPlayer.pauseVideo();
+      video?.pause();
+      yt?.pauseVideo?.();
       return;
     }
 
@@ -121,9 +100,9 @@ export default function Live({ sourceType, source, videoId, onError }) {
       if (!isUnmuted) fadeInAudio(video);
     }
 
-    if ((fallback || sourceType === "youtube") && ytPlayer && playerReady) {
-      ytPlayer.playVideo();
-      if (!isUnmuted) fadeInAudio(ytPlayer);
+    if ((fallback || sourceType === "youtube") && yt && playerReady) {
+      yt.playVideo();
+      if (!isUnmuted) fadeInAudio(yt);
     }
   }, [isVisible, fallback, sourceType, playerReady, isUnmuted]);
 
@@ -151,12 +130,11 @@ export default function Live({ sourceType, source, videoId, onError }) {
     }
   };
 
-  if (fallback || sourceType === "youtube") {
-    if (!videoId) return null;
+  if ((fallback || sourceType === "youtube") && videoId) {
     return (
       <div
         ref={containerRef}
-        className="relative aspect-video rounded-xl overflow-hidden shadow-xl backdrop-blur-md bg-white/10 mx-auto flex items-center justify-center"
+        className="relative aspect-video rounded-xl overflow-hidden shadow-xl backdrop-blur-md bg-white/10"
       >
         <div id={`yt-player-${videoId}`} className="w-full h-full" />
       </div>
@@ -166,7 +144,7 @@ export default function Live({ sourceType, source, videoId, onError }) {
   return (
     <div
       ref={containerRef}
-      className="relative aspect-video rounded-xl overflow-hidden shadow-xl backdrop-blur-md bg-white/10 mx-auto flex items-center justify-center"
+      className="relative aspect-video rounded-xl overflow-hidden shadow-xl backdrop-blur-md bg-white/10"
     >
       <video
         ref={videoRef}
@@ -175,7 +153,7 @@ export default function Live({ sourceType, source, videoId, onError }) {
         muted
         playsInline
         onError={() => {
-          console.warn("⚠️ Native HLS error; falling back");
+          console.warn("Native HLS error, switching to fallback.");
           setFallback(true);
           onError?.();
         }}
