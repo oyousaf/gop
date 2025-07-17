@@ -1,5 +1,25 @@
 import GA from "./components/GA";
 
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "حدائق الجنة",
+  url: "https://oyousaf.uk",
+  logo: "/apple-touch-icon.png",
+  sameAs: ["https://x.com/oyousaf_", "https://oyousaf.uk"],
+  description:
+    "Discover the beauty of Islam with resources on Quranic teachings, Hadith, spiritual growth, and Islamic education.",
+  founder: {
+    "@type": "Person",
+    name: "oyousaf",
+    url: "https://oyousaf.uk",
+  },
+  address: {
+    "@type": "PostalAddress",
+    addressCountry: "GB",
+  },
+};
+
 export const metadata = {
   metadataBase: new URL("https://oyousaf.uk"),
   title: "حدائق الجنة – Reviving the Ummah through Sacred Islamic Knowledge",
@@ -73,10 +93,15 @@ export const viewport = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en-gb" dir="ltr">
-      <head />
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+      </head>
       <body>
         <GA />
-        {children}
+        <main>{children}</main>
       </body>
     </html>
   );

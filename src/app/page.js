@@ -18,6 +18,9 @@ import "./styles/globals.css";
 export default function Home() {
   return (
     <div className="min-h-screen max-w-7xl mx-auto bg-background text-foreground">
+      <h1 className="sr-only">
+        حدائق الجنة – Reviving the Ummah through Sacred Islamic Knowledge
+      </h1>
       <Navbar />
       <Hero />
       <Banner />
