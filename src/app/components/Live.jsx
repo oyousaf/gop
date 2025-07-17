@@ -45,15 +45,28 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
 
   // Handle HLS stream
   useEffect(() => {
-    if (sourceType !== "hls" || fallback || !videoRef.current) return;
+    if (
+      sourceType !== "hls" ||
+      fallback ||
+      !videoRef.current ||
+      !source?.trim()
+    )
+      return;
 
     const video = videoRef.current;
+
     if (video.canPlayType("application/vnd.apple.mpegurl")) {
       video.src = source;
     } else if (Hls.isSupported()) {
       const hls = new Hls();
-      hls.loadSource(source);
-      hls.attachMedia(video);
+
+      try {
+        hls.loadSource(source.trim());
+        hls.attachMedia(video);
+      } catch (err) {
+        console.error("HLS source load failed:", err);
+        fallbackToYoutube();
+      }
 
       hls.on(Hls.Events.ERROR, (_, data) => {
         if (data.fatal) {
