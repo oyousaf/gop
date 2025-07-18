@@ -9,11 +9,13 @@ export default function News() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeArticle, setActiveArticle] = useState(null);
+  const [lang, setLang] = useState("en");
 
   useEffect(() => {
     const loadNews = async () => {
       try {
-        const res = await fetch("/api/news");
+        setLoading(true);
+        const res = await fetch(`/api/news?lang=${lang}`);
         if (!res.ok) throw new Error("Failed to fetch news");
         const data = await res.json();
         setNews(data);
@@ -24,7 +26,7 @@ export default function News() {
       }
     };
     loadNews();
-  }, []);
+  }, [lang]);
 
   useEffect(() => {
     document.body.classList.toggle("overflow-hidden", !!activeArticle);
@@ -52,11 +54,34 @@ export default function News() {
         viewport={{ once: true }}
         className="text-4xl md:text-5xl font-bold text-center mb-12 text-white"
       >
-        News
+        {lang === "ar" ? "\u0623\u062e\u0628\u0627\u0631" : "News"}
       </motion.h2>
 
+      <div className="flex justify-center mb-6">
+        <button
+          onClick={() => setLang("en")}
+          className={`px-4 py-2 mx-1 rounded ${
+            lang === "en" ? "bg-white text-background" : "bg-white/10 text-white"
+          }`}
+        >
+          English
+        </button>
+        <button
+          onClick={() => setLang("ar")}
+          className={`px-4 py-2 mx-1 rounded ${
+            lang === "ar" ? "bg-white text-background" : "bg-white/10 text-white"
+          }`}
+        >
+          العربية
+        </button>
+      </div>
+
       {loading ? (
-        <p className="text-white text-center animate-pulse">Loading news...</p>
+        <p className="text-white text-center animate-pulse">
+          {lang === "ar"
+            ? "\u062c\u0627\u0631\u064a \u062a\u062d\u0645\u064a\u0644 \u0627\u0644\u0623\u062e\u0628\u0627\u0631..."
+            : "Loading news..."}
+        </p>
       ) : error ? (
         <p className="text-red-500 text-center">{error}</p>
       ) : (
@@ -79,7 +104,9 @@ export default function News() {
               </p>
               <div className="mt-auto text-center">
                 <span className="inline-block mt-4 px-4 py-2 bg-neutral-200 text-background hover:text-[#6c857d] rounded hover:bg-neutral-300 transition-colors duration-200 text-center">
-                  Read More
+                  {lang === "ar"
+                    ? "\u0627\u0642\u0631\u0623 \u0627\u0644\u0645\u0632\u064a\u062f"
+                    : "Read More"}
                 </span>
               </div>
             </motion.div>
@@ -120,8 +147,7 @@ export default function News() {
               </h3>
               <p className="text-lg leading-relaxed text-center whitespace-pre-wrap">
                 {cleanContent(
-                  activeArticle.content ||
-                    "No full content available."
+                  activeArticle.content || "No full content available."
                 )}
               </p>
               <div className="text-center mt-6">
@@ -131,7 +157,9 @@ export default function News() {
                   rel="noopener noreferrer"
                   className="text-green-300 underline hover:text-green-400"
                 >
-                  Source
+                  {lang === "ar"
+                    ? "\u0627\u0644\u0645\u0635\u062f\u0631"
+                    : "Source"}
                 </a>
               </div>
             </motion.div>

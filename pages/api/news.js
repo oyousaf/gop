@@ -6,18 +6,40 @@ export default async function handler(req, res) {
   }
 
   try {
-    const query = encodeURIComponent(
-      `islam OR palestine OR gaza OR "middle east" OR islamic OR aqsa OR "masjid al aqsa" OR quran OR makkah OR sunnah OR madinah OR hijab OR ummah`
+    const lang = req.query.lang === "ar" ? "ar" : "en";
+
+    const keywords = encodeURIComponent(
+      lang === "ar"
+        ? `"غزة" OR "فلسطين" OR "الإسلام" OR "السنة" OR "النبي محمد" OR "مكة" OR "المدينة" OR "المسجد الأقصى" OR "القرآن الكريم" OR "أمة" OR "إسلامي" OR "الحجاب"`
+        : `"gaza" OR "palestine" OR "islam" OR "sunnah" OR "prophet muhammad" OR "makkah" OR "madinah" OR "masjid al aqsa" OR "holy quran" OR "free palestine" OR "ummah" OR "islamic" OR "hijab"`
     );
 
-    const url = `https://newsapi.org/v2/everything?q=${query}&pageSize=20&sortBy=publishedAt&language=en&apiKey=${API_KEY}`;
+    const trustedDomains =
+      lang === "ar"
+        ? [
+            "aljazeera.net",
+            "alarabiya.net",
+            "thenationalnews.com"
+          ]
+        : [
+            "aljazeera.com",
+            "arabnews.com",
+            "middleeasteye.net",
+            "thenationalnews.com",
+            "islam21c.com",
+            "muslimnews.co.uk",
+            "aboutislam.net"
+          ];
+
+    const url = `https://newsapi.org/v2/everything?q=${keywords}&pageSize=20&sortBy=publishedAt&language=${lang}&domains=${trustedDomains.join(
+      ","
+    )}&apiKey=${API_KEY}`;
 
     const response = await fetch(url);
     if (!response.ok) throw new Error("Failed to fetch news data");
 
     const { articles = [] } = await response.json();
 
-    // Track duplicates by normalised URL and title
     const seenUrls = new Set();
     const seenTitles = new Set();
 
@@ -30,12 +52,10 @@ export default async function handler(req, res) {
 
       if (!isValid) return false;
 
-      // Normalise URL (remove query params, if needed)
       const cleanUrl = article.url.split("?")[0].trim();
       const title = article.title.trim().toLowerCase();
 
       const isDuplicate = seenUrls.has(cleanUrl) || seenTitles.has(title);
-
       if (isDuplicate) return false;
 
       seenUrls.add(cleanUrl);
