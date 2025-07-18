@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Hls from "hls.js";
-import { FaSpinner, FaPlayCircle } from "react-icons/fa";
+import { FaPlayCircle } from "react-icons/fa";
+import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
 export default function Live({ sourceType = "hls", source, videoId, onError }) {
   const containerRef = useRef(null);
@@ -16,13 +17,21 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
   const [isUnmuted, setIsUnmuted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
+  // Fix for missing dependency warning
+  const fallbackToYoutube = useCallback(() => {
+    setIsYoutube(true);
+    setLoading(true);
+    onError?.();
+  }, [onError]);
+
   // Track visibility (scroll into view)
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => setIsVisible(entry.isIntersecting),
       { threshold: 0.6 }
     );
-    if (containerRef.current) observer.observe(containerRef.current);
+    const el = containerRef.current;
+    if (el) observer.observe(el);
     return () => observer.disconnect();
   }, []);
 
@@ -41,6 +50,7 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
     if (!isYoutube || !videoId || ytRef.current) return;
 
     const id = `yt-player-${videoId}`;
+
     const initYT = () => {
       const container = document.getElementById(id);
       if (!container || ytRef.current || !window.YT?.Player) return false;
@@ -119,7 +129,7 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
     }
 
     return () => video.removeEventListener("canplay", onCanPlay);
-  }, [source, isYoutube]);
+  }, [source, isYoutube, fallbackToYoutube]);
 
   // Playback & fade audio when visible and allowed
   useEffect(() => {
@@ -159,12 +169,6 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
     }, 75);
   }
 
-  function fallbackToYoutube() {
-    setIsYoutube(true);
-    setLoading(true);
-    onError?.();
-  }
-
   return (
     <div
       ref={containerRef}
@@ -172,7 +176,7 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
     >
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/30 z-10">
-          <FaSpinner className="text-white animate-spin text-3xl" />
+          <AiOutlineLoading3Quarters className="text-white animate-spin text-3xl" />
         </div>
       )}
 
