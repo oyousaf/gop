@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Hls from "hls.js";
 import { FaPlayCircle } from "react-icons/fa";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
@@ -17,21 +17,13 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
   const [isUnmuted, setIsUnmuted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
-  // Fix for missing dependency warning
-  const fallbackToYoutube = useCallback(() => {
-    setIsYoutube(true);
-    setLoading(true);
-    onError?.();
-  }, [onError]);
-
   // Track visibility (scroll into view)
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => setIsVisible(entry.isIntersecting),
       { threshold: 0.6 }
     );
-    const el = containerRef.current;
-    if (el) observer.observe(el);
+    if (containerRef.current) observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
 
@@ -50,7 +42,6 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
     if (!isYoutube || !videoId || ytRef.current) return;
 
     const id = `yt-player-${videoId}`;
-
     const initYT = () => {
       const container = document.getElementById(id);
       if (!container || ytRef.current || !window.YT?.Player) return false;
@@ -129,7 +120,7 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
     }
 
     return () => video.removeEventListener("canplay", onCanPlay);
-  }, [source, isYoutube, fallbackToYoutube]);
+  }, [source, isYoutube]);
 
   // Playback & fade audio when visible and allowed
   useEffect(() => {
@@ -167,6 +158,12 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
       }
       if (volume >= (media.setVolume ? 100 : 1)) clearInterval(fade);
     }, 75);
+  }
+
+  function fallbackToYoutube() {
+    setIsYoutube(true);
+    setLoading(true);
+    onError?.();
   }
 
   return (
