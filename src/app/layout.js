@@ -1,5 +1,12 @@
+import { Oleo_Script } from "next/font/google";
 import GA from "./components/GA";
 import "./styles/globals.css";
+
+const oleo = Oleo_Script({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  display: "swap",
+});
 
 const description =
   "Discover the beauty of Islam with resources on Quranic teachings, Hadith, spiritual growth, and Islamic education.";
@@ -105,31 +112,17 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en-GB" dir="ltr" suppressHydrationWarning>
+    <html
+      lang="en-GB"
+      dir="ltr"
+      suppressHydrationWarning
+      className={oleo.className}
+    >
       <head>
-        {/* Preconnect to Google Fonts to improve LCP */}
-        <link
-          rel="preconnect"
-          href="https://fonts.googleapis.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Oleo+Script:wght@400;700&display=swap"
-        />
-
-        {/* JSON-LD structured data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
-
-        {/* Fallback meta description */}
         <meta name="description" content={description} />
       </head>
       <body className="bg-background text-white antialiased scroll-smooth">
