@@ -2,15 +2,18 @@ import { Oleo_Script } from "next/font/google";
 import GA from "./components/GA";
 import "./styles/globals.css";
 
+// Google Font (non-blocking with next/font)
 const oleo = Oleo_Script({
   subsets: ["latin"],
   weight: ["400", "700"],
   display: "swap",
 });
 
+// Static site description
 const description =
   "Discover the beauty of Islam with resources on Quranic teachings, Hadith, spiritual growth, and Islamic education.";
 
+// JSON-LD structured data
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "Organization",
@@ -30,6 +33,7 @@ const structuredData = {
   },
 };
 
+// Metadata for SEO & social
 export const metadata = {
   metadataBase: new URL("https://oyousaf.uk"),
   title: {
@@ -104,6 +108,7 @@ export const metadata = {
   },
 };
 
+// Viewport settings for responsive layout
 export const viewport = {
   width: "device-width",
   initialScale: 1,
@@ -119,15 +124,19 @@ export default function RootLayout({ children }) {
       className={oleo.className}
     >
       <head>
+        {/* SEO structured data */}
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(structuredData),
+          }}
         />
         <meta name="description" content={description} />
       </head>
       <body className="bg-background text-white antialiased scroll-smooth">
         <GA />
         <main>
+          {/* Hidden fallback description for accessibility */}
           <p className="sr-only">{description}</p>
           {children}
         </main>
