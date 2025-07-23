@@ -132,7 +132,7 @@ export default function News() {
                 {truncate(article.description || article.content)}
               </p>
               <div className="mt-auto text-center">
-                <span className="inline-block mt-4 px-4 py-2 bg-neutral-200 text-background hover:text-[#6c857d] rounded hover:bg-neutral-300 transition-colors duration-200 text-center">
+                <span className="inline-block mt-4 px-4 py-2 bg-neutral-400 hover:text-[#6c857d] rounded hover:bg-neutral-300 transition-colors duration-200 text-center">
                   {lang === "ar" ? "اقرأ المزيد" : "Read More"}
                 </span>
               </div>
