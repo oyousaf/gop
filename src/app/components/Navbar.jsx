@@ -9,20 +9,31 @@ import Image from "next/image";
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [hasScrolled, setHasScrolled] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen((prev) => !prev);
 
   useEffect(() => {
+    const onScroll = () => setHasScrolled(window.scrollY > 10);
+    window.addEventListener("scroll", onScroll);
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
     document.body.style.overflow = isMenuOpen ? "hidden" : "auto";
-    return () => (document.body.style.overflow = "auto");
+    return () => {
+      document.body.style.overflow = "auto";
+    };
   }, [isMenuOpen]);
 
   return (
     <nav
-      className="max-w-7xl mx-auto fixed w-full bg-background text-white text-2xl p-3 z-[100] border-b border-white/10 shadow-md"
+      className={`fixed top-0 left-0 w-full z-[100] text-white text-2xl border-b border-white/10 shadow-md transition duration-300 ${
+        hasScrolled ? "bg-[#9d8770]/90 backdrop-blur-md" : "bg-[#9d8770]"
+      }`}
       aria-label="Main navigation"
     >
-      <div className="flex justify-between items-center">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
         {/* Logo */}
         <button
           onClick={() => handleScroll("hero")}
@@ -35,17 +46,19 @@ export default function Navbar() {
             width={200}
             height={100}
             priority
+            draggable={false}
+            className="pointer-events-none select-none"
           />
         </button>
 
-        {/* Desktop Nav Links */}
-        <ul className="hidden md:flex space-x-8 flex-grow justify-center">
+        {/* Desktop Nav */}
+        <ul className="hidden md:flex items-center space-x-2">
           {navLinks.map((item) => (
             <li key={item.id}>
               <button
                 onClick={() => handleScroll(item.href.slice(1))}
                 aria-label={`Go to ${item.name}`}
-                className="text-neutral-200 hover:text-white transition duration-300 ease-in-out hover:scale-110"
+                className="py-2 px-4 text-neutral-200 hover:text-white transition duration-300 ease-in-out hover:scale-110"
               >
                 {item.name}
               </button>
@@ -53,37 +66,39 @@ export default function Navbar() {
           ))}
         </ul>
 
-        {/* Desktop Social Icons */}
-        <ul className="hidden md:flex space-x-6 items-center">
-          {socialLinks.map((item) => (
-            <li key={item.name}>
-              <a
-                href={item.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={`Visit our ${item.name}`}
-                className="text-neutral-200 hover:text-white transition duration-300 ease-in-out hover:scale-110"
-              >
-                {item.icon}
-              </a>
-            </li>
-          ))}
-        </ul>
+        {/* Socials & Hamburger */}
+        <div className="flex items-center space-x-4">
+          <ul className="hidden md:flex items-center space-x-4">
+            {socialLinks.map((item) => (
+              <li key={item.name}>
+                <a
+                  href={item.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Visit our ${item.name}`}
+                  className="text-neutral-200 hover:text-white transition duration-300 ease-in-out hover:scale-110"
+                >
+                  {item.icon}
+                </a>
+              </li>
+            ))}
+          </ul>
 
-        {/* Mobile Toggle Button */}
-        <motion.button
-          whileTap={{ scale: 0.9 }}
-          className="md:hidden z-[101]"
-          onClick={toggleMenu}
-          aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          aria-expanded={isMenuOpen}
-        >
-          {isMenuOpen ? (
-            <AiOutlineClose className="text-5xl" />
-          ) : (
-            <AiOutlineMenu className="text-5xl" />
-          )}
-        </motion.button>
+          {/* Mobile menu toggle */}
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            className="md:hidden z-[101] text-white"
+            onClick={toggleMenu}
+            aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={isMenuOpen}
+          >
+            {isMenuOpen ? (
+              <AiOutlineClose className="text-4xl" />
+            ) : (
+              <AiOutlineMenu className="text-4xl" />
+            )}
+          </motion.button>
+        </div>
       </div>
 
       {/* Mobile Menu */}
@@ -94,7 +109,7 @@ export default function Navbar() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ duration: 0.3 }}
-            className="fixed top-0 left-0 w-full h-screen bg-background bg-opacity-95 z-[100] flex flex-col justify-center"
+            className="fixed top-0 left-0 w-full h-screen bg-background/95 backdrop-blur-sm z-[100] flex flex-col justify-center items-center"
             role="dialog"
             aria-modal="true"
             aria-label="Mobile navigation menu"
