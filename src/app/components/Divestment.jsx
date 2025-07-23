@@ -87,7 +87,7 @@ export default function Divestment() {
             .map((brand, index) => (
               <motion.li
                 key={brand.name}
-                className="bg-red-500/60 backdrop-blur-lg shadow-md rounded-lg p-6 border border-white/10 flex flex-col text-white text-center"
+                className="bg-red-700/60 backdrop-blur-lg shadow-md rounded-lg p-6 border border-white/10 flex flex-col text-white text-center"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
