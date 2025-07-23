@@ -13,15 +13,18 @@ import News from "./components/News";
 import Divestment from "./components/Divestment";
 import ScrollToTop from "./components/ScrollToTop";
 
-import "./styles/globals.css";
-
 export default function Home() {
   return (
-    <div className="min-h-screen max-w-7xl mx-auto bg-background text-foreground">
+    <div className="bg-background text-foreground min-h-screen">
       <h1 className="sr-only">
         حدائق الجنة – Reviving the Ummah through Sacred Islamic Knowledge
       </h1>
+
+      {/* Persistent UI */}
       <Navbar />
+      <ScrollToTop />
+
+      {/* Hero + Page Sections */}
       <Hero />
       <Banner />
       <Makkah />
@@ -31,8 +34,9 @@ export default function Home() {
       <Hadith />
       <News />
       <Divestment />
+
+      {/* Footer */}
       <Footer />
-      <ScrollToTop />
     </div>
   );
 }

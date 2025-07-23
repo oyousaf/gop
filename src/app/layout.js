@@ -1,14 +1,20 @@
 import GA from "./components/GA";
+import "./styles/globals.css";
+
+const description =
+  "Discover the beauty of Islam with resources on Quranic teachings, Hadith, spiritual growth, and Islamic education.";
 
 const structuredData = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: "حدائق الجنة",
   url: "https://oyousaf.uk",
-  logo: "/apple-touch-icon.png",
-  sameAs: ["https://x.com/oyousaf_", "https://oyousaf.uk"],
-  description:
-    "Discover the beauty of Islam with resources on Quranic teachings, Hadith, spiritual growth, and Islamic education.",
+  logo: "https://oyousaf.uk/apple-touch-icon.png",
+  sameAs: [
+    "https://x.com/oyousaf_",
+    "https://oyousaf.uk",
+  ],
+  description,
   founder: {
     "@type": "Person",
     name: "oyousaf",
@@ -22,15 +28,15 @@ const structuredData = {
 
 export const metadata = {
   metadataBase: new URL("https://oyousaf.uk"),
-  title: "حدائق الجنة – Reviving the Ummah through Sacred Islamic Knowledge",
-  description:
-    "Discover the beauty of Islam with resources on Quranic teachings, Hadith, spiritual growth, and Islamic education.",
-  authors: [
-    { name: "oyousaf", url: "https://oyousaf.uk" },
-    { name: "OYOUSAF" },
-    { name: "OYOUSAF87" },
-    { name: "oyousaf_" },
-  ],
+  title: {
+    default:
+      "حدائق الجنة – Reviving the Ummah through Sacred Islamic Knowledge",
+    template: "%s | حدائق الجنة",
+  },
+  description,
+  applicationName: "حدائق الجنة",
+  authors: [{ name: "oyousaf", url: "https://oyousaf.uk" }],
+  category: "Religion & Spirituality",
   keywords: [
     "Islamic knowledge",
     "Quran and Sunnah",
@@ -45,16 +51,20 @@ export const metadata = {
     "Tazkiyah and Tawheed",
     "Sacred Islamic teachings",
     "Islamic unity and values",
+    "Authentic Hadith",
+    "Masjid al-Aqsa",
+    "Sacred knowledge",
   ],
   openGraph: {
-    title: "حدائق الجنة",
-    description:
-      "Discover the beauty of Islam with resources on Quranic teachings, Hadith, spiritual growth, and Islamic education.",
     type: "website",
+    locale: "en_GB",
     url: "https://oyousaf.uk",
+    siteName: "حدائق الجنة",
+    title: "حدائق الجنة – Reviving the Ummah through Sacred Islamic Knowledge",
+    description,
     images: [
       {
-        url: "/og-image.jpg",
+        url: "https://oyousaf.uk/og-image.jpg",
         width: 1200,
         height: 630,
         alt: "حدائق الجنة – Sacred Islamic Knowledge",
@@ -64,9 +74,10 @@ export const metadata = {
   twitter: {
     card: "summary_large_image",
     creator: "@oyousaf_",
+    site: "@oyousaf_",
     title: "حدائق الجنة",
-    description: "Reviving the Ummah through sacred Islamic knowledge.",
-    images: ["/og-image.jpg"],
+    description,
+    images: ["https://oyousaf.uk/og-image.jpg"],
   },
   icons: {
     icon: "/favicon.ico",
@@ -76,6 +87,13 @@ export const metadata = {
     index: true,
     follow: true,
     nocache: false,
+    googleBot: {
+      index: true,
+      follow: true,
+      maxSnippet: -1,
+      maxImagePreview: "large",
+      maxVideoPreview: -1,
+    },
   },
   alternates: {
     canonical: "https://oyousaf.uk",
@@ -85,22 +103,30 @@ export const metadata = {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  userScalable: false,
+  maximumScale: 1,
+  userScalable: "no",
   themeColor: "#9d8770",
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en-gb" dir="ltr">
+    <html lang="en-GB" dir="ltr" suppressHydrationWarning>
       <head>
+        {/* JSON-LD Structured Data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
+        {/* Force meta description for non-crawlers or fallback */}
+        <meta name="description" content={description} />
       </head>
-      <body>
+      <body className="bg-background text-white antialiased scroll-smooth">
         <GA />
-        <main>{children}</main>
+        <main>
+          {/* Inline text to reinforce snippet */}
+          <p className="sr-only">{description}</p>
+          {children}
+        </main>
       </body>
     </html>
   );
