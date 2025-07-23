@@ -1,35 +1,53 @@
-@import url("https://fonts.googleapis.com/css2?family=Oleo+Script:wght@400;700");
+@import url("https://fonts.googleapis.com/css2?family=Oleo+Script:wght@400;700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --background: #9d8770;
+    --foreground: #ffffff;
+  }
+
   html {
     font-family: "Oleo Script", serif;
     scroll-behavior: smooth;
+    color-scheme: light;
   }
 
   body {
-    background-color: #9d8770;
-    color: #ffffff;
-    -webkit-touch-callout: none; /* iOS Safari */
-    -webkit-user-select: none; /* Chrome/Safari/Opera */
-    -khtml-user-select: none; /* Konqueror */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* IE/Edge */
+    background-color: var(--background);
+    color: var(--foreground);
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     user-select: none;
     -webkit-user-drag: none;
-    pointer-events: auto; /* keep body interactive */
+    pointer-events: auto;
+    overflow-x: hidden;
+  }
+
+  /* Improve motion handling for users with reduced motion settings */
+  @media (prefers-reduced-motion: reduce) {
+    html:focus-within {
+      scroll-behavior: auto;
+    }
+
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
   }
 }
 
-:root {
-  --background: #9d8770;
-  --foreground: #ffffff;
-}
-
-/* Custom scrollbar */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 12px;
   height: 12px;
@@ -48,15 +66,16 @@
   background-color: #6c857d;
 }
 
-/* Disable right-click and image dragging for basic protection */
+/* Image Interactions — Safe Optimisation */
 img,
 picture,
 video,
 canvas {
   user-select: none;
-  pointer-events: none;
+  -webkit-user-drag: none;
 }
 
+/* Keep pointer events unless explicitly disabled on component level */
 img {
-  -webkit-user-drag: none;
+  pointer-events: auto;
 }
