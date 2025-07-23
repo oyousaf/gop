@@ -10,10 +10,7 @@ const structuredData = {
   name: "حدائق الجنة",
   url: "https://oyousaf.uk",
   logo: "https://oyousaf.uk/apple-touch-icon.png",
-  sameAs: [
-    "https://x.com/oyousaf_",
-    "https://oyousaf.uk",
-  ],
+  sameAs: ["https://x.com/oyousaf_", "https://oyousaf.uk"],
   description,
   founder: {
     "@type": "Person",
