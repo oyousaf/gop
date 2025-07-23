@@ -83,7 +83,7 @@ export default function Divestment() {
             .map((brand, index) => (
               <motion.article
                 key={brand.name}
-                className="bg-white/5 backdrop-blur-lg shadow-md rounded-lg p-6 border border-white/10 flex flex-col text-white text-center"
+                className="bg-white/10 backdrop-blur-lg shadow-md rounded-lg p-6 border border-white/10 flex flex-col text-white text-center"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
@@ -95,10 +95,12 @@ export default function Divestment() {
                 role="article"
                 aria-label={`Brand: ${brand.name}`}
               >
-                <h3 className="md:text-3xl text-2xl text-red-800 font-semibold mb-4">
+                <h3 className="md:text-3xl text-2xl text-red-900 font-semibold mb-4">
                   {brand.name}
                 </h3>
-                <p className="md:text-2xl text-lg flex-grow">{brand.reason}</p>
+                <p className="md:text-2xl text-lg flex-grow text-slate-100">
+                  {brand.reason}
+                </p>
               </motion.article>
             ))}
         </AnimatePresence>
