@@ -24,10 +24,10 @@ export default function Hero() {
       />
 
       {/* Light overlay only (no blur for perf) */}
-      <div className="absolute inset-0 bg-black/40 z-10" />
+      <div className="absolute inset-0 bg-black/40 z-10 backdrop-blur-md" />
 
       {/* Hero Content - NO animation on LCP */}
-      <div className="relative z-20 px-4 text-center max-w-3xl bg-black/50 rounded-xl p-6 shadow-lg">
+      <div className="relative z-20 px-4 text-center max-w-3xl bg-white/20 rounded-xl p-6 shadow-lg backdrop-blur-lg">
         <h1 className="text-4xl md:text-6xl font-extrabold leading-tight drop-shadow-md">
           إحياء الأمة بعلم الدين المقدس
         </h1>
