@@ -45,19 +45,13 @@ export default function Hero() {
           Reviving the Ummah with sacred knowledge of the Deen
         </motion.p>
 
-        <motion.div
-          animate={{ y: [0, -10, 0] }}
-          transition={{ duration: 1.2, repeat: Infinity }}
-          className="mt-10"
+        <button
+          onClick={() => handleScroll("welcome")}
+          aria-label="Scroll to Welcome section"
+          className="text-white hover:text-white/80 transition duration-300 mt-10 animate-bounce"
         >
-          <button
-            onClick={() => handleScroll("welcome")}
-            aria-label="Scroll to Welcome section"
-            className="text-white hover:text-white/80 transition duration-300"
-          >
-            <FaArrowDown size={40} />
-          </button>
-        </motion.div>
+          <FaArrowDown size={40} />
+        </button>
       </div>
     </section>
   );
