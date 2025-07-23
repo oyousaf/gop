@@ -2,7 +2,17 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import Live from "./Live";
+import dynamic from "next/dynamic";
+
+// Lazy-load Live component with fallback skeleton
+const Live = dynamic(() => import("./Live"), {
+  loading: () => (
+    <div className="aspect-video flex items-center justify-center rounded-xl bg-black/40 text-white">
+      <p className="animate-pulse text-lg">Loading Live Stream…</p>
+    </div>
+  ),
+  ssr: false,
+});
 
 const CHANNEL_ID = "UCfBw_uwZb_oFLyVsjWk6owQ";
 
@@ -11,10 +21,8 @@ export default function Madinah() {
   const [useFallback, setUseFallback] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
 
-  // Handle hydration mismatch
   useEffect(() => setHasMounted(true), []);
 
-  // YouTube fallback fetch
   useEffect(() => {
     if (!useFallback) return;
 
@@ -45,7 +53,12 @@ export default function Madinah() {
   }
 
   return (
-    <section id="madinah" className="relative py-16 min-h-screen">
+    <section
+      id="madinah"
+      className="relative py-16 min-h-screen"
+      role="region"
+      aria-label="Live Madinah Stream"
+    >
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -69,6 +82,7 @@ export default function Madinah() {
             <Live
               sourceType="hls"
               source="/api/stream/madinah"
+              videoId={videoId}
               onError={handleStreamError}
             />
           )}

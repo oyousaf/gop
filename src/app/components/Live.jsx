@@ -17,7 +17,7 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
   const [isUnmuted, setIsUnmuted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
-  // Track visibility (scroll into view)
+  // Intersection Observer to detect visibility
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => setIsVisible(entry.isIntersecting),
@@ -27,7 +27,7 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
     return () => observer.disconnect();
   }, []);
 
-  // Capture user click to allow unmuting
+  // Detect user interaction (for autoplay & unmute)
   useEffect(() => {
     const onClick = () => {
       setUserInteracted(true);
@@ -37,7 +37,7 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
     return () => window.removeEventListener("click", onClick);
   }, []);
 
-  // Setup YouTube embed
+  // Setup YouTube
   useEffect(() => {
     if (!isYoutube || !videoId || ytRef.current) return;
 
@@ -67,8 +67,9 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
       return true;
     };
 
-    if (!window.YT) {
+    if (!window.YT && !document.getElementById("yt-api")) {
       const script = document.createElement("script");
+      script.id = "yt-api";
       script.src = "https://www.youtube.com/iframe_api";
       document.body.appendChild(script);
       window.onYouTubeIframeAPIReady = initYT;
@@ -87,12 +88,11 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
     };
   }, [isYoutube, videoId]);
 
-  // Setup HLS video
+  // Setup HLS
   useEffect(() => {
     if (isYoutube || !videoRef.current || !source) return;
 
     const video = videoRef.current;
-
     const onCanPlay = () => {
       setPlayerReady(true);
       setLoading(false);
@@ -122,7 +122,7 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
     return () => video.removeEventListener("canplay", onCanPlay);
   }, [source, isYoutube]);
 
-  // Playback & fade audio when visible and allowed
+  // Manage playback & fade audio
   useEffect(() => {
     const yt = ytRef.current;
     const video = videoRef.current;
@@ -170,6 +170,8 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
     <div
       ref={containerRef}
       className="relative aspect-video rounded-xl overflow-hidden shadow-xl backdrop-blur-md bg-white/10"
+      role="region"
+      aria-label="Live Makkah Stream"
     >
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/30 z-10">
@@ -178,7 +180,11 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
       )}
 
       {isYoutube && videoId ? (
-        <div id={`yt-player-${videoId}`} className="w-full h-full" />
+        <div
+          id={`yt-player-${videoId}`}
+          className="w-full h-full"
+          aria-label="YouTube Live Player"
+        />
       ) : (
         <video
           ref={videoRef}

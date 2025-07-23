@@ -3,9 +3,18 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import moment from "moment-hijri";
-import Live from "./Live";
+import dynamic from "next/dynamic";
 
-// Constants
+// Lazy-load Live component with skeleton fallback
+const Live = dynamic(() => import("./Live"), {
+  loading: () => (
+    <div className="aspect-video flex items-center justify-center rounded-xl bg-black/40 text-white">
+      <p className="animate-pulse text-lg">Loading Live Stream…</p>
+    </div>
+  ),
+  ssr: false,
+});
+
 const CHANNEL_ID = "UCqtGJe9AnRfq5wwjk27VsoQ";
 const PRAYER_ORDER = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"];
 
@@ -22,22 +31,19 @@ export default function Makkah() {
     country: "Saudi Arabia",
   });
 
-  // Mount & clock update
   useEffect(() => {
     setHasMounted(true);
     const interval = setInterval(() => setClock(new Date()), 1000);
     return () => clearInterval(interval);
   }, []);
 
-  // Fetch stream fallback video
   useEffect(() => {
     fetch(`/api/youtube?channelId=${CHANNEL_ID}`)
       .then((res) => res.json())
       .then((data) => data.videoId && setVideoId(data.videoId))
-      .catch((err) => console.error("Fetch failed:", err));
+      .catch((err) => console.error("YouTube Fetch failed:", err));
   }, []);
 
-  // Fetch IP-based location & prayer times
   useEffect(() => {
     (async () => {
       try {
@@ -52,18 +58,16 @@ export default function Makkah() {
         );
         const timings = await prayerRes.json();
         if (!timings.error) setPrayerTimes(timings);
-        else console.warn("Prayer timing error:", timings);
       } catch (err) {
         console.error("Location/Prayer fetch error:", err);
       }
     })();
   }, []);
 
-  // Determine upcoming prayer
   useEffect(() => {
     if (!prayerTimes || !clock) return;
-
     const now = clock;
+
     for (let name of PRAYER_ORDER) {
       const [h, m] = convertTo24(prayerTimes[name]).split(":").map(Number);
       const prayerTime = new Date();
@@ -75,11 +79,6 @@ export default function Makkah() {
     }
     setUpcomingPrayer("Fajr");
   }, [prayerTimes, clock]);
-
-  const handleStreamError = () => {
-    console.warn("⚠️ HLS stream failed. Falling back to YouTube.");
-    setUseFallback(true);
-  };
 
   const gregorian = moment(clock).locale("en").format("dddd, Do MMMM YYYY");
   const hijri = moment(clock).locale("ar-SA").format("iD iMMMM iYYYY");
@@ -96,7 +95,12 @@ export default function Makkah() {
   }
 
   return (
-    <section id="makkah" className="relative py-16 min-h-screen">
+    <section
+      id="makkah"
+      className="relative py-16 min-h-screen"
+      role="region"
+      aria-label="Live Makkah Stream"
+    >
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -120,7 +124,8 @@ export default function Makkah() {
             <Live
               sourceType="hls"
               source="/api/stream/makkah"
-              onError={handleStreamError}
+              videoId={videoId}
+              onError={() => setUseFallback(true)}
             />
           )}
         </div>
@@ -140,13 +145,9 @@ export default function Makkah() {
   );
 }
 
-// Extracted reusable UI components/helpers
 function SectionWrapper({ children }) {
   return (
-    <section
-      id="makkah"
-      className="relative py-16 min-h-screen flex justify-center items-center"
-    >
+    <section className="relative py-16 min-h-screen flex justify-center items-center">
       {children}
     </section>
   );
@@ -177,16 +178,17 @@ function PrayerTimesCard({
         <button
           onClick={() => setIs24Hour(!is24Hour)}
           className="text-white/70 border px-3 py-1 rounded hover:bg-white/10 transition"
+          aria-label="Toggle clock format"
         >
           {is24Hour ? "12H" : "24H"}
         </button>
       </div>
 
-      <motion.div className="text-xl md:text-2xl">
+      <div className="text-xl md:text-2xl">
         <p className="text-white/60 italic mb-2">{gregorian}</p>
         <p className="text-white/80 font-medium mb-2">{hijri}</p>
         <p className="text-white mb-4 font-mono">{formattedClock}</p>
-      </motion.div>
+      </div>
 
       {prayerTimes ? (
         <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-2xl md:text-3xl">
@@ -236,7 +238,7 @@ function PrayerTimesCard({
   );
 }
 
-// Utility: Convert 12h to 24h
+// Utility Functions
 function convertTo24(timeStr) {
   try {
     const [time, modifier] = timeStr.split(" ");
@@ -252,7 +254,6 @@ function convertTo24(timeStr) {
   }
 }
 
-// Utility: Get countdown string
 function getCountdown(timeStr, now) {
   try {
     const [h, m] = convertTo24(timeStr).split(":").map(Number);

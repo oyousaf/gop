@@ -31,8 +31,23 @@ export default function Aqsa() {
     fetchVideo();
   }, []);
 
+  if (!hasMounted || loading) {
+    return (
+      <SectionWrapper>
+        <p className="text-white/70 animate-pulse text-base">
+          Loading stream...
+        </p>
+      </SectionWrapper>
+    );
+  }
+
   return (
-    <section id="aqsa" className="relative py-16 min-h-screen">
+    <section
+      id="aqsa"
+      role="region"
+      aria-label="Live Al-Aqsa Stream"
+      className="relative py-16 min-h-screen"
+    >
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
@@ -50,13 +65,7 @@ export default function Aqsa() {
         </motion.h2>
 
         <div className="w-full mb-8">
-          {!hasMounted || loading ? (
-            <div className="flex justify-center items-center w-full aspect-video rounded-xl overflow-hidden shadow-xl backdrop-blur-md bg-white/10">
-              <p className="text-white/70 text-base animate-pulse">
-                Loading stream...
-              </p>
-            </div>
-          ) : videoId ? (
+          {videoId ? (
             <Live sourceType="youtube" videoId={videoId} />
           ) : (
             <div className="flex justify-center items-center w-full aspect-video rounded-xl overflow-hidden shadow-xl backdrop-blur-md bg-white/10">
@@ -67,6 +76,19 @@ export default function Aqsa() {
           )}
         </div>
       </motion.div>
+    </section>
+  );
+}
+
+function SectionWrapper({ children }) {
+  return (
+    <section
+      id="aqsa"
+      role="region"
+      aria-label="Loading Al-Aqsa Stream"
+      className="relative py-16 min-h-screen flex justify-center items-center"
+    >
+      <div className="w-full max-w-5xl px-4 text-center">{children}</div>
     </section>
   );
 }

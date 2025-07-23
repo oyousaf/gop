@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiX } from "react-icons/fi";
 
@@ -10,6 +10,7 @@ export default function News() {
   const [error, setError] = useState(null);
   const [activeArticle, setActiveArticle] = useState(null);
   const [lang, setLang] = useState("en");
+  const closeButtonRef = useRef(null);
 
   useEffect(() => {
     const loadNews = async () => {
@@ -30,47 +31,73 @@ export default function News() {
 
   useEffect(() => {
     document.body.classList.toggle("overflow-hidden", !!activeArticle);
+    if (activeArticle && closeButtonRef.current) {
+      closeButtonRef.current.focus();
+    }
+
+    const onEsc = (e) => {
+      if (e.key === "Escape") setActiveArticle(null);
+    };
+    window.addEventListener("keydown", onEsc);
+    return () => window.removeEventListener("keydown", onEsc);
   }, [activeArticle]);
 
-  const truncate = (text, limit = 5000) => {
-    if (!text) return "No preview available.";
-    return text.length > limit ? `${text.slice(0, limit)}...` : text;
-  };
+  const truncate = (text, limit = 5000) =>
+    !text
+      ? "No preview available."
+      : text.length > limit
+      ? `${text.slice(0, limit)}...`
+      : text;
 
-  const cleanContent = (text) => {
-    if (!text) return "No content available.";
-    return text.replace(/\[\+\d+\schars\]/, "").trim();
-  };
+  const cleanContent = (text) =>
+    !text
+      ? "No content available."
+      : text.replace(/\[\+\d+\schars\]/, "").trim();
 
   return (
     <section
       id="news"
       className="relative py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto"
+      aria-labelledby="news-heading"
     >
       <motion.h2
+        id="news-heading"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
         viewport={{ once: true }}
         className="text-4xl md:text-5xl font-bold text-center mb-12 text-white"
       >
-        {lang === "ar" ? "\u0623\u062e\u0628\u0627\u0631" : "News"}
+        {lang === "ar" ? "أخبار" : "News"}
       </motion.h2>
 
-      <div className="flex justify-center mb-6">
+      {/* Language Toggle */}
+      <div
+        className="flex justify-center mb-6"
+        role="group"
+        aria-label="Language toggle"
+      >
         <button
           onClick={() => setLang("en")}
           className={`px-4 py-2 mx-1 rounded ${
-            lang === "en" ? "bg-white text-background" : "bg-white/10 text-white"
+            lang === "en"
+              ? "bg-white text-background"
+              : "bg-white/10 text-white"
           }`}
+          aria-pressed={lang === "en"}
+          aria-label="Switch to English"
         >
           English
         </button>
         <button
           onClick={() => setLang("ar")}
           className={`px-4 py-2 mx-1 rounded ${
-            lang === "ar" ? "bg-white text-background" : "bg-white/10 text-white"
+            lang === "ar"
+              ? "bg-white text-background"
+              : "bg-white/10 text-white"
           }`}
+          aria-pressed={lang === "ar"}
+          aria-label="Switch to Arabic"
         >
           العربية
         </button>
@@ -78,16 +105,14 @@ export default function News() {
 
       {loading ? (
         <p className="text-white text-center animate-pulse">
-          {lang === "ar"
-            ? "\u062c\u0627\u0631\u064a \u062a\u062d\u0645\u064a\u0644 \u0627\u0644\u0623\u062e\u0628\u0627\u0631..."
-            : "Loading news..."}
+          {lang === "ar" ? "جاري تحميل الأخبار..." : "Loading news..."}
         </p>
       ) : error ? (
         <p className="text-red-500 text-center">{error}</p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {news.map((article, i) => (
-            <motion.div
+            <motion.article
               key={i}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -95,6 +120,10 @@ export default function News() {
               viewport={{ once: true }}
               className="cursor-pointer bg-white/5 backdrop-blur-md rounded-xl border border-white/10 p-6 flex flex-col shadow-md hover:shadow-lg transition-shadow"
               onClick={() => setActiveArticle(article)}
+              role="button"
+              tabIndex={0}
+              aria-label={`Open news article titled ${article.title}`}
+              onKeyDown={(e) => e.key === "Enter" && setActiveArticle(article)}
             >
               <h3 className="text-2xl font-semibold text-orange-200 mb-4 text-center">
                 {article.title}
@@ -104,12 +133,10 @@ export default function News() {
               </p>
               <div className="mt-auto text-center">
                 <span className="inline-block mt-4 px-4 py-2 bg-neutral-200 text-background hover:text-[#6c857d] rounded hover:bg-neutral-300 transition-colors duration-200 text-center">
-                  {lang === "ar"
-                    ? "\u0627\u0642\u0631\u0623 \u0627\u0644\u0645\u0632\u064a\u062f"
-                    : "Read More"}
+                  {lang === "ar" ? "اقرأ المزيد" : "Read More"}
                 </span>
               </div>
-            </motion.div>
+            </motion.article>
           ))}
         </div>
       )}
@@ -122,6 +149,10 @@ export default function News() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            aria-modal="true"
+            role="dialog"
+            aria-labelledby="modal-title"
+            aria-describedby="modal-description"
             onClick={() => setActiveArticle(null)}
           >
             <motion.div
@@ -134,21 +165,26 @@ export default function News() {
             >
               <div className="w-full flex justify-end mb-4">
                 <button
+                  ref={closeButtonRef}
                   onClick={() => setActiveArticle(null)}
                   className="text-white hover:text-red-400 transition"
-                  aria-label="Close"
+                  aria-label="Close article"
                 >
                   <FiX className="w-10 h-10" />
                 </button>
               </div>
 
-              <h3 className="text-2xl font-bold text-center mb-4">
+              <h3
+                id="modal-title"
+                className="text-2xl font-bold text-center mb-4"
+              >
                 {activeArticle.title}
               </h3>
-              <p className="text-lg leading-relaxed text-center whitespace-pre-wrap">
-                {cleanContent(
-                  activeArticle.content || "No full content available."
-                )}
+              <p
+                id="modal-description"
+                className="text-lg leading-relaxed text-center whitespace-pre-wrap"
+              >
+                {cleanContent(activeArticle.content || "")}
               </p>
               <div className="text-center mt-6">
                 <a
@@ -157,9 +193,7 @@ export default function News() {
                   rel="noopener noreferrer"
                   className="text-green-300 underline hover:text-green-400"
                 >
-                  {lang === "ar"
-                    ? "\u0627\u0644\u0645\u0635\u062f\u0631"
-                    : "Source"}
+                  {lang === "ar" ? "المصدر" : "Source"}
                 </a>
               </div>
             </motion.div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FiX } from "react-icons/fi";
 
@@ -9,6 +9,7 @@ export default function Hadith() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeHadith, setActiveHadith] = useState(null);
+  const closeButtonRef = useRef(null);
 
   useEffect(() => {
     const loadHadiths = async () => {
@@ -28,6 +29,9 @@ export default function Hadith() {
 
   useEffect(() => {
     document.body.classList.toggle("overflow-hidden", !!activeHadith);
+    if (activeHadith && closeButtonRef.current) {
+      closeButtonRef.current.focus();
+    }
   }, [activeHadith]);
 
   const truncate = (text, limit = 220) =>
@@ -37,8 +41,10 @@ export default function Hadith() {
     <section
       id="hadith"
       className="relative py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto"
+      aria-labelledby="hadith-heading"
     >
       <motion.h2
+        id="hadith-heading"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -57,7 +63,7 @@ export default function Hadith() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {hadiths.map((hadith, i) => (
-            <motion.div
+            <motion.article
               key={i}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -65,6 +71,10 @@ export default function Hadith() {
               viewport={{ once: true }}
               className="cursor-pointer bg-white/5 backdrop-blur-md rounded-xl border border-white/10 p-6 flex flex-col shadow-md hover:shadow-lg transition-shadow"
               onClick={() => setActiveHadith(hadith)}
+              role="button"
+              tabIndex={0}
+              aria-label={`Open full hadith titled ${hadith.title}`}
+              onKeyDown={(e) => e.key === "Enter" && setActiveHadith(hadith)}
             >
               <h3 className="text-2xl font-semibold text-[#b9e1d4] mb-4 text-center">
                 {hadith.title}
@@ -77,7 +87,7 @@ export default function Hadith() {
                   Read More
                 </span>
               </div>
-            </motion.div>
+            </motion.article>
           ))}
         </div>
       )}
@@ -90,6 +100,10 @@ export default function Hadith() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            aria-modal="true"
+            role="dialog"
+            aria-labelledby="modal-title"
+            aria-describedby="modal-description"
             onClick={() => setActiveHadith(null)}
           >
             <motion.div
@@ -102,18 +116,25 @@ export default function Hadith() {
             >
               <div className="w-full flex justify-end mb-4">
                 <button
+                  ref={closeButtonRef}
                   onClick={() => setActiveHadith(null)}
                   className="text-white hover:text-red-400 transition"
-                  aria-label="Close"
+                  aria-label="Close hadith modal"
                 >
                   <FiX className="w-10 h-10" />
                 </button>
               </div>
 
-              <h3 className="text-2xl font-bold text-center mb-4">
+              <h3
+                id="modal-title"
+                className="text-2xl font-bold text-center mb-4"
+              >
                 {activeHadith.title}
               </h3>
-              <p className="text-lg leading-relaxed text-center whitespace-pre-wrap">
+              <p
+                id="modal-description"
+                className="text-lg leading-relaxed text-center whitespace-pre-wrap"
+              >
                 {activeHadith.content}
               </p>
               <div className="text-center mt-6">
