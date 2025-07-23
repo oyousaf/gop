@@ -109,18 +109,31 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en-GB" dir="ltr" suppressHydrationWarning>
       <head>
+        {/* Preconnect to font provider early */}
+        <link
+          rel="preconnect"
+          href="https://fonts.googleapis.com"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
+
         {/* JSON-LD Structured Data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
-        {/* Force meta description for non-crawlers or fallback */}
+
+        {/* Force meta description */}
         <meta name="description" content={description} />
       </head>
       <body className="bg-background text-white antialiased scroll-smooth">
         <GA />
         <main>
-          {/* Inline text to reinforce snippet */}
+          {/* Inline SR fallback to reinforce snippet content */}
           <p className="sr-only">{description}</p>
           {children}
         </main>

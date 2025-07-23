@@ -30,7 +30,7 @@
     overflow-x: hidden;
   }
 
-  /* Improve motion handling for users with reduced motion settings */
+  /* Reduce motion for accessibility */
   @media (prefers-reduced-motion: reduce) {
     html:focus-within {
       scroll-behavior: auto;
@@ -66,7 +66,7 @@
   background-color: #6c857d;
 }
 
-/* Image Interactions — Safe Optimisation */
+/* Restrict image interaction for protection */
 img,
 picture,
 video,
@@ -75,7 +75,6 @@ canvas {
   -webkit-user-drag: none;
 }
 
-/* Keep pointer events unless explicitly disabled on component level */
 img {
   pointer-events: auto;
 }
