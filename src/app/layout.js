@@ -109,7 +109,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en-GB" dir="ltr" suppressHydrationWarning>
       <head>
-        {/* Preconnect to font provider early */}
+        {/* Preconnect to Google Fonts to improve LCP */}
         <link
           rel="preconnect"
           href="https://fonts.googleapis.com"
@@ -120,20 +120,23 @@ export default function RootLayout({ children }) {
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Oleo+Script:wght@400;700&display=swap"
+        />
 
-        {/* JSON-LD Structured Data */}
+        {/* JSON-LD structured data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
         />
 
-        {/* Force meta description */}
+        {/* Fallback meta description */}
         <meta name="description" content={description} />
       </head>
       <body className="bg-background text-white antialiased scroll-smooth">
         <GA />
         <main>
-          {/* Inline SR fallback to reinforce snippet content */}
           <p className="sr-only">{description}</p>
           {children}
         </main>
