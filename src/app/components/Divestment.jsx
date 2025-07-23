@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { boycott } from "../utils/constants";
 import { AnimatePresence, motion } from "framer-motion";
 
@@ -17,11 +17,15 @@ export default function Divestment() {
     (node) => {
       if (!node || visibleCount >= boycott.length) return;
       const observer = new IntersectionObserver(
-        ([entry]) => entry.isIntersecting && loadMore(),
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            loadMore();
+            observer.disconnect();
+          }
+        },
         { threshold: 1 }
       );
       observer.observe(node);
-      return () => observer.disconnect();
     },
     [loadMore, visibleCount]
   );
@@ -45,7 +49,7 @@ export default function Divestment() {
         Divestment
       </motion.h2>
 
-      {/* Static Text Section */}
+      {/* Intro Text */}
       <motion.div
         className="max-w-5xl mx-auto text-center space-y-6 text-white/90 text-lg md:text-2xl leading-relaxed"
         initial="hidden"
@@ -72,8 +76,8 @@ export default function Divestment() {
       </motion.div>
 
       {/* Brand Cards */}
-      <div
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-12"
+      <ul
+        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-12 list-none"
         aria-label="Boycott brands"
       >
         <AnimatePresence>
@@ -81,32 +85,32 @@ export default function Divestment() {
             .sort((a, b) => a.name.localeCompare(b.name))
             .slice(0, visibleCount)
             .map((brand, index) => (
-              <motion.article
+              <motion.li
                 key={brand.name}
-                className="bg-white/10 backdrop-blur-lg shadow-md rounded-lg p-6 border border-white/10 flex flex-col text-white text-center"
+                className="bg-red-500/60 backdrop-blur-lg shadow-md rounded-lg p-6 border border-white/10 flex flex-col text-white text-center"
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
                 transition={{
                   duration: 0.3,
-                  delay: Math.min(index * 0.015, 0.2),
+                  delay: Math.min(index * 0.015, 0.15),
                 }}
                 tabIndex={0}
-                role="article"
+                role="listitem"
                 aria-label={`Brand: ${brand.name}`}
               >
-                <h3 className="md:text-3xl text-2xl text-red-900 font-semibold mb-4">
+                <h3 className="md:text-3xl text-2xl font-semibold mb-4">
                   {brand.name}
                 </h3>
-                <p className="md:text-2xl text-lg flex-grow text-slate-100">
+                <p className="md:text-2xl text-lg flex-grow text-white">
                   {brand.reason}
                 </p>
-              </motion.article>
+              </motion.li>
             ))}
         </AnimatePresence>
-      </div>
+      </ul>
 
-      {/* Lazy Load Observer */}
+      {/* Lazy Loader Trigger */}
       {visibleCount < boycott.length && (
         <div ref={observerRef} className="h-10 mt-10" aria-hidden="true" />
       )}
