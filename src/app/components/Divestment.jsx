@@ -95,7 +95,7 @@ export default function Divestment() {
                 role="article"
                 aria-label={`Brand: ${brand.name}`}
               >
-                <h3 className="md:text-3xl text-2xl text-red-300 font-semibold mb-4">
+                <h3 className="md:text-3xl text-2xl text-red-800 font-semibold mb-4">
                   {brand.name}
                 </h3>
                 <p className="md:text-2xl text-lg flex-grow">{brand.reason}</p>

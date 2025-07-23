@@ -19,29 +19,24 @@ export default function Navbar() {
 
   return (
     <nav
-      className="max-w-7xl mx-auto fixed w-full bg-background text-2xl text-white p-3 z-[100] border-b border-background shadow-md shadow-background"
+      className="max-w-7xl mx-auto fixed w-full bg-background text-white text-2xl p-3 z-[100] border-b border-white/10 shadow-md"
       aria-label="Main navigation"
     >
       <div className="flex justify-between items-center">
         {/* Logo */}
-        <motion.div
-          className="font-bold cursor-pointer"
-          whileTap={{ scale: 0.95 }}
+        <button
+          onClick={() => handleScroll("hero")}
+          aria-label="Scroll to top"
+          className="hover:opacity-90 transition"
         >
-          <button
-            onClick={() => handleScroll("hero")}
-            aria-label="Scroll to top"
-            className="focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
-          >
-            <Image
-              src="/logo.png"
-              alt="Site logo"
-              width={200}
-              height={100}
-              priority
-            />
-          </button>
-        </motion.div>
+          <Image
+            src="/logo.png"
+            alt="Site logo"
+            width={200}
+            height={100}
+            priority
+          />
+        </button>
 
         {/* Desktop Nav Links */}
         <ul className="hidden md:flex space-x-8 flex-grow justify-center">
@@ -50,7 +45,7 @@ export default function Navbar() {
               <button
                 onClick={() => handleScroll(item.href.slice(1))}
                 aria-label={`Go to ${item.name}`}
-                className="text-gray-200 hover:text-white transition-all duration-300 ease-in-out hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
+                className="text-neutral-200 hover:text-white transition duration-300 ease-in-out hover:scale-110"
               >
                 {item.name}
               </button>
@@ -67,7 +62,7 @@ export default function Navbar() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`Visit our ${item.name}`}
-                className="text-gray-200 hover:text-white transition-all duration-300 ease-in-out hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
+                className="text-neutral-200 hover:text-white transition duration-300 ease-in-out hover:scale-110"
               >
                 {item.icon}
               </a>
@@ -78,15 +73,15 @@ export default function Navbar() {
         {/* Mobile Toggle Button */}
         <motion.button
           whileTap={{ scale: 0.9 }}
-          className="md:hidden text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded z-[101]"
+          className="md:hidden z-[101]"
           onClick={toggleMenu}
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           aria-expanded={isMenuOpen}
         >
           {isMenuOpen ? (
-            <AiOutlineClose className="text-5xl text-white" />
+            <AiOutlineClose className="text-5xl" />
           ) : (
-            <AiOutlineMenu className="text-5xl text-white" />
+            <AiOutlineMenu className="text-5xl" />
           )}
         </motion.button>
       </div>
@@ -99,12 +94,12 @@ export default function Navbar() {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: "100%" }}
             transition={{ duration: 0.3 }}
-            className="fixed top-0 left-0 w-full h-screen bg-background bg-opacity-90 z-[100] flex flex-col justify-between"
+            className="fixed top-0 left-0 w-full h-screen bg-background bg-opacity-95 z-[100] flex flex-col justify-center"
             role="dialog"
             aria-modal="true"
             aria-label="Mobile navigation menu"
           >
-            <div className="flex flex-col items-center space-y-6 mt-auto mb-auto">
+            <div className="flex flex-col items-center space-y-6">
               {navLinks.map((item) => (
                 <button
                   key={item.id}
@@ -113,14 +108,14 @@ export default function Navbar() {
                     toggleMenu();
                   }}
                   aria-label={`Navigate to ${item.name}`}
-                  className="text-3xl uppercase text-gray-200 hover:text-white transition-all duration-300 ease-in-out hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
+                  className="text-3xl uppercase text-neutral-200 hover:text-white transition duration-300 ease-in-out hover:scale-110"
                 >
                   {item.name}
                 </button>
               ))}
             </div>
 
-            <div className="flex justify-center space-x-6 mb-20">
+            <div className="flex justify-center space-x-6 mt-12">
               {socialLinks.map((item) => (
                 <a
                   key={item.name}
@@ -128,7 +123,7 @@ export default function Navbar() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Visit our ${item.name}`}
-                  className="text-3xl text-gray-200 hover:text-white transition-all duration-300 ease-in-out hover:scale-110 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 rounded"
+                  className="text-3xl text-neutral-200 hover:text-white transition duration-300 ease-in-out hover:scale-110"
                 >
                   {item.icon}
                 </a>
