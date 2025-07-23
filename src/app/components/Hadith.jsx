@@ -63,7 +63,7 @@ export default function Hadith() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {hadiths.map((hadith, i) => (
-            <motion.article
+            <motion.div
               key={i}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -71,8 +71,8 @@ export default function Hadith() {
               viewport={{ once: true }}
               className="cursor-pointer bg-white/5 backdrop-blur-md rounded-xl border border-white/10 p-6 flex flex-col shadow-md hover:shadow-lg transition-shadow"
               onClick={() => setActiveHadith(hadith)}
-              role="button"
               tabIndex={0}
+              role="button"
               aria-label={`Open full hadith titled ${hadith.title}`}
               onKeyDown={(e) => e.key === "Enter" && setActiveHadith(hadith)}
             >
@@ -83,11 +83,11 @@ export default function Hadith() {
                 {truncate(hadith.content)}
               </p>
               <div className="mt-auto text-center">
-                <span className="inline-block mt-4 px-4 py-2 bg-neutral-200 text-background hover:text-[#6c857d] rounded hover:bg-neutral-300 transition-colors duration-200 text-center">
+                <span className="inline-block mt-4 px-4 py-2 bg-neutral-200 text-background hover:text-[#6c857d] rounded hover:bg-neutral-300 transition-colors duration-200">
                   Read More
                 </span>
               </div>
-            </motion.article>
+            </motion.div>
           ))}
         </div>
       )}
