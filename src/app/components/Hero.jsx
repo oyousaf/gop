@@ -10,7 +10,7 @@ export default function Hero() {
     <section
       id="hero"
       className="relative h-screen flex items-center justify-center text-white p-2 overflow-hidden"
-      style={{ contentVisibility: "auto", containIntrinsicSize: "700px" }} // optional for perf
+      style={{ contentVisibility: "auto", containIntrinsicSize: "700px" }}
     >
       {/* Optimised Background Image */}
       <Image
