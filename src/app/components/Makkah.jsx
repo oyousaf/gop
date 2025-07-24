@@ -97,7 +97,7 @@ export default function Makkah() {
   return (
     <section
       id="makkah"
-      className="relative py-16 min-h-screen"
+      className="relative py-16 min-h-screen scroll-mt-16"
       role="region"
       aria-label="Live Makkah Stream"
     >

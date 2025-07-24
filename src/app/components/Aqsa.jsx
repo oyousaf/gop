@@ -46,7 +46,7 @@ export default function Aqsa() {
       id="aqsa"
       role="region"
       aria-label="Live Al-Aqsa Stream"
-      className="relative py-16 min-h-screen"
+      className="relative py-16 min-h-screen scroll-mt-16"
     >
       <motion.div
         initial={{ opacity: 0, y: 40 }}

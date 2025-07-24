@@ -32,7 +32,7 @@ export default function Divestment() {
 
   return (
     <section
-      className="max-w-7xl mx-auto p-6 py-12 scroll-mt-24"
+      className="max-w-7xl mx-auto p-6 py-12 scroll-mt-16"
       id="divestment"
       aria-labelledby="divestment-heading"
       role="region"

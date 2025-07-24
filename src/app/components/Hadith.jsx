@@ -40,7 +40,7 @@ export default function Hadith() {
   return (
     <section
       id="hadith"
-      className="relative py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto"
+      className="relative py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto scroll-mt-16"
       aria-labelledby="hadith-heading"
     >
       <motion.h2
