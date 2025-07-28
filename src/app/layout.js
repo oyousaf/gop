@@ -1,6 +1,7 @@
 import { Oleo_Script } from "next/font/google";
 import GA from "./components/GA";
 import "./styles/globals.css";
+import { Analytics } from "@vercel/analytics/next";
 
 // Google Font (non-blocking with next/font)
 const oleo = Oleo_Script({
@@ -135,6 +136,7 @@ export default function RootLayout({ children }) {
       </head>
       <body className="bg-background text-white antialiased scroll-smooth">
         <GA />
+        <Analytics />
         <main>
           {/* Hidden fallback description for accessibility */}
           <p className="sr-only">{description}</p>
