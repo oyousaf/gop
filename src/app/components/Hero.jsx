@@ -40,10 +40,10 @@ export default function Hero() {
         </h1>
 
         {/* LCP-optimised paragraph */}
-        <p className="mt-4 text-xl md:text-2xl text-white/90 font-sans">
+        <p className="mt-4 text-xl md:text-2xl text-white/90">
           <span className="sr-only">Reviving the Ummah</span>
           <span aria-hidden="true">
-            Reviving the Ummah with sacred knowledge of the Deen
+            Reviving the Ummah through Sacred Islamic Knowledge
           </span>
         </p>
 
