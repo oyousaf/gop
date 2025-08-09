@@ -3,7 +3,7 @@ import GA from "./components/GA";
 import "./styles/globals.css";
 import { Analytics } from "@vercel/analytics/next";
 
-// Google Font (non-blocking with next/font)
+// Google Font
 const oleo = Oleo_Script({
   subsets: ["latin"],
   weight: ["400", "700"],
@@ -12,7 +12,7 @@ const oleo = Oleo_Script({
 
 // Static site description
 const description =
-  "Discover the beauty of Islam with resources on Quranic teachings, Hadith, spiritual growth, and Islamic education.";
+  "Discover the beauty of Islam with resources on Quran, Hadith, spiritual growth, and authentic Islamic education.";
 
 // JSON-LD structured data
 const structuredData = {
@@ -37,11 +37,7 @@ const structuredData = {
 // Metadata for SEO & social
 export const metadata = {
   metadataBase: new URL("https://oyousaf.uk"),
-  title: {
-    default:
-      "حدائق الجنة – Reviving the Ummah through Sacred Islamic Knowledge",
-    template: "%s | حدائق الجنة",
-  },
+  title: "حدائق الجنة – Sacred Islamic Knowledge",
   description,
   applicationName: "حدائق الجنة",
   authors: [{ name: "oyousaf", url: "https://oyousaf.uk" }],
@@ -69,7 +65,7 @@ export const metadata = {
     locale: "en_GB",
     url: "https://oyousaf.uk",
     siteName: "حدائق الجنة",
-    title: "حدائق الجنة – Reviving the Ummah through Sacred Islamic Knowledge",
+    title: "حدائق الجنة – Sacred Islamic Knowledge",
     description,
     images: [
       {
@@ -84,7 +80,7 @@ export const metadata = {
     card: "summary_large_image",
     creator: "@oyousaf_",
     site: "@oyousaf_",
-    title: "حدائق الجنة",
+    title: "حدائق الجنة – Sacred Islamic Knowledge",
     description,
     images: ["https://oyousaf.uk/og-image.jpg"],
   },
@@ -138,8 +134,8 @@ export default function RootLayout({ children }) {
         <GA />
         <Analytics />
         <main>
-          {/* Hidden fallback description for accessibility */}
-          <p className="sr-only">{description}</p>
+          {/* Hidden H1 to reinforce title for Google */}
+          <h1 className="sr-only">حدائق الجنة – Sacred Islamic Knowledge</h1>
           {children}
         </main>
       </body>
