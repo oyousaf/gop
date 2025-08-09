@@ -34,7 +34,7 @@ const structuredData = {
   },
 };
 
-// Metadata for SEO & social
+// Metadata for SEO & socials
 export const metadata = {
   metadataBase: new URL("https://oyousaf.uk"),
   title: "حدائق الجنة – Sacred Islamic Knowledge",
