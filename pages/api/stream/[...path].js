@@ -1,52 +1,69 @@
 const DIRECT_STREAMS = {
-  makkah: "http://m.live.net.sa:1935/live/quran/gmswf.m3u8",
-  madinah: "http://m.live.net.sa:1935/live/sunnah/playlist.m3u8",
+  makkah: [
+    "https://cdn-globecast.akamaized.net/live/eds/saudi_quran/hls_roku/index.m3u8",
+    "https://media2.streambrothers.com:1936/8122/8122/playlist.m3u8",
+    "https://edge66.magictvbox.com/liveApple/al_majd/tracks-v1a1/mono.m3u8",
+    "https://playlist.fasttvcdn.com/pl/dlkqw1ftuvuuzkcb4pxdcg/Iqraafasttv2/playlist.m3u8",
+  ],
+  madinah:
+    "https://cdn-globecast.akamaized.net/live/eds/saudi_sunnah/hls_roku/index.m3u8",
 };
 
 export default async function handler(req, res) {
   const { path = [] } = req.query;
   const [loc, ...rest] = path;
-  const streamUrl = DIRECT_STREAMS[loc?.toLowerCase()];
 
-  if (!streamUrl) {
+  let streamList = DIRECT_STREAMS[loc?.toLowerCase()];
+  if (!streamList) {
     return res.status(404).json({ error: "Unknown stream location" });
   }
 
-  // Use base from full stream URL
-  const baseUrl = streamUrl.substring(0, streamUrl.lastIndexOf("/") + 1);
+  // Always handle as array for consistency
+  if (!Array.isArray(streamList)) streamList = [streamList];
 
-  // Build target stream URL (root file or ts/m3u8 chunk)
-  const proxyPath = rest.join("/");
-  const targetUrl = rest.length ? `${baseUrl}${proxyPath}` : streamUrl;
+  let targetUrl = null;
+  let upstream = null;
+  let baseUrl = null;
 
-  try {
-    const upstream = await fetch(targetUrl);
-    if (!upstream.ok) {
-      console.error("Upstream error", upstream.status, targetUrl);
-      return res.status(502).json({ error: "Upstream fetch failed" });
+  // Try each URL in the list until one works
+  for (const url of streamList) {
+    baseUrl = url.substring(0, url.lastIndexOf("/") + 1);
+    const fullUrl = rest.length ? `${baseUrl}${rest.join("/")}` : url;
+
+    try {
+      const resp = await fetch(fullUrl);
+      if (resp.ok) {
+        targetUrl = fullUrl;
+        upstream = resp;
+        break;
+      } else {
+        console.warn(`Failed: ${fullUrl} (${resp.status})`);
+      }
+    } catch (err) {
+      console.warn(`Error fetching: ${fullUrl}`, err);
     }
-
-    const contentType = upstream.headers.get("content-type") || "";
-
-    if (contentType.includes("mpegurl")) {
-      const originalText = await upstream.text();
-      const rewritten = originalText.replace(
-        /^(?!#)([^\s].+\.(m3u8|ts))$/gm,
-        (match) => `/api/stream/${loc}/${match}`
-      );
-
-      res.setHeader("Content-Type", "application/vnd.apple.mpegurl");
-      res.setHeader("Cache-Control", "no-cache");
-      return res.status(200).send(rewritten);
-    }
-
-    // Binary data (TS segments)
-    const buf = await upstream.arrayBuffer();
-    res.setHeader("Content-Type", contentType);
-    res.setHeader("Cache-Control", "no-cache");
-    return res.status(200).send(Buffer.from(buf));
-  } catch (err) {
-    console.error("Proxy error", err);
-    return res.status(500).json({ error: "Stream proxy error" });
   }
+
+  if (!upstream) {
+    return res.status(502).json({ error: "All upstream streams failed" });
+  }
+
+  const contentType = upstream.headers.get("content-type") || "";
+
+  if (contentType.includes("mpegurl")) {
+    const originalText = await upstream.text();
+    const rewritten = originalText.replace(
+      /^(?!#)([^\s].+\.(m3u8|ts))$/gm,
+      (match) => `/api/stream/${loc}/${match}`
+    );
+
+    res.setHeader("Content-Type", "application/vnd.apple.mpegurl");
+    res.setHeader("Cache-Control", "no-cache");
+    return res.status(200).send(rewritten);
+  }
+
+  const buf = await upstream.arrayBuffer();
+  res.setHeader("Content-Type", contentType);
+  res.setHeader("Cache-Control", "no-cache");
+  return res.status(200).send(Buffer.from(buf));
 }
