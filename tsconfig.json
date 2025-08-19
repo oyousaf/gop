@@ -29,7 +29,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-, "pages/api/stream/[location].js"  ],
+, "pages/api/stream/[location].js", "src/app/test-stream/page.jsx"  ],
   "exclude": [
     "node_modules"
   ]
