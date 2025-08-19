@@ -17,7 +17,7 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
   const [isUnmuted, setIsUnmuted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
-  // Intersection Observer to detect visibility
+  // Intersection observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => setIsVisible(entry.isIntersecting),
@@ -27,7 +27,7 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
     return () => observer.disconnect();
   }, []);
 
-  // Detect user interaction (for autoplay & unmute)
+  // Detect user interaction (to allow autoplay+unmute)
   useEffect(() => {
     const onClick = () => {
       setUserInteracted(true);
@@ -40,8 +40,8 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
   // Setup YouTube
   useEffect(() => {
     if (!isYoutube || !videoId || ytRef.current) return;
-
     const id = `yt-player-${videoId}`;
+
     const initYT = () => {
       const container = document.getElementById(id);
       if (!container || ytRef.current || !window.YT?.Player) return false;
@@ -63,7 +63,6 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
           },
         },
       });
-
       return true;
     };
 
@@ -91,38 +90,48 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
   // Setup HLS
   useEffect(() => {
     if (isYoutube || !videoRef.current || !source) return;
-
     const video = videoRef.current;
+
     const onCanPlay = () => {
       setPlayerReady(true);
       setLoading(false);
     };
-
     video.addEventListener("canplay", onCanPlay);
 
-    if (video.canPlayType("application/vnd.apple.mpegurl")) {
-      video.src = source;
-    } else if (Hls.isSupported()) {
-      const hls = new Hls();
-      hls.loadSource(source);
-      hls.attachMedia(video);
+    // First fetch to check for server fallback
+    fetch(source)
+      .then(async (res) => {
+        if (res.headers.get("content-type")?.includes("application/json")) {
+          const data = await res.json();
+          if (data.fallback === "youtube") {
+            fallbackToYoutube();
+            return;
+          }
+        }
 
-      hls.on(Hls.Events.ERROR, (_, data) => {
-        if (data.fatal) {
-          hls.destroy();
+        if (video.canPlayType("application/vnd.apple.mpegurl")) {
+          video.src = source;
+        } else if (Hls.isSupported()) {
+          const hls = new Hls();
+          hls.loadSource(source);
+          hls.attachMedia(video);
+          hls.on(Hls.Events.ERROR, (_, data) => {
+            if (data.fatal) {
+              hls.destroy();
+              fallbackToYoutube();
+            }
+          });
+          return () => hls.destroy();
+        } else {
           fallbackToYoutube();
         }
-      });
-
-      return () => hls.destroy();
-    } else {
-      fallbackToYoutube();
-    }
+      })
+      .catch(() => fallbackToYoutube());
 
     return () => video.removeEventListener("canplay", onCanPlay);
   }, [source, isYoutube]);
 
-  // Manage playback & fade audio
+  // Manage playback / mute
   useEffect(() => {
     const yt = ytRef.current;
     const video = videoRef.current;
@@ -146,7 +155,6 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
     setIsUnmuted(true);
     const step = media.setVolume ? 5 : 0.05;
     let volume = 0;
-
     const fade = setInterval(() => {
       volume = Math.min(media.setVolume ? 100 : 1, volume + step);
       if (media.setVolume) {
@@ -171,7 +179,7 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
       ref={containerRef}
       className="relative aspect-video rounded-xl overflow-hidden shadow-xl backdrop-blur-md bg-white/10"
       role="region"
-      aria-label="Live Makkah Stream"
+      aria-label="Live Stream Player"
     >
       {loading && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/30 z-10">
