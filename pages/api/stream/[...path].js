@@ -1,11 +1,13 @@
 const DIRECT_STREAMS = {
   makkah: [
+    //https://www.elahmad.com/tv/m3u8/online_live_14_tv.m3u8?id=qoran_tv&t=11111111",
     //"https://cdn-globecast.akamaized.net/live/eds/saudi_quran/hls_roku/index.m3u8",
     "https://media2.streambrothers.com:1936/8122/8122/playlist.m3u8",
     "https://edge66.magictvbox.com/liveApple/al_majd/tracks-v1a1/mono.m3u8",
     "https://playlist.fasttvcdn.com/pl/dlkqw1ftuvuuzkcb4pxdcg/Iqraafasttv2/playlist.m3u8",
   ],
   madinah: [
+    //"https://www.elahmad.com/tv/m3u8/online_live_14_tv.m3u8?id=sunna_tv&t=11111111",
     //"https://cdn-globecast.akamaized.net/live/eds/saudi_sunnah/hls_roku/index.m3u8",
     "https://media2.streambrothers.com:1936/8122/8122/playlist.m3u8",
     "https://edge66.magictvbox.com/liveApple/al_majd/tracks-v1a1/mono.m3u8",
