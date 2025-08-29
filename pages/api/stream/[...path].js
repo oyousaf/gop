@@ -11,7 +11,7 @@ const DIRECT_STREAMS = {
     //"https://cdn-globecast.akamaized.net/live/eds/saudi_sunnah/hls_roku/index.m3u8",
     //"https://media2.streambrothers.com:1936/8122/8122/playlist.m3u8",
     //"https://edge66.magictvbox.com/liveApple/al_majd/tracks-v1a1/mono.m3u8",
-    //"https://playlist.fasttvcdn.com/pl/dlkqw1ftuvuuzkcb4pxdcg/Iqraafasttv2/playlist.m3u8", 
+    //"https://playlist.fasttvcdn.com/pl/dlkqw1ftuvuuzkcb4pxdcg/Iqraafasttv2/playlist.m3u8",
   ]
 };
 
