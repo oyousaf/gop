@@ -29,7 +29,7 @@ export default function Madinah() {
     (async () => {
       try {
         const res = await fetch(
-          `/api/youtube?channelId=${CHANNEL_ID}&query=madinah`
+          `/api/youtube?channelId=${CHANNEL_ID}&query=madina`
         );
         const data = await res.json();
         if (data.videoId) setVideoId(data.videoId);
