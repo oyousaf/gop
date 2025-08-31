@@ -81,6 +81,7 @@ export const boycott = [
     reason:
       "Providing financial services and credit card facilities to Israeli consumers and businesses.",
   },
+  { name: "Anita Gelato", reason: "Company based in Israel." },
   { name: "Apple", reason: "Have R&D centers in the country." },
   { name: "Aquaﬁna", reason: "Owned by PepsiCo." },
   { name: "Aquarius", reason: "Brand owned by Coca-Cola." },
@@ -159,6 +160,10 @@ export const boycott = [
     reason: "Allows listings in occupied Palestinian territory.",
   },
   {
+    name: "Booz Allen Hamilton",
+    reason: "Management & IT consulting firm with operations in Israel.",
+  },
+  {
     name: "Boston Consulting Group (BCG)",
     reason: "Providing consulting services to various Israeli businesses.",
   },
@@ -176,6 +181,10 @@ export const boycott = [
     name: "Capital One",
     reason:
       "Has ties with Israel through a $500m loan deal with Elbit Systems Ltd, an Israeli weapons manufacturer.",
+  },
+  {
+    name: "Capri Holdings",
+    reason: "Parent company of Michael Kors, Jimmy Choo, and Versace.",
   },
   { name: "Carita Paris", reason: "Owned by L'Oreal Paris." },
   { name: "Carrefour", reason: "Made huge investments into Israel." },
@@ -201,6 +210,11 @@ export const boycott = [
   },
   { name: "Chips Ahoy!", reason: "Owned by Mondelez." },
   { name: "Cinnabon", reason: "Owned by Bimbo." },
+  { name: "Citi Bank", reason: "Investments in the Israeli tech sector." },
+  {
+    name: "Clal Insurance Enterprises",
+    reason: "Insurance company headquartered in Tel Aviv.",
+  },
   { name: "Clean & Clear", reason: "Brand of Johnson & Johnson." },
   { name: "Clear Blue", reason: "Is owned by Procter and Gamble." },
   {
@@ -208,6 +222,7 @@ export const boycott = [
     reason:
       "Founder Ronald Lauder is the president of the World Jewish Congress, and chairman of the Jewish National Fund.",
   },
+  { name: "Close Up", reason: "Toothpaste brand owned by Unilever." },
   { name: "Cisco", reason: "Major investments in Israeli cybersecurity." },
   { name: "Coach", reason: "Luxury fashion brand owned by Tapestry, Inc." },
   {
@@ -222,7 +237,10 @@ export const boycott = [
     reason: "CEO Stan Duncan supported openly, as mentioned in NYT.",
   },
   { name: "Converse", reason: "Owned by Nike." },
+  { name: "Cornetto", reason: "Ice cream brand owned by Wall’s/Unilever." },
   { name: "Costa Coffee", reason: "Posted social media support for Israel." },
+  { name: "Côte d’Or", reason: "Chocolate brand owned by Mondelez." },
+  { name: "Crest", reason: "Brand owned by Procter & Gamble." },
   {
     name: "Crowne Plaza",
     reason:
@@ -234,7 +252,7 @@ export const boycott = [
       "Overwolf, the parent company of CurseForge, funds the revenue generated from mods to the Israeli Defense Forces.",
   },
   {
-    name: "CyberArk Software",
+    name: "CyberArk",
     reason: "Cybersecurity company headquartered in Israel.",
   },
   { name: "Daim Bar", reason: "Owned by Mondelez." },
@@ -254,6 +272,7 @@ export const boycott = [
     name: "Deutsche Telekom",
     reason: "Invests in Israeli software company Teridion.",
   },
+  { name: "DeviantArt", reason: "Based in Tel Aviv." },
   { name: "DHL Group", reason: "Company with operations in Israel." },
   { name: "Dior", reason: "Owner of Dior’s parent company, LVMH." },
   {
@@ -277,16 +296,22 @@ export const boycott = [
   },
   { name: "Elie Tahari", reason: "Founder lives in Israel." },
   { name: "Elementor", reason: "An Israeli company." },
+  { name: "EPAM Systems", reason: "Acquires Israel-based startups." },
   { name: "Ericsson", reason: "Provides 5G to Israel." },
   {
     name: "Estee Lauder",
     reason: "Owners are the president of the World Jewish Congress.",
   },
   {
+    name: "Eucerin",
+    reason: "Owned by Beiersdorf Group, which supports Israel.",
+  },
+  {
     name: "Evian",
     reason: "Owner of Evian, Danone, invests millions in Israel.",
   },
   { name: "Expedia", reason: "Profiting from Israeli settlements." },
+  { name: "Fancy Medjoul", reason: "Date company with operations in Israel." },
   { name: "Fanta", reason: "Owned by Coca-Cola." },
   { name: "Fairlife", reason: "Owned by Coca-Cola." },
   { name: "Facebook (Meta)", reason: "Has been censoring neutral content." },
@@ -303,6 +328,22 @@ export const boycott = [
     name: "First International Bank of Israel",
     reason: "Headquartered in Israel.",
   },
+  { name: "Fiverr", reason: "Israeli company." },
+  {
+    name: "FlixBus",
+    reason: "CEO André Schwämmlein voiced support for Israel.",
+  },
+  { name: "Food to Live", reason: "Sells Israeli dates." },
+  {
+    name: "Foods Alive",
+    reason: "Sells Israeli organic black cumin seed oil.",
+  },
+  { name: "Fox Corp", reason: "Parent company of Fox News." },
+  { name: "Fox News", reason: "Biased reporting and support for Israel." },
+  { name: "Fred Joaillier (Fred Jewelry)", reason: "Owned by LVMH." },
+  { name: "Frito-Lay", reason: "Snack brand owned by PepsiCo." },
+  { name: "Funyuns", reason: "Owned by PepsiCo." },
+  { name: "Fuze", reason: "Owned by Coca-Cola." },
   {
     name: "Gatorade",
     reason: "Owned by PepsiCo with no direct ties to Israel.",
@@ -372,6 +413,7 @@ export const boycott = [
     name: "IBM",
     reason: "Involvements in Israeli security and military apparatus.",
   },
+  { name: "ICL Group", reason: "Israeli multinational manufacturing company." },
   { name: "IKEA", reason: "Donated $1.1 million to Israel." },
   {
     name: "Inditex Group",
@@ -384,10 +426,16 @@ export const boycott = [
     reason: "Venture capital firm with investments in Israeli tech companies.",
   },
   {
+    name: "Instagram",
+    reason:
+      "Platform under Meta, accused of censoring pro-Palestinian content.",
+  },
+  {
     name: "Intel",
     reason:
       "Significant investments in Israel, totaling more than $50 billion.",
   },
+  { name: "Irish Spring", reason: "Owned by Colgate-Palmolive." },
   { name: "IT Cosmetics", reason: "Owned by L’Oréal." },
   { name: "J Street", reason: "Lobbying for Israel." },
   {
@@ -426,6 +474,7 @@ export const boycott = [
   },
   { name: "Kenzo", reason: "Owned by LVMH, Bernard Arnault." },
   { name: "Kerastase", reason: "Owned by L’Oréal." },
+  { name: "Kevita", reason: "Drink brand owned by PepsiCo." },
   {
     name: "KFC",
     reason: "Founding company Yum Brands is an investor in Israeli start-ups.",
@@ -437,10 +486,14 @@ export const boycott = [
     reason:
       "Received the Jubilee Award by the Israeli Prime Minister Netanyahu.",
   },
+  { name: "Kirks", reason: "Soft drink brand owned by Coca-Cola." },
   { name: "Kleenex", reason: "Owned by Kimberly Clark." },
   { name: "KKR", reason: "Made three investments in Israeli tech companies." },
   { name: "KKW Cosmetics", reason: "Owned by Kim Kardashian." },
-  { name: "Kinley Water", reason: "A brand of bottled water owned by Coca-Cola." },
+  {
+    name: "Kinley Water",
+    reason: "A brand of bottled water owned by Coca-Cola.",
+  },
   { name: "Kitkat", reason: "Owned by Nestle." },
   { name: "Knorr", reason: "Owned by Unilever." },
   { name: "Kolynos", reason: "Owned by Colgate-Palmolive." },
@@ -449,6 +502,7 @@ export const boycott = [
     reason:
       "Owners of Krispy Kreme invested and donated through their Alfred Landecker Foundation.",
   },
+  { name: "Kurkure", reason: "Snack brand owned by PepsiCo." },
   {
     name: "L’Oréal",
     reason: "Initiated operations in Israel in the mid-1990s.",
@@ -486,6 +540,7 @@ export const boycott = [
   { name: "Lupilu", reason: "Owned by Lidl." },
   { name: "Lux", reason: "Owned by Unilever." },
   { name: "LVMH", reason: "Owned by Bernard Arnault." },
+  { name: "M&M", reason: "Chocolate brand owned by Mars." },
   { name: "Maccas", reason: "McDonald’s, known as Maccas in some regions." },
   { name: "Maaza", reason: "Owned by Coca-Cola." },
   { name: "Maggi", reason: "Owned by Nestlé." },
@@ -543,10 +598,13 @@ export const boycott = [
   { name: "Monki", reason: "Owned by H&M Group." },
   { name: "Monday.com", reason: "Headquartered in Tel Aviv, Israel." },
   { name: "Monster", reason: "Owned by Coca-Cola." },
-  { name: "Moroccan Oil", reason: "Manufactured in Israel." },
   {
     name: "Morgan Lewis",
     reason: "Published a letter to openly support Israel.",
+  },
+  {
+    name: "Moroccanoil",
+    reason: "Hair & body products brand, manufactured in Israel.",
   },
   { name: "Morrisons", reason: "Source produce from the state of Israel." },
   { name: "Mountain Dew", reason: "Owned by PepsiCo." },
@@ -859,6 +917,7 @@ export const boycott = [
     name: "Taffix",
     reason: "Manufactured by an Israeli company (Nasus Pharma).",
   },
+  { name: "Tag Heuer", reason: "Owned by LVMH." },
   {
     name: "Tata",
     reason:
@@ -868,23 +927,23 @@ export const boycott = [
     name: "Tesla",
     reason: "Announced free use of all its Superchargers in Israel.",
   },
-  { name: "Thomas (Bagel/Biscuits)", reason: "Owned by Bimbo." },
+  { name: "Thomas' (Bagel/Biscuits/Muffins)", reason: "Owned by Bimbo." },
   {
     name: "Thompson's WaterSeal",
-    reason: "Owned by Sherwin-Williams, known to support Israeli military.",
+    reason: "Owned by Sherwin-Williams, supports Israeli military.",
   },
-  { name: "Thomas's English Muffins", reason: "Owned by Bimbo." },
   { name: "Tic Tac", reason: "Owned by Ferrero." },
   { name: "Toblerone", reason: "Owned by Mondelez International." },
+  { name: "Tom Ford", reason: "Owned by Estée Lauder." },
   { name: "Tostitos", reason: "Owned by PepsiCo." },
   { name: "Trader Joe’s", reason: "Sells products sourced from Israel." },
   { name: "Trident", reason: "Owned by Mondelez International." },
+  { name: "Triscuit", reason: "Owned by Mondelez International." },
   { name: "Tropicana", reason: "Owned by PepsiCo." },
   { name: "Tropico", reason: "Owned by Coca-Cola." },
   { name: "Twix", reason: "Owned by Mars." },
   { name: "Twisties", reason: "Owned by Mondelez." },
   { name: "TUC", reason: "Owned by Mondelez." },
-  { name: "Tag Heuer", reason: "Owned by LVMH." },
   { name: "Urban Decay", reason: "Is a brand of L’Oreal." },
   {
     name: "Under Armour",
@@ -907,6 +966,7 @@ export const boycott = [
     name: "Waitrose",
     reason: "Has been known to sell products sourced from Israel.",
   },
+  { name: "Wall’s", reason: "Owned by Unilever." },
   { name: "Walmart", reason: "Pledged $1m to Israeli victims." },
   {
     name: "Wells Fargo",
@@ -916,8 +976,15 @@ export const boycott = [
   { name: "Wheat Thins", reason: "Owned by Mondelez." },
   { name: "Walkers", reason: "Is a brand of PepsiCo." },
   { name: "Warner Chilcott", reason: "Owned by TEVA pharma." },
+  { name: "Wild Harvest Organic Tahini", reason: "Produced in Israel." },
+  {
+    name: "Winston & Strawn",
+    reason: "Law firm with services tied to Israel.",
+  },
+  { name: "Wissotzky Tea", reason: "Israeli tea company." },
   { name: "Wix", reason: "Tech company headquartered in Tel Aviv." },
   { name: "Whatsapp", reason: "Owned by Meta." },
+  { name: "Wheel Washing Powder", reason: "Owned by Unilever." },
   {
     name: "Wrigley’s Company",
     reason: "Invested in Israeli food tech startups through JVC.",
