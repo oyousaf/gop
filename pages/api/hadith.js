@@ -2,6 +2,8 @@ import moment from "moment-hijri";
 
 let cachedResults = null;
 let cacheExpiry = 0;
+let cachedMonth = null;
+let keywordIndex = 0; // 🔄 rotate through month keywords
 
 export default async function handler(req, res) {
   const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
@@ -11,7 +13,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ error: "Missing RapidAPI key" });
   }
 
-  // 🗓️ Hijri month → themed keywords (expanded)
+  // 📅 Hijri month → themed keywords (expanded list)
   const hijriMonthKeywords = {
     1: ["fasting", "Ashura", "virtues", "repentance", "charity"], // Muharram
     2: ["Safar", "travel", "omens", "illness", "hardship"], // Safar
@@ -30,34 +32,44 @@ export default async function handler(req, res) {
   const currentMonthNum = moment().iMonth() + 1;
   const keywords = hijriMonthKeywords[currentMonthNum] || ["faith"];
 
-  // ⏳ Serve cached results if not expired
-  if (cachedResults && Date.now() < cacheExpiry) {
-    return res.status(200).json(cachedResults);
+  // Reset keyword rotation when month changes
+  if (cachedMonth !== currentMonthNum) {
+    keywordIndex = 0;
+  }
+
+  // Select keyword in round-robin fashion
+  const keyword = keywords[keywordIndex % keywords.length];
+  keywordIndex++;
+
+  // ⏳ Serve cached results if not expired + same month + same keyword
+  if (
+    cachedResults &&
+    Date.now() < cacheExpiry &&
+    cachedMonth === currentMonthNum &&
+    cachedResults.keyword === keyword
+  ) {
+    return res.status(200).json(cachedResults.results);
   }
 
   let data;
-  for (const keyword of keywords) {
-    const url = `https://${RAPIDAPI_HOST}/hadiths?search=${encodeURIComponent(
-      keyword
-    )}`;
-    console.log(`🔎 Trying keyword: ${keyword}`);
+  const url = `https://${RAPIDAPI_HOST}/hadiths?search=${encodeURIComponent(
+    keyword
+  )}`;
+  console.log(`🔎 Fetching hadiths with keyword: ${keyword}`);
 
-    data = await retryFetch(url, {
-      headers: {
-        "x-rapidapi-key": RAPIDAPI_KEY,
-        "x-rapidapi-host": RAPIDAPI_HOST,
-        Accept: "application/json",
-      },
-    }).catch(() => null);
+  data = await retryFetch(url, {
+    headers: {
+      "x-rapidapi-key": RAPIDAPI_KEY,
+      "x-rapidapi-host": RAPIDAPI_HOST,
+      Accept: "application/json",
+    },
+  }).catch(() => null);
 
-    if (data?.hadiths?.length) {
-      break; // ✅ stop at first successful keyword
-    }
-  }
-
-  // Final fallback if nothing found
+  // 🚨 Final fallback
   if (!data?.hadiths?.length) {
-    console.warn("No results for any month keywords, falling back to 'faith'");
+    console.warn(
+      `No results for keyword "${keyword}", falling back to 'faith'`
+    );
     const fallbackUrl = `https://${RAPIDAPI_HOST}/hadiths?search=faith`;
     data = await retryFetch(fallbackUrl, {
       headers: {
@@ -80,19 +92,19 @@ export default async function handler(req, res) {
     )}`,
   }));
 
-  // 🗄️ Cache results for 6 hours
-  cachedResults = results;
+  // 🗄️ Cache results for 6 hours (per month + keyword)
+  cachedResults = { keyword, results };
+  cachedMonth = currentMonthNum;
   cacheExpiry = Date.now() + 1000 * 60 * 60 * 6;
 
   return res.status(200).json(results);
 }
 
-// 🔁 Retry fetch with exponential backoff & safe JSON parsing
+// 🔁 Retry fetch with exponential backoff
 async function retryFetch(url, options, retries = 5, delay = 1000) {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       const response = await fetch(url, options);
-
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
       const text = await response.text();
