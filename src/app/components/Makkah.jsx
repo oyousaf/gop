@@ -15,7 +15,7 @@ const Live = dynamic(() => import("./Live"), {
   ssr: false,
 });
 
-const CHANNEL_ID = "UCqtGJe9AnRfq5wwjk27VsoQ";
+const CHANNEL_ID = "UCos52azQNBgW63_9uDJoPDA";
 const PRAYER_ORDER = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"];
 
 export default function Makkah() {
