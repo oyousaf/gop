@@ -341,7 +341,7 @@ export const boycott = [
   { name: "Fox Corp", reason: "Parent company of Fox News." },
   { name: "Fox News", reason: "Biased reporting and support for Israel." },
   { name: "Fred Joaillier (Fred Jewellery)", reason: "Owned by LVMH." },
-  { name: "Frito-Lay", reason: "Snack brand owned by PepsiCo." },
+  { name: "Frito-Lay (Fritos, Lay's, Cheetos)", reason: "Snack brand owned by PepsiCo." },
   { name: "Funyuns", reason: "Owned by PepsiCo." },
   { name: "Fuze", reason: "Owned by Coca-Cola." },
   {
