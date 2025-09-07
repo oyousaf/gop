@@ -69,17 +69,23 @@ export default async function handler(req, res) {
     return res.status(502).json({ error: "Invalid data structure from API" });
   }
 
-  // 🛡️ Deduplicate hadiths by content text
+  // 🛡️ Deduplicate hadiths by title + content
   const uniqueHadiths = [];
-  const seen = new Set();
+  const seenTitles = new Set();
+  const seenContents = new Set();
 
   for (const hadith of data.hadiths) {
+    const title = hadith.Section_English || "Hadith";
     const content =
       hadith.English_Hadith || hadith.English_Matn || "No content";
-    if (!seen.has(content)) {
-      seen.add(content);
+
+    // check both title and content
+    if (!seenTitles.has(title) && !seenContents.has(content)) {
+      seenTitles.add(title);
+      seenContents.add(content);
+
       uniqueHadiths.push({
-        title: hadith.Section_English || "Hadith",
+        title,
         content,
         link: `https://www.google.com/search?q=Hadith ${encodeURIComponent(
           content
@@ -88,7 +94,6 @@ export default async function handler(req, res) {
     }
   }
 
-  // only take first 9 unique ones
   const results = uniqueHadiths.slice(0, 9);
 
   // 🗄️ Cache this keyword’s results for 6 hours
