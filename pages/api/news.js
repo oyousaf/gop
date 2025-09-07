@@ -16,11 +16,7 @@ export default async function handler(req, res) {
 
     const trustedDomains =
       lang === "ar"
-        ? [
-            "aljazeera.net",
-            "alarabiya.net",
-            "thenationalnews.com"
-          ]
+        ? ["aljazeera.net", "alarabiya.net", "thenationalnews.com"]
         : [
             "aljazeera.com",
             "arabnews.com",
@@ -28,7 +24,7 @@ export default async function handler(req, res) {
             "thenationalnews.com",
             "islam21c.com",
             "muslimnews.co.uk",
-            "aboutislam.net"
+            "aboutislam.net",
           ];
 
     const url = `https://newsapi.org/v2/everything?q=${keywords}&pageSize=20&sortBy=publishedAt&language=${lang}&domains=${trustedDomains.join(
@@ -43,23 +39,29 @@ export default async function handler(req, res) {
     const seenUrls = new Set();
     const seenTitles = new Set();
 
+    const cleanText = (text) =>
+      !text ? "" : text.replace(/\[\+\d+\schars\]/g, "").trim();
+
     const filtered = articles.filter((article) => {
       const isValid =
         article.title &&
         article.url &&
-        article.description &&
-        article.urlToImage;
+        (lang === "ar" || article.description) &&
+        (lang === "ar" || article.urlToImage);
 
       if (!isValid) return false;
 
       const cleanUrl = article.url.split("?")[0].trim();
       const title = article.title.trim().toLowerCase();
 
-      const isDuplicate = seenUrls.has(cleanUrl) || seenTitles.has(title);
-      if (isDuplicate) return false;
+      if (seenUrls.has(cleanUrl) || seenTitles.has(title)) return false;
 
       seenUrls.add(cleanUrl);
       seenTitles.add(title);
+
+      // clean text before sending
+      article.description = cleanText(article.description);
+      article.content = cleanText(article.content);
 
       return true;
     });

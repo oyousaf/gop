@@ -67,6 +67,7 @@ export default function News() {
         transition={{ duration: 0.6 }}
         viewport={{ once: true }}
         className="text-4xl md:text-5xl font-bold text-center mb-12 text-white"
+        dir={lang === "ar" ? "rtl" : "ltr"}
       >
         {lang === "ar" ? "أخبار" : "News"}
       </motion.h2>
@@ -125,10 +126,16 @@ export default function News() {
               aria-label={`Open news article titled ${article.title}`}
               onKeyDown={(e) => e.key === "Enter" && setActiveArticle(article)}
             >
-              <h3 className="text-2xl font-semibold text-orange-200 mb-4 text-center">
+              <h3
+                className="text-2xl font-semibold text-orange-200 mb-4 text-center"
+                dir={lang === "ar" ? "rtl" : "ltr"}
+              >
                 {article.title}
               </h3>
-              <p className="text-white/90 text-lg mb-6 text-center">
+              <p
+                className="text-white/90 text-lg mb-6 text-center"
+                dir={lang === "ar" ? "rtl" : "ltr"}
+              >
                 {truncate(article.description || article.content)}
               </p>
               <div className="mt-auto text-center">
@@ -177,15 +184,21 @@ export default function News() {
               <h3
                 id="modal-title"
                 className="text-2xl font-bold text-center mb-4"
+                dir={lang === "ar" ? "rtl" : "ltr"}
               >
                 {activeArticle.title}
               </h3>
+
               <p
                 id="modal-description"
                 className="text-lg leading-relaxed text-center whitespace-pre-wrap"
+                dir={lang === "ar" ? "rtl" : "ltr"}
               >
-                {cleanContent(activeArticle.content || "")}
+                {cleanContent(
+                  activeArticle.description || activeArticle.content || ""
+                )}
               </p>
+
               <div className="text-center mt-6">
                 <a
                   href={activeArticle.url}
