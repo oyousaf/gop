@@ -41,7 +41,7 @@ export default async function handler(req, res) {
 
   console.log(`🔎 Fetching hadiths with keyword: ${keyword}`);
   let data = await retryFetch(
-    `https://${RAPIDAPI_HOST}/hadiths?search=${encodeURIComponent(keyword)}`,
+    `https://${RAPIDAPI_HOST}/hadiths?search=${encodeURIComponent(keyword)}&limit=30`,
     {
       headers: {
         "x-rapidapi-key": RAPIDAPI_KEY,
