@@ -69,13 +69,27 @@ export default async function handler(req, res) {
     return res.status(502).json({ error: "Invalid data structure from API" });
   }
 
-  const results = data.hadiths.slice(0, 9).map((hadith) => ({
-    title: hadith.Section_English || "Hadith",
-    content: hadith.English_Hadith || hadith.English_Matn || "No content",
-    link: `https://www.google.com/search?q=Hadith ${encodeURIComponent(
-      hadith.English_Hadith || ""
-    )}`,
-  }));
+  // 🛡️ Deduplicate hadiths by content text
+  const uniqueHadiths = [];
+  const seen = new Set();
+
+  for (const hadith of data.hadiths) {
+    const content =
+      hadith.English_Hadith || hadith.English_Matn || "No content";
+    if (!seen.has(content)) {
+      seen.add(content);
+      uniqueHadiths.push({
+        title: hadith.Section_English || "Hadith",
+        content,
+        link: `https://www.google.com/search?q=Hadith ${encodeURIComponent(
+          content
+        )}`,
+      });
+    }
+  }
+
+  // only take first 9 unique ones
+  const results = uniqueHadiths.slice(0, 9);
 
   // 🗄️ Cache this keyword’s results for 6 hours
   cache[cacheKey] = {
