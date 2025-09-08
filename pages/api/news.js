@@ -66,7 +66,7 @@ export default async function handler(req, res) {
       return true;
     });
 
-    res.status(200).json(filtered.slice(0, 12));
+    res.status(200).json(filtered.slice(0, 15));
   } catch (error) {
     console.error("News fetch error:", error);
     res.status(500).json({ error: error.message });

@@ -94,7 +94,7 @@ export default async function handler(req, res) {
     }
   }
 
-  const results = uniqueHadiths.slice(0, 9);
+  const results = uniqueHadiths.slice(0, 15);
 
   // 🗄️ Cache this keyword’s results for 6 hours
   cache[cacheKey] = {
