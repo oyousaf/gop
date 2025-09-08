@@ -27,7 +27,7 @@ export default async function handler(req, res) {
             "aboutislam.net",
           ];
 
-    const url = `https://newsapi.org/v2/everything?q=${keywords}&pageSize=20&sortBy=publishedAt&language=${lang}&domains=${trustedDomains.join(
+    const url = `https://newsapi.org/v2/everything?q=${keywords}&pageSize=30&sortBy=publishedAt&language=${lang}&domains=${trustedDomains.join(
       ","
     )}&apiKey=${API_KEY}`;
 
