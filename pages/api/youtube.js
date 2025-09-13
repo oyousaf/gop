@@ -10,11 +10,17 @@ export default async function handler(req, res) {
   const base = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&channelId=${channelId}&key=${API_KEY}`;
   const queryParam = query ? `&q=${encodeURIComponent(query)}` : "";
 
-  // Fetches the first videoId from a YouTube search result URL
+  // Helper: fetch the first videoId from a YouTube search URL
   const fetchVideoId = async (url) => {
     try {
       const res = await fetch(url);
       const data = await res.json();
+
+      if (data?.error) {
+        console.error("🔴 YouTube API error:", data.error);
+        return null;
+      }
+
       return data?.items?.[0]?.id?.videoId || null;
     } catch (err) {
       console.error("🔴 Failed YouTube API fetch:", err);
@@ -23,11 +29,11 @@ export default async function handler(req, res) {
   };
 
   try {
-    // 1. Try fetching current live stream
-    const liveURL = `${base}&eventType=live${queryParam}`;
+    // 1. Try fetching the current live stream (no query filter)
+    const liveURL = `${base}&eventType=live`;
     let videoId = await fetchVideoId(liveURL);
 
-    // 2. Fallback to most recent upload if no live found
+    // 2. Fallback to most recent upload (optionally filter by query)
     if (!videoId) {
       const latestURL = `${base}&order=date${queryParam}`;
       videoId = await fetchVideoId(latestURL);
@@ -38,7 +44,7 @@ export default async function handler(req, res) {
     } else {
       return res
         .status(404)
-        .json({ error: "No video found for this channel." });
+        .json({ error: "No live or recent video found for this channel." });
     }
   } catch (err) {
     console.error("🔥 API Handler Error:", err);
