@@ -29,11 +29,11 @@ export default async function handler(req, res) {
   };
 
   try {
-    // 1. Try fetching the current live stream (no query filter)
+    // 1. Try fetching the current live stream
     const liveURL = `${base}&eventType=live`;
     let videoId = await fetchVideoId(liveURL);
 
-    // 2. Fallback to most recent upload (optionally filter by query)
+    // 2. Fallback to most recent upload
     if (!videoId) {
       const latestURL = `${base}&order=date${queryParam}`;
       videoId = await fetchVideoId(latestURL);
