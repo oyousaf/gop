@@ -38,11 +38,17 @@ export default function Makkah() {
   }, []);
 
   useEffect(() => {
-    fetch(`/api/youtube?channelId=${CHANNEL_ID}`)
-      .then((res) => res.json())
-      .then((data) => data.videoId && setVideoId(data.videoId))
-      .catch((err) => console.error("YouTube Fetch failed:", err));
-  }, []);
+    if (!useFallback || videoId) return;
+    (async () => {
+      try {
+        const res = await fetch(`/api/youtube?channelId=${CHANNEL_ID}`);
+        const data = await res.json();
+        if (data.videoId) setVideoId(data.videoId);
+      } catch (err) {
+        console.error("❌ Makkah YouTube fetch failed:", err);
+      }
+    })();
+  }, [useFallback, videoId]);
 
   useEffect(() => {
     (async () => {

@@ -24,20 +24,21 @@ export default function Madinah() {
   useEffect(() => setHasMounted(true), []);
 
   useEffect(() => {
-    if (!useFallback) return;
-
+    if (!useFallback || videoId) return;
     (async () => {
       try {
-        const res = await fetch(
-          `/api/youtube?channelId=${CHANNEL_ID}&query=madinah`
-        );
+        const res = await fetch(`/api/youtube?channelId=${CHANNEL_ID}`);
         const data = await res.json();
-        if (data.videoId) setVideoId(data.videoId);
+        if (data.videoId) {
+          setVideoId(data.videoId);
+        } else {
+          console.warn("⚠️ No YouTube fallback video found.");
+        }
       } catch (err) {
         console.error("YouTube fallback fetch failed:", err);
       }
     })();
-  }, [useFallback]);
+  }, [useFallback, videoId]);
 
   const handleStreamError = () => {
     console.warn("⚠️ Madinah HLS stream failed. Switching to YouTube.");
@@ -82,7 +83,6 @@ export default function Madinah() {
             <Live
               sourceType="hls"
               source="/api/stream/madinah"
-              videoId={videoId}
               onError={handleStreamError}
             />
           )}
