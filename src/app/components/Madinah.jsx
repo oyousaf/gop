@@ -14,7 +14,11 @@ const Live = dynamic(() => import("./Live"), {
   ssr: false,
 });
 
-const CHANNEL_ID = "UCROKYPep-UuODNwyipe6JMw";
+const CHANNEL_IDS = [
+  "UCROKYPep-UuODNwyipe6JMw", // main
+  "UCfBw_uwZb_oFLyVsjWk6owQ", // backup 1
+  "UCdJ1z8f2zkgARhnxCqohb_g", // backup 2
+];
 
 export default function Madinah() {
   const [videoId, setVideoId] = useState(null);
@@ -27,7 +31,7 @@ export default function Madinah() {
     if (!useFallback || videoId) return;
     (async () => {
       try {
-        const res = await fetch(`/api/youtube?channelId=${CHANNEL_ID}`);
+        const res = await fetch(`/api/youtube?channelId=${CHANNEL_IDS}`);
         const data = await res.json();
         if (data.videoId) {
           setVideoId(data.videoId);
