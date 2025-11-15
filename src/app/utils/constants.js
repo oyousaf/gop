@@ -141,6 +141,7 @@ export const boycott = [
       "Operates in the Israeli market through its pharmaceuticals and crop science.",
   },
   { name: "Bershka", reason: "A fashion brand under the INDITEX Group." },
+  { name: "BelVita", reason: "Owned by Mondelez." },
   { name: "Biotherm", reason: "Owned by L’Oréal." },
   { name: "Bimbo", reason: "Invests in Israeli start-ups." },
   {
