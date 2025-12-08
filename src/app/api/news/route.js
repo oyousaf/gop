@@ -1,12 +1,14 @@
-export default async function handler(req, res) {
+export async function GET(request) {
   const API_KEY = process.env.NEWS_API_KEY;
 
   if (!API_KEY) {
-    return res.status(500).json({ error: "API key is missing" });
+    return Response.json({ error: "API key is missing" }, { status: 500 });
   }
 
   try {
-    const lang = req.query.lang === "ar" ? "ar" : "en";
+    // Extract query params in app-router style
+    const { searchParams } = new URL(request.url);
+    const lang = searchParams.get("lang") === "ar" ? "ar" : "en";
 
     const keywords = encodeURIComponent(
       lang === "ar"
@@ -32,7 +34,9 @@ export default async function handler(req, res) {
     )}&apiKey=${API_KEY}`;
 
     const response = await fetch(url);
-    if (!response.ok) throw new Error("Failed to fetch news data");
+    if (!response.ok) {
+      throw new Error("Failed to fetch news data");
+    }
 
     const { articles = [] } = await response.json();
 
@@ -59,16 +63,15 @@ export default async function handler(req, res) {
       seenUrls.add(cleanUrl);
       seenTitles.add(title);
 
-      // clean text before sending
       article.description = cleanText(article.description);
       article.content = cleanText(article.content);
 
       return true;
     });
 
-    res.status(200).json(filtered.slice(0, 15));
+    return Response.json(filtered.slice(0, 15), { status: 200 });
   } catch (error) {
     console.error("News fetch error:", error);
-    res.status(500).json({ error: error.message });
+    return Response.json({ error: error.message }, { status: 500 });
   }
 }

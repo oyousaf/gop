@@ -1,10 +1,16 @@
-export default async function handler(req, res) {
+export async function GET(request) {
+  const { searchParams } = new URL(request.url);
+
   const API_KEY = process.env.YOUTUBE_API_KEY;
-  const { channelId, query = "" } = req.query;
+  const channelId = searchParams.get("channelId");
+  const query = searchParams.get("query") || "";
 
   if (!API_KEY || !channelId) {
     console.warn("❌ Missing YOUTUBE_API_KEY or channelId");
-    return res.status(400).json({ error: "Missing API key or channelId" });
+    return Response.json(
+      { error: "Missing API key or channelId" },
+      { status: 400 }
+    );
   }
 
   // Accept single or comma-separated multiple IDs
@@ -33,9 +39,13 @@ export default async function handler(req, res) {
     for (const id of channelIds) {
       const liveURL = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&eventType=live&channelId=${id}&key=${API_KEY}`;
       const videoId = await fetchVideoId(liveURL);
+
       if (videoId) {
         console.log(`✅ Live stream found on channel ${id}`);
-        return res.status(200).json({ videoId, channelId: id, type: "live" });
+        return Response.json(
+          { videoId, channelId: id, type: "live" },
+          { status: 200 }
+        );
       }
     }
 
@@ -48,20 +58,23 @@ export default async function handler(req, res) {
       console.log(
         `⚙️ No live streams. Returning latest upload from ${fallbackId}`
       );
-      return res
-        .status(200)
-        .json({
+
+      return Response.json(
+        {
           videoId: latestVideoId,
           channelId: fallbackId,
           type: "latest",
-        });
+        },
+        { status: 200 }
+      );
     }
 
-    return res
-      .status(404)
-      .json({ error: "No live or recent videos found for any channel." });
+    return Response.json(
+      { error: "No live or recent videos found for any channel." },
+      { status: 404 }
+    );
   } catch (err) {
     console.error("🔥 API Handler Error:", err);
-    return res.status(500).json({ error: "Internal server error" });
+    return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }

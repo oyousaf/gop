@@ -2,7 +2,7 @@ import moment from "moment-hijri";
 
 let cache = {};
 
-export default async function handler(req, res) {
+export async function GET(req, res) {
   const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
   const RAPIDAPI_HOST = "hadiths-api.p.rapidapi.com";
 
