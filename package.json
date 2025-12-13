@@ -10,18 +10,18 @@
     "postbuild": "next-sitemap"
   },
   "dependencies": {
-    "@vercel/analytics": "^1.5.0",
+    "@vercel/analytics": "^1.6.1",
     "appwrite": "^16.0.2",
-    "axios": "^1.7.9",
-    "cheerio": "^1.0.0",
+    "axios": "^1.13.2",
+    "cheerio": "^1.1.2",
     "framer-motion": "^11.18.2",
     "hls.js": "^1.6.7",
     "moment-hijri": "^3.0.0",
-    "next": "16.0.7",
+    "next": "^16.0.10",
     "next-sitemap": "^4.2.3",
-    "puppeteer": "^24.4.0",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
+    "puppeteer": "^24.33.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-ga4": "^2.1.0",
     "react-icons": "^5.3.0",
     "react-scroll": "^1.9.0",
@@ -29,7 +29,7 @@
   },
   "devDependencies": {
     "eslint": "^9.0.0",
-    "eslint-config-next": "16.0.7",
+    "eslint-config-next": "^16.0.10",
     "postcss": "^8",
     "tailwindcss": "^3.4.1"
   }
