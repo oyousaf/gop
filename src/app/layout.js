@@ -45,20 +45,12 @@ export const metadata = {
   keywords: [
     "Islamic knowledge",
     "Quran and Sunnah",
-    "Hadith and Tafsir",
+    "Authentic Hadith",
     "Islamic spirituality",
     "Fiqh and Seerah",
     "Learn Islam online",
-    "Daily Quran reflection",
-    "Islamic education",
-    "Revive the Ummah",
-    "Muslim lifestyle",
-    "Tazkiyah and Tawheed",
     "Sacred Islamic teachings",
-    "Islamic unity and values",
-    "Authentic Hadith",
-    "Masjid al-Aqsa",
-    "Sacred knowledge",
+    "Tazkiyah and Tawheed",
   ],
   openGraph: {
     type: "website",
@@ -128,7 +120,6 @@ export default function RootLayout({ children }) {
             __html: JSON.stringify(structuredData),
           }}
         />
-        <meta name="description" content={description} />
       </head>
       <body className="bg-background text-white antialiased scroll-smooth">
         <GA />
