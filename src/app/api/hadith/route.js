@@ -143,6 +143,15 @@ export async function GET() {
 
   const month = moment().iMonth() + 1;
   const keywords = hijriMonthKeywords[month] || ["faith"];
+  const cacheKey = `month-${month}`;
+
+  // 🔁 Cache read
+  if (
+    RESULT_CACHE[cacheKey] &&
+    Date.now() < RESULT_CACHE[cacheKey].expiry
+  ) {
+    return NextResponse.json(RESULT_CACHE[cacheKey].results);
+  }
 
   let results = [];
 
@@ -159,6 +168,12 @@ export async function GET() {
       if (results.length) break;
     }
   }
+
+  // 🗄️ Cache write (6 hours)
+  RESULT_CACHE[cacheKey] = {
+    results,
+    expiry: Date.now() + 6 * 60 * 60 * 1000,
+  };
 
   return NextResponse.json(results);
 }
