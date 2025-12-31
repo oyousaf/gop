@@ -7,7 +7,7 @@ let HADITH_DATA = null;
 let RESULT_CACHE = {};
 
 // ----------------------------------------------------
-// 🔒 Safe string formatter (prevents .toLowerCase crash)
+// 🔒 Safe string formatter
 // ----------------------------------------------------
 function safe(h) {
   if (typeof h === "string") return h;
@@ -15,9 +15,9 @@ function safe(h) {
   return String(h);
 }
 
-// ---------------------------------------------
+// ----------------------------------------------------
 // 📅 Hijri Month Keywords
-// ---------------------------------------------
+// ----------------------------------------------------
 const hijriMonthKeywords = {
   1: ["Muharram","Ashura","fasting","virtues","repentance","charity"],
   2: ["Safar","travel","omens","illness","hardship"],
@@ -33,16 +33,44 @@ const hijriMonthKeywords = {
  12: ["Dhul Hijjah","Hajj","sacrifice","Eid al-Adha","pilgrimage","forgiveness"]
 };
 
-// ---------------------------------------------
-// 🌍 Global fallback if month keywords fail
-// ---------------------------------------------
-const GLOBAL_FALLBACK = [
-  "mercy","charity","worship","faith","patience","kindness","good deeds"
-];
+// ----------------------------------------------------
+// 🧠 Synonyms
+// ----------------------------------------------------
+const SYNONYMS = {
+  fasting: ["fast", "fasts", "fasting", "sawm", "siyaam"],
+  "fasting six": ["six days", "six fasts", "shawwal fast"],
 
-// ---------------------------------------------
-// 📚 Load ONLY the 6 major books
-// ---------------------------------------------
+  forgiveness: ["forgive", "forgiven", "forgives", "pardoned", "pardon", "mercy"],
+  repentance: ["repent", "repents", "repented", "turn back"],
+
+  virtues: ["virtue", "virtuous", "excellence", "best of people"],
+
+  supplication: ["dua", "du'a", "invocation", "supplicate", "pray"],
+
+  knowledge: ["knowledge", "ilm", "learn", "learning", "scholar"],
+
+  mercy: ["mercy", "merciful", "compassion", "rahmah"],
+
+  patience: ["patience", "patient", "sabr", "steadfast"],
+
+  brotherhood: ["brother", "brothers", "love for your brother"],
+
+  charity: ["charity", "sadaqah", "donation", "give", "spend"],
+
+  pilgrimage: ["hajj", "pilgrimage", "pilgrim"],
+  hajj: ["hajj", "pilgrimage"],
+
+  Prophet: ["messenger", "rasul", "prophet"]
+};
+
+// ----------------------------------------------------
+// 🌍 Global fallback if all else fails
+// ----------------------------------------------------
+const GLOBAL_FALLBACK = ["mercy", "charity", "faith", "patience", "kindness"];
+
+// ----------------------------------------------------
+// 📚 Load ONLY the 6 major collections
+// ----------------------------------------------------
 function loadHadithData() {
   if (HADITH_DATA) return;
 
@@ -80,15 +108,12 @@ function loadHadithData() {
       );
 
       all.push({
-        // lowercase fields for fast searching
-        collection: safe(h.collection || file.replace(".json","")).toLowerCase(),
+        collection: safe(h.collection || file.replace(".json", "")).toLowerCase(),
         book: safe(h.book || h.bookNumber || ""),
         number: safe(h.hadithnumber || h.refno || h.number || ""),
         text: english.toLowerCase(),
-
-        // store original for output
         original: {
-          collection: safe(h.collection || file.replace(".json","")).toLowerCase(),
+          collection: safe(h.collection || file.replace(".json", "")).toLowerCase(),
           book: safe(h.book || h.bookNumber || ""),
           number: safe(h.hadithnumber || h.refno || h.number || ""),
           text: english
@@ -98,34 +123,37 @@ function loadHadithData() {
   }
 
   HADITH_DATA = all;
-  console.log(`📚 Loaded ${all.length} hadiths (PRIMARY SIX ONLY, safe substring search)`);
+  console.log(`📚 Loaded ${all.length} hadith (primary six, flat array mode)`);
 }
 
-// ---------------------------------------------
-// 🔎 SUPER FAST substring search
-// ---------------------------------------------
+// ----------------------------------------------------
+// 🔎 Search with synonyms
+// ----------------------------------------------------
 function searchKeyword(keyword) {
-  const k = keyword.toLowerCase();
+  const terms = [keyword.toLowerCase(), ...(SYNONYMS[keyword] || [])];
+
   const results = [];
 
   for (const h of HADITH_DATA) {
-    if (h.text.includes(k)) {
-      results.push({
-        title: `${h.original.collection} ${h.original.book}:${h.original.number}`,
-        content: h.original.text,
-        link: `https://sunnah.com/${h.original.collection}:${h.original.number}`
-      });
-
-      if (results.length >= 20) break;
+    for (const t of terms) {
+      if (h.text.includes(t)) {
+        results.push({
+          title: `${h.original.collection} ${h.original.book}:${h.original.number}`,
+          content: h.original.text,
+          link: `https://sunnah.com/${h.original.collection}:${h.original.number}`
+        });
+        break;
+      }
     }
+    if (results.length >= 20) break;
   }
 
   return results;
 }
 
-// ---------------------------------------------
-// 🕌 MAIN ROUTE – month-first sequential search
-// ---------------------------------------------
+// ----------------------------------------------------
+// 🕌 MAIN ROUTE 
+// ----------------------------------------------------
 export async function GET() {
   loadHadithData();
 
@@ -137,46 +165,32 @@ export async function GET() {
     return NextResponse.json(RESULT_CACHE[cacheKey].results);
   }
 
-  let usedKeyword = null;
   let results = [];
 
-  // 1️⃣ Try every month keyword sequentially
+  // 1️⃣ Try month keywords in order 
   for (const keyword of monthKeywords) {
-    const out = searchKeyword(keyword);
-    if (out.length > 0) {
-      usedKeyword = keyword;
-      results = out;
-      break;
-    }
+    results = searchKeyword(keyword);
+    if (results.length > 0) break;
   }
 
-  // 2️⃣ Fallback if no month keyword matches
-  if (!usedKeyword) {
+  // 2️⃣ Fallback keywords
+  if (results.length === 0) {
     for (const keyword of GLOBAL_FALLBACK) {
-      const out = searchKeyword(keyword);
-      if (out.length > 0) {
-        usedKeyword = keyword;
-        results = out;
-        break;
-      }
+      results = searchKeyword(keyword);
+      if (results.length > 0) break;
     }
   }
 
-  // 3️⃣ Hard fail
-  if (!usedKeyword) {
-    return NextResponse.json({ error: "No hadith found" }, { status: 502 });
+  // 3️⃣ Guaranteed fallback
+  if (results.length === 0) {
+    results = searchKeyword("Allah");
   }
 
-  const response = {
-    month,
-    keywordUsed: usedKeyword,
-    results
-  };
-
+  // Cache flat array
   RESULT_CACHE[cacheKey] = {
-    results: response,
+    results,
     expiry: Date.now() + 6 * 60 * 60 * 1000,
   };
 
-  return NextResponse.json(response);
+  return NextResponse.json(results);
 }
