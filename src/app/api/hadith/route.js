@@ -1,138 +1,110 @@
+import fs from "fs";
+import path from "path";
 import moment from "moment-hijri";
+import Fuse from "fuse.js";
+import { NextResponse } from "next/server";
 
-let cache = {};
+let HADITH_DATA = null;
+let FUSE = null;
+let RESULT_CACHE = {};
 
-export async function GET(req, res) {
-  const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
-  const RAPIDAPI_HOST = "hadiths-api.p.rapidapi.com";
+const hijriMonthKeywords = {
+  1: ["Muharram", "Ashura", "fasting", "virtues", "repentance", "charity"],
+  2: ["Safar", "travel", "omens", "illness", "hardship"],
+  3: ["Rabi ul Awwal", "Prophet", "mercy", "seerah", "birth", "character"],
+  4: ["Rabi ul Thani", "companions", "gratitude", "knowledge", "sunnah", "charity"],
+  5: ["Jumada al Ula", "knowledge", "justice", "family", "worship", "obedience"],
+  6: ["Jumada al Thani", "patience", "sabr", "truthfulness", "character", "brotherhood"],
+  7: ["Rajab", "forgiveness", "virtues", "supplication", "fasting"],
+  8: ["Shaban", "fasting", "night prayers", "preparation", "barakah"],
+  9: ["Ramadan", "fasting", "Quran", "Laylat al-Qadr", "taraweeh"],
+  10: ["Shawwal", "fasting six", "Eid", "charity", "brotherhood", "community"],
+  11: ["Dhul Qadah", "pilgrimage", "travel", "justice", "knowledge", "peace"],
+  12: ["Dhul Hijjah", "Hajj", "sacrifice", "Eid al-Adha", "pilgrimage", "forgiveness"]
+};
 
-  if (!RAPIDAPI_KEY) {
-    return res.status(500).json({ error: "Missing RapidAPI key" });
-  }
+function loadHadithData() {
+  if (HADITH_DATA) return;
 
-  // 📅 Hijri month → themed keywords
-  const hijriMonthKeywords = {
-    1: ["fasting", "Ashura", "virtues", "repentance", "charity"], // Muharram
-    2: ["Safar", "travel", "omens", "illness", "hardship"], // Safar
-    3: ["birth", "Prophet", "mercy", "seerah", "character"], // Rabi ul Awwal
-    4: ["charity", "knowledge", "companions", "gratitude", "sunnah"], // Rabi ul Thani
-    5: ["prayer", "justice", "family", "worship", "obedience"], // Jumada al Awwal
-    6: ["patience", "truthfulness", "character", "brotherhood"], // Jumada al Thani
-    7: ["Rajab", "forgiveness", "virtues", "supplication", "fasting"], // Rajab
-    8: ["Shaban", "fasting", "night prayers", "preparation", "barakah"], // Sha'ban
-    9: ["Ramadan", "fasting", "Quran", "Laylat al-Qadr", "taraweeh"], // Ramadan
-    10: ["Eid", "charity", "fasting six", "brotherhood", "community"], // Shawwal
-    11: ["travel", "justice", "knowledge", "pilgrimage", "peace"], // Dhul Qadah
-    12: ["Hajj", "sacrifice", "Eid al-Adha", "pilgrimage", "forgiveness"], // Dhul Hijjah
-  };
+  const files = [
+    "bukhari.json",
+    "muslim.json",
+    "tirmidhi.json",
+    "abudawood.json",
+    "nasai.json",
+    "ibnmajah.json"
+  ];
 
-  const currentMonthNum = moment().iMonth() + 1;
-  const keywords = hijriMonthKeywords[currentMonthNum] || ["faith"];
+  let all = [];
 
-  // 🎲 Pick a random keyword each request
-  const keyword = keywords[Math.floor(Math.random() * keywords.length)];
-  const cacheKey = `${currentMonthNum}-${keyword}`;
+  for (const file of files) {
+    const fullPath = path.join(process.cwd(), "data", "hadith", file);
 
-  // ⏳ Serve from cache if valid
-  if (cache[cacheKey] && Date.now() < cache[cacheKey].expiry) {
-    console.log(`⚡ Serving cached results for ${keyword}`);
-    return res.status(200).json(cache[cacheKey].results);
-  }
+    if (!fs.existsSync(fullPath)) continue;
 
-  console.log(`🔎 Fetching hadiths with keyword: ${keyword}`);
-  let data = await retryFetch(
-    `https://${RAPIDAPI_HOST}/hadiths?search=${encodeURIComponent(keyword)}&limit=30`,
-    {
-      headers: {
-        "x-rapidapi-key": RAPIDAPI_KEY,
-        "x-rapidapi-host": RAPIDAPI_HOST,
-        Accept: "application/json",
-      },
-    }
-  ).catch(() => null);
+    const arr = JSON.parse(fs.readFileSync(fullPath, "utf8"));
 
-  // 🚨 Final fallback
-  if (!data?.hadiths?.length) {
-    console.warn(
-      `No results for keyword "${keyword}", falling back to 'faith'`
-    );
-    data = await retryFetch(`https://${RAPIDAPI_HOST}/hadiths?search=faith`, {
-      headers: {
-        "x-rapidapi-key": RAPIDAPI_KEY,
-        "x-rapidapi-host": RAPIDAPI_HOST,
-        Accept: "application/json",
-      },
-    }).catch(() => null);
-  }
-
-  if (!data?.hadiths || !Array.isArray(data.hadiths)) {
-    return res.status(502).json({ error: "Invalid data structure from API" });
-  }
-
-  // 🛡️ Deduplicate hadiths by title + content
-  const uniqueHadiths = [];
-  const seenTitles = new Set();
-  const seenContents = new Set();
-
-  for (const hadith of data.hadiths) {
-    const title = hadith.Section_English || "Hadith";
-    const content =
-      hadith.English_Hadith || hadith.English_Matn || "No content";
-
-    // check both title and content
-    if (!seenTitles.has(title) && !seenContents.has(content)) {
-      seenTitles.add(title);
-      seenContents.add(content);
-
-      uniqueHadiths.push({
-        title,
-        content,
-        link: `https://www.google.com/search?q=Hadith ${encodeURIComponent(
-          content
-        )}`,
+    for (const h of arr) {
+      all.push({
+        collection: h.collection || file.replace(".json", ""),
+        book: h.book || "",
+        number: h.refno || "",
+        text: h.english || "",
+        text_ar: h.arabic || ""
       });
     }
   }
 
-  const results = uniqueHadiths.slice(0, 15);
+  HADITH_DATA = all;
 
-  // 🗄️ Cache this keyword’s results for 6 hours
-  cache[cacheKey] = {
-    results,
-    expiry: Date.now() + 1000 * 60 * 60 * 6,
-  };
+  FUSE = new Fuse(all, {
+    keys: ["text", "text_ar"],
+    threshold: 0.32,
+    minMatchCharLength: 3
+  });
 
-  return res.status(200).json(results);
+  console.log(`📚 Loaded ${all.length} hadiths from Hadith-DB`);
 }
 
-// 🔁 Retry fetch with exponential backoff
-async function retryFetch(url, options, retries = 5, delay = 1000) {
-  for (let attempt = 1; attempt <= retries; attempt++) {
-    try {
-      const response = await fetch(url, options);
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+export async function GET() {
+  loadHadithData();
 
-      const text = await response.text();
-      let data;
+  const month = moment().iMonth() + 1;
+  const themes = hijriMonthKeywords[month] || ["faith"];
+  const keyword = themes[Math.floor(Math.random() * themes.length)];
 
-      try {
-        data = JSON.parse(text);
-      } catch {
-        throw new Error(`Invalid JSON: ${text.slice(0, 120)}`);
-      }
+  const cacheKey = `${month}-${keyword}`;
 
-      if (data?.hadiths && Array.isArray(data.hadiths)) {
-        return data;
-      } else {
-        console.warn(`Invalid data structure on attempt ${attempt}`);
-      }
-    } catch (err) {
-      console.warn(`Attempt ${attempt} failed: ${err.message}`);
-    }
+  if (RESULT_CACHE[cacheKey] && Date.now() < RESULT_CACHE[cacheKey].expiry) {
+    return NextResponse.json(RESULT_CACHE[cacheKey].results, { status: 200 });
+  }
 
-    if (attempt < retries) {
-      await new Promise((resolve) => setTimeout(resolve, delay * attempt));
+  const results = FUSE.search(keyword).slice(0, 40).map(r => r.item);
+
+  if (!results.length) {
+    return NextResponse.json({ error: "No hadith found" }, { status: 502 });
+  }
+
+  const seen = new Set();
+  const unique = [];
+
+  for (const h of results) {
+    if (!seen.has(h.text)) {
+      seen.add(h.text);
+      unique.push({
+        title: `${h.collection} ${h.book}:${h.number}`,
+        content: h.text,
+        link: `https://sunnah.com/${h.collection}:${h.number}`
+      });
     }
   }
-  throw new Error(`All ${retries} attempts failed`);
+
+  const final = unique.slice(0, 15);
+
+  RESULT_CACHE[cacheKey] = {
+    results: final,
+    expiry: Date.now() + 6 * 60 * 60 * 1000
+  };
+
+  return NextResponse.json(final, { status: 200 });
 }
