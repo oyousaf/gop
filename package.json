@@ -15,7 +15,6 @@
     "axios": "^1.13.2",
     "cheerio": "^1.1.2",
     "framer-motion": "^11.18.2",
-    "fuse.js": "^7.1.0",
     "hls.js": "^1.6.7",
     "moment-hijri": "^3.0.0",
     "next": "^16.0.10",
