@@ -25,15 +25,15 @@ export default function Home() {
       <ScrollToTop />
 
       {/* Hero + Page Sections */}
-      <Hero />{/*
+      <Hero />
       <Banner />
       <Makkah />
       <Madinah />
       <Aqsa />
-      <Knowledge />*/}
-      <Hadith />{/*
+      <Knowledge />
+      <Hadith />
       <News />
-      <Divestment />*/}
+      <Divestment />
 
       {/* Footer */}
       <Footer />
