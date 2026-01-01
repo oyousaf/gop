@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const PREVIEW_CHAR_LIMIT = 420;
 
-// Human-readable collection names
+// Canonical collection names
 const COLLECTION_LABELS = {
   bukhari: "Sahih al-Bukhari",
   muslim: "Sahih Muslim",
@@ -69,25 +69,19 @@ export default function Hadith() {
       </motion.h2>
 
       {loading ? (
-        <p className="text-white text-center animate-pulse">
-          Loading hadiths…
-        </p>
+        <p className="text-white text-center animate-pulse">Loading hadiths…</p>
       ) : error ? (
         <p className="text-red-500 text-center">{error}</p>
       ) : (
         <div className="flex flex-col gap-12">
           {hadiths.map((hadith, i) => {
             const arabic =
-              typeof hadith.arabic === "string"
-                ? hadith.arabic.trim()
-                : "";
+              typeof hadith.arabic === "string" ? hadith.arabic.trim() : "";
             const hasArabic = arabic.length > 0;
 
             const currentLang = lang[i] || "en";
             const text =
-              currentLang === "ar" && hasArabic
-                ? arabic
-                : hadith.content || "";
+              currentLang === "ar" && hasArabic ? arabic : hadith.content || "";
 
             const canExpand = text.length > PREVIEW_CHAR_LIMIT;
             const isExpanded = !!expanded[i];
@@ -168,24 +162,27 @@ export default function Hadith() {
                   )}
                 </AnimatePresence>
 
-                {/* PROVENANCE */}
-                {Array.isArray(hadith.sources) &&
-                  hadith.sources.length > 0 && (
-                    <div className="mt-6">
-                      {!isExpanded && (
-                        <div className="w-12 h-px bg-white/20 mx-auto mb-4" />
-                      )}
-                      <p className="text-xs text-white/50 text-center">
-                        Narrated in:{" "}
-                        {hadith.sources
-                          .map(
-                            (s) =>
-                              COLLECTION_LABELS[s] || s
-                          )
-                          .join(" · ")}
-                      </p>
-                    </div>
-                  )}
+                {/* SOURCE BADGES */}
+                {Array.isArray(hadith.sources) && hadith.sources.length > 0 && (
+                  <div className="mt-6 flex flex-wrap justify-center gap-2">
+                    {hadith.sources.map((s) => (
+                      <span
+                        key={s}
+                        className="
+                            text-xs
+                            px-3 py-1
+                            rounded-full
+                            border border-white/15
+                            text-white/70
+                            bg-white/5
+                            backdrop-blur
+                          "
+                      >
+                        {COLLECTION_LABELS[s] || s}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </article>
             );
           })}
