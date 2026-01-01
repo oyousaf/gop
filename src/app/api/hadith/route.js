@@ -6,14 +6,14 @@ import { NextResponse } from "next/server";
 let HADITH_DATA = null;
 let RESULT_CACHE = {};
 
-/* ----------------------------------------------------
+/* ---------------------------------------------
    🔒 Safe string
----------------------------------------------------- */
+--------------------------------------------- */
 const safe = (v) => (typeof v === "string" ? v : v ? String(v) : "");
 
-/* ----------------------------------------------------
+/* ---------------------------------------------
    📅 Hijri Month Keywords
----------------------------------------------------- */
+--------------------------------------------- */
 const hijriMonthKeywords = {
   1: ["Muharram", "Ashura", "fasting", "repentance", "charity"],
   2: ["Safar", "travel", "hardship"],
@@ -31,9 +31,9 @@ const hijriMonthKeywords = {
 
 const GLOBAL_FALLBACK = ["mercy", "charity", "faith"];
 
-/* ----------------------------------------------------
+/* ---------------------------------------------
    🧹 Normalize text for deduplication
----------------------------------------------------- */
+--------------------------------------------- */
 function normalize(text) {
   return text
     .toLowerCase()
@@ -42,9 +42,9 @@ function normalize(text) {
     .trim();
 }
 
-/* ----------------------------------------------------
-   📚 Load hadith corpus
----------------------------------------------------- */
+/* ---------------------------------------------
+   📚 Load hadith corpus (ENRICHED)
+--------------------------------------------- */
 function loadHadithData() {
   if (HADITH_DATA) return;
 
@@ -65,6 +65,11 @@ function loadHadithData() {
     if (!fs.existsSync(fp)) continue;
 
     const raw = JSON.parse(fs.readFileSync(fp, "utf8"));
+
+    const collectionTitles = {
+      en: raw?.metadata?.english?.title || collection,
+      ar: raw?.metadata?.arabic?.title || null,
+    };
 
     const arr = Array.isArray(raw)
       ? raw
@@ -103,6 +108,7 @@ function loadHadithData() {
           arabic: arabic || null,
           narrator,
           sources: [collection],
+          collectionTitles,
         });
       } else {
         const existing = map.get(key);
@@ -116,9 +122,9 @@ function loadHadithData() {
   HADITH_DATA = Array.from(map.values());
 }
 
-/* ----------------------------------------------------
+/* ---------------------------------------------
    🔎 Keyword search
----------------------------------------------------- */
+--------------------------------------------- */
 function searchKeyword(keyword) {
   const k = keyword.toLowerCase();
   const results = [];
@@ -127,12 +133,11 @@ function searchKeyword(keyword) {
     if (!h.text.includes(k)) continue;
 
     results.push({
-      title: `${h.collection} ${h.book}:${h.number}`,
       content: h.original,
       arabic: h.arabic || null,
-      link: `https://sunnah.com/${h.collection}:${h.number}`,
       narrator: h.narrator || null,
       sources: h.sources,
+      collectionTitles: h.collectionTitles,
     });
 
     if (results.length >= 20) break;
@@ -141,9 +146,9 @@ function searchKeyword(keyword) {
   return results;
 }
 
-/* ----------------------------------------------------
-   🕌 MAIN ROUTE — FLAT ARRAY OUTPUT
----------------------------------------------------- */
+/* ---------------------------------------------
+   🕌 MAIN ROUTE
+--------------------------------------------- */
 export async function GET() {
   loadHadithData();
 
