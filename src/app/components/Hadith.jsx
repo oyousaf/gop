@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
+const PREVIEW_CHAR_LIMIT = 420;
+
 export default function Hadith() {
   const [hadiths, setHadiths] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -63,47 +65,48 @@ export default function Hadith() {
       ) : (
         <div className="flex flex-col gap-12">
           {hadiths.map((hadith, i) => {
+            const arabic =
+              typeof hadith.arabic === "string"
+                ? hadith.arabic.trim()
+                : "";
+            const hasArabic = arabic.length > 0;
+
             const currentLang = lang[i] || "en";
-            const showArabic = currentLang === "ar" && hadith.arabic;
+            const text =
+              currentLang === "ar" && hasArabic
+                ? arabic
+                : hadith.content || "";
+
+            const canExpand = text.length > PREVIEW_CHAR_LIMIT;
             const isExpanded = !!expanded[i];
-            const text = showArabic ? hadith.arabic : hadith.content;
 
             return (
-              <motion.article
+              <article
                 key={`${hadith.title}-${i}`}
-                layout
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4 }}
-                viewport={{ once: true }}
                 className="
-                  relative cursor-pointer
+                  relative
                   bg-white/5 backdrop-blur-md
                   rounded-2xl
                   border border-white/10
                   px-6 sm:px-10 py-8
                   shadow-md
                 "
-                onClick={() => toggleExpand(i)}
               >
                 {/* LANGUAGE TOGGLE */}
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toggleLang(i);
-                  }}
-                  className="
-                    absolute top-4 right-4
+                  type="button"
+                  onClick={() => hasArabic && toggleLang(i)}
+                  aria-disabled={!hasArabic}
+                  className={`
+                    absolute top-4 right-4 z-20
                     text-xs font-semibold
-                    px-3 py-1
-                    rounded-full
-                    border border-white/20
-                    text-white/80
-                    hover:text-white
-                    hover:border-white/40
-                    transition
-                  "
-                  aria-label="Toggle language"
+                    px-3 py-1 rounded-full border transition
+                    ${
+                      hasArabic
+                        ? "border-white/20 text-white/80 hover:text-white hover:border-white/40"
+                        : "border-white/10 text-white/30 cursor-default"
+                    }
+                  `}
                 >
                   {currentLang === "en" ? "AR" : "EN"}
                 </button>
@@ -115,54 +118,60 @@ export default function Hadith() {
                   </h3>
                 )}
 
-                {/* HADITH TEXT */}
+                {/* TEXT (ONLY THIS IS CLICKABLE) */}
                 <motion.p
+                  onClick={() => canExpand && toggleExpand(i)}
                   layout
                   className={`
                     text-lg leading-[2.15]
                     whitespace-pre-wrap
                     max-w-3xl mx-auto
-                    py-1 overflow-hidden
-                    ${showArabic ? "text-right font-arabic" : "text-left"}
-                    ${!isExpanded ? "line-clamp-4" : ""}
+                    overflow-hidden
+                    ${
+                      currentLang === "ar"
+                        ? "text-right font-arabic"
+                        : "text-left"
+                    }
+                    ${!isExpanded && canExpand ? "line-clamp-4 cursor-pointer" : ""}
                   `}
                 >
                   {text}
                 </motion.p>
 
-                {/* ELLIPSIS HINT */}
-                {!isExpanded && text.length > 400 && (
-                  <p className="text-xs text-white/40 text-center mt-3">
-                    Tap to read more
-                  </p>
-                )}
-
-                {/* EXPANDED EXTRAS */}
+                {/* EXPANDED FADE */}
                 <AnimatePresence>
                   {isExpanded && (
                     <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      transition={{ duration: 0.25 }}
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: 8 }}
+                      transition={{ duration: 0.2 }}
+                      className="mt-6"
                     >
-                      <div className="w-12 h-px bg-white/20 mx-auto my-8" />
-
-                      {Array.isArray(hadith.sources) &&
-                        hadith.sources.length > 0 && (
-                          <p className="text-xs text-white/50 text-center">
-                            Narrated in:{" "}
-                            {hadith.sources
-                              .map(
-                                (s) => s.charAt(0).toUpperCase() + s.slice(1)
-                              )
-                              .join(" · ")}
-                          </p>
-                        )}
+                      <div className="w-12 h-px bg-white/20 mx-auto mb-4" />
                     </motion.div>
                   )}
                 </AnimatePresence>
-              </motion.article>
+
+                {/* PROVENANCE */}
+                {Array.isArray(hadith.sources) &&
+                  hadith.sources.length > 0 && (
+                    <div className="mt-6">
+                      {!isExpanded && (
+                        <div className="w-12 h-px bg-white/20 mx-auto mb-4" />
+                      )}
+                      <p className="text-xs text-white/50 text-center">
+                        Narrated in:{" "}
+                        {hadith.sources
+                          .map(
+                            (s) =>
+                              s.charAt(0).toUpperCase() + s.slice(1)
+                          )
+                          .join(" · ")}
+                      </p>
+                    </div>
+                  )}
+              </article>
             );
           })}
         </div>
