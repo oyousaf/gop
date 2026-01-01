@@ -5,6 +5,16 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const PREVIEW_CHAR_LIMIT = 420;
 
+// Human-readable collection names
+const COLLECTION_LABELS = {
+  bukhari: "Sahih al-Bukhari",
+  muslim: "Sahih Muslim",
+  tirmidhi: "Jami‘ at-Tirmidhi",
+  nasai: "Sunan an-Nasa’i",
+  ibnmajah: "Sunan Ibn Majah",
+  abudawud: "Sunan Abi Dawud",
+};
+
 export default function Hadith() {
   const [hadiths, setHadiths] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -59,7 +69,9 @@ export default function Hadith() {
       </motion.h2>
 
       {loading ? (
-        <p className="text-white text-center animate-pulse">Loading hadiths…</p>
+        <p className="text-white text-center animate-pulse">
+          Loading hadiths…
+        </p>
       ) : error ? (
         <p className="text-red-500 text-center">{error}</p>
       ) : (
@@ -82,7 +94,7 @@ export default function Hadith() {
 
             return (
               <article
-                key={`${hadith.title}-${i}`}
+                key={`${hadith.narrator || "hadith"}-${i}`}
                 className="
                   relative
                   bg-white/5 backdrop-blur-md
@@ -93,23 +105,22 @@ export default function Hadith() {
                 "
               >
                 {/* LANGUAGE TOGGLE */}
-                <button
-                  type="button"
-                  onClick={() => hasArabic && toggleLang(i)}
-                  aria-disabled={!hasArabic}
-                  className={`
-                    absolute top-4 right-4 z-20
-                    text-xs font-semibold
-                    px-3 py-1 rounded-full border transition
-                    ${
-                      hasArabic
-                        ? "border-white/20 text-white/80 hover:text-white hover:border-white/40"
-                        : "border-white/10 text-white/30 cursor-default"
-                    }
-                  `}
-                >
-                  {currentLang === "en" ? "AR" : "EN"}
-                </button>
+                {hasArabic && (
+                  <button
+                    type="button"
+                    onClick={() => toggleLang(i)}
+                    className="
+                      absolute top-4 right-4 z-20
+                      text-xs font-semibold
+                      px-3 py-1 rounded-full border
+                      border-white/20 text-white/80
+                      hover:text-white hover:border-white/40
+                      transition
+                    "
+                  >
+                    {currentLang === "en" ? "AR" : "EN"}
+                  </button>
+                )}
 
                 {/* NARRATOR */}
                 {hadith.narrator && (
@@ -118,7 +129,7 @@ export default function Hadith() {
                   </h3>
                 )}
 
-                {/* TEXT (ONLY THIS IS CLICKABLE) */}
+                {/* TEXT */}
                 <motion.p
                   onClick={() => canExpand && toggleExpand(i)}
                   layout
@@ -132,7 +143,11 @@ export default function Hadith() {
                         ? "text-right font-arabic"
                         : "text-left"
                     }
-                    ${!isExpanded && canExpand ? "line-clamp-4 cursor-pointer" : ""}
+                    ${
+                      !isExpanded && canExpand
+                        ? "line-clamp-4 cursor-pointer"
+                        : ""
+                    }
                   `}
                 >
                   {text}
@@ -165,7 +180,7 @@ export default function Hadith() {
                         {hadith.sources
                           .map(
                             (s) =>
-                              s.charAt(0).toUpperCase() + s.slice(1)
+                              COLLECTION_LABELS[s] || s
                           )
                           .join(" · ")}
                       </p>
