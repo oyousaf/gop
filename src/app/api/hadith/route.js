@@ -79,7 +79,13 @@ function loadHadithData() {
       if (!english) continue;
 
       const arabic =
-        h?.arabic?.text || h?.text?.arabic || h?.hadith?.arabic || "";
+        typeof h?.arabic === "string"
+          ? h.arabic
+          : typeof h?.hadith?.arabic === "string"
+          ? h.hadith.arabic
+          : typeof h?.text?.arabic === "string"
+          ? h.text.arabic
+          : "";
 
       const key = normalize(english);
 
