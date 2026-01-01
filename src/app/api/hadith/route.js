@@ -74,20 +74,17 @@ function loadHadithData() {
 
     for (const h of arr) {
       const english =
-        h?.english?.text ||
-        h?.text?.english ||
-        h?.hadith?.text ||
-        "";
+        h?.english?.text || h?.text?.english || h?.hadith?.text || "";
 
       if (!english) continue;
+
+      const arabic =
+        h?.arabic?.text || h?.text?.arabic || h?.hadith?.arabic || "";
 
       const key = normalize(english);
 
       const narrator = safe(
-        h?.narrator ||
-        h?.english?.narrator ||
-        h?.hadith?.narrator ||
-        ""
+        h?.narrator || h?.english?.narrator || h?.hadith?.narrator || ""
       );
 
       if (!map.has(key)) {
@@ -97,6 +94,7 @@ function loadHadithData() {
           number: safe(h.idInBook || h.hadithnumber || ""),
           text: english.toLowerCase(),
           original: english,
+          arabic: arabic || null,
           narrator,
           sources: [collection],
         });
@@ -125,6 +123,7 @@ function searchKeyword(keyword) {
     results.push({
       title: `${h.collection} ${h.book}:${h.number}`,
       content: h.original,
+      arabic: h.arabic || null,
       link: `https://sunnah.com/${h.collection}:${h.number}`,
       narrator: h.narrator || null,
       sources: h.sources,
