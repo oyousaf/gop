@@ -1,17 +1,22 @@
 "use client";
 
+import dynamic from "next/dynamic";
+
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Footer from "./components/Footer";
 import Banner from "./components/Banner";
-import Makkah from "./components/Makkah";
-import Madinah from "./components/Madinah";
-import Aqsa from "./components/Aqsa";
-import Knowledge from "./components/Knowledge";
-import Hadith from "./components/Hadith";
-import News from "./components/News";
-import Divestment from "./components/Divestment";
-import ScrollToTop from "./components/ScrollToTop";
+
+const Makkah = dynamic(() => import("./components/Makkah"));
+const Madinah = dynamic(() => import("./components/Madinah"));
+const Aqsa = dynamic(() => import("./components/Aqsa"));
+const Knowledge = dynamic(() => import("./components/Knowledge"));
+const Hadith = dynamic(() => import("./components/Hadith"));
+const News = dynamic(() => import("./components/News"));
+const Divestment = dynamic(() => import("./components/Divestment"));
+const ScrollToTop = dynamic(() => import("./components/ScrollToTop"), {
+  ssr: false,
+});
 
 export default function Home() {
   return (
@@ -20,22 +25,21 @@ export default function Home() {
         حدائق الجنة – Reviving the Ummah through Sacred Islamic Knowledge
       </h1>
 
-      {/* Persistent UI */}
       <Navbar />
       <ScrollToTop />
 
-      {/* Hero + Page Sections */}
-      <Hero />
-      <Banner />
-      <Makkah />
-      <Madinah />
-      <Aqsa />
-      <Knowledge />
-      <Hadith />
-      <News />
-      <Divestment />
+      <main>
+        <Hero />
+        <Banner />
+        <Makkah />
+        <Madinah />
+        <Aqsa />
+        <Knowledge />
+        <Hadith />
+        <News />
+        <Divestment />
+      </main>
 
-      {/* Footer */}
       <Footer />
     </div>
   );
