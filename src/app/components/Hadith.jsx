@@ -5,14 +5,34 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const PREVIEW_CHAR_LIMIT = 420;
 
-// Canonical collection names
+// Canonical collection labels
 const COLLECTION_LABELS = {
-  bukhari: "Sahih al-Bukhari",
-  muslim: "Sahih Muslim",
-  tirmidhi: "Jami‘ at-Tirmidhi",
-  nasai: "Sunan an-Nasa’i",
-  ibnmajah: "Sunan Ibn Majah",
-  abudawud: "Sunan Abi Dawud",
+  bukhari: {
+    en: "Sahih al-Bukhari",
+    ar: "صحيح البخاري",
+    sahihayn: true,
+  },
+  muslim: {
+    en: "Sahih Muslim",
+    ar: "صحيح مسلم",
+    sahihayn: true,
+  },
+  tirmidhi: {
+    en: "Jami‘ at-Tirmidhi",
+    ar: "جامع الترمذي",
+  },
+  nasai: {
+    en: "Sunan an-Nasa’i",
+    ar: "سنن النسائي",
+  },
+  ibnmajah: {
+    en: "Sunan Ibn Majah",
+    ar: "سنن ابن ماجه",
+  },
+  abudawud: {
+    en: "Sunan Abi Dawud",
+    ar: "سنن أبي داود",
+  },
 };
 
 export default function Hadith() {
@@ -81,7 +101,9 @@ export default function Hadith() {
 
             const currentLang = lang[i] || "en";
             const text =
-              currentLang === "ar" && hasArabic ? arabic : hadith.content || "";
+              currentLang === "ar" && hasArabic
+                ? arabic
+                : hadith.content || "";
 
             const canExpand = text.length > PREVIEW_CHAR_LIMIT;
             const isExpanded = !!expanded[i];
@@ -98,7 +120,7 @@ export default function Hadith() {
                   shadow-md
                 "
               >
-                {/* LANGUAGE TOGGLE */}
+                {/* LANGUAGE TOGGLE — TEXT ONLY */}
                 {hasArabic && (
                   <button
                     type="button"
@@ -123,7 +145,7 @@ export default function Hadith() {
                   </h3>
                 )}
 
-                {/* TEXT */}
+                {/* HADITH TEXT */}
                 <motion.p
                   onClick={() => canExpand && toggleExpand(i)}
                   layout
@@ -147,7 +169,7 @@ export default function Hadith() {
                   {text}
                 </motion.p>
 
-                {/* EXPANDED FADE */}
+                {/* EXPAND ANIMATION */}
                 <AnimatePresence>
                   {isExpanded && (
                     <motion.div
@@ -162,27 +184,32 @@ export default function Hadith() {
                   )}
                 </AnimatePresence>
 
-                {/* SOURCE BADGES */}
-                {Array.isArray(hadith.sources) && hadith.sources.length > 0 && (
-                  <div className="mt-6 flex flex-wrap justify-center gap-2">
-                    {hadith.sources.map((s) => (
-                      <span
-                        key={s}
-                        className="
-                            text-xs
-                            px-3 py-1
-                            rounded-full
-                            border border-white/15
-                            text-white/70
-                            bg-white/5
-                            backdrop-blur
-                          "
-                      >
-                        {COLLECTION_LABELS[s] || s}
-                      </span>
-                    ))}
-                  </div>
-                )}
+                {/* SOURCE BADGES — EN / AR + SAHIHAYN GOLD */}
+                {Array.isArray(hadith.sources) &&
+                  hadith.sources.length > 0 && (
+                    <div className="mt-6 flex flex-wrap justify-center gap-2">
+                      {hadith.sources.map((s) => {
+                        const meta = COLLECTION_LABELS[s];
+                        const label = meta?.[currentLang] || s;
+
+                        return (
+                          <span
+                            key={s}
+                            className={`
+                              text-xs px-3 py-1 rounded-full border backdrop-blur
+                              ${
+                                meta?.sahihayn
+                                  ? "border-amber-400/60 text-amber-300 bg-amber-400/10"
+                                  : "border-white/15 text-white/70 bg-white/5"
+                              }
+                            `}
+                          >
+                            {label}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  )}
               </article>
             );
           })}
