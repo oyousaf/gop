@@ -17,9 +17,9 @@ export default function Hadith() {
         const res = await fetch("/api/hadith");
         if (!res.ok) throw new Error("Failed to fetch hadith");
         const data = await res.json();
-        setHadiths(data);
+        setHadiths(Array.isArray(data) ? data : []);
       } catch (err) {
-        setError(err.message);
+        setError(err.message || "Unexpected error");
       } finally {
         setLoading(false);
       }
@@ -34,8 +34,8 @@ export default function Hadith() {
     }
   }, [activeHadith]);
 
-  const truncate = (text, limit = 220) =>
-    text.length > limit ? `${text.slice(0, limit)}...` : text;
+  const truncate = (text, limit = 260) =>
+    text && text.length > limit ? `${text.slice(0, limit)}…` : text;
 
   return (
     <section
@@ -55,44 +55,43 @@ export default function Hadith() {
       </motion.h2>
 
       {loading ? (
-        <p className="text-white text-center animate-pulse">
-          Loading hadiths...
-        </p>
+        <p className="text-white text-center animate-pulse">Loading hadiths…</p>
       ) : error ? (
         <p className="text-red-500 text-center">{error}</p>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="flex flex-col gap-10">
           {hadiths.map((hadith, i) => (
-            <motion.div
-              key={i}
+            <motion.article
+              key={`${hadith.title}-${i}`}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: i * 0.05 }}
               viewport={{ once: true }}
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.985 }}
               className="cursor-pointer bg-white/5 backdrop-blur-md rounded-xl border border-white/10 p-6 flex flex-col shadow-md hover:shadow-lg transition-shadow"
               onClick={() => setActiveHadith(hadith)}
               tabIndex={0}
               role="button"
-              aria-label={`Open full hadith titled ${hadith.title}`}
+              aria-label="Open full hadith"
               onKeyDown={(e) => e.key === "Enter" && setActiveHadith(hadith)}
             >
-              <h3 className="text-2xl font-semibold text-[#b9e1d4] mb-4 text-center">
-                {hadith.title}
-              </h3>
-              <p className="text-white/90 text-lg mb-6 text-center">
+              {/* NARRATOR  */}
+              {hadith.narrator && (
+                <h3 className="text-2xl font-semibold text-[#b9e1d4] mb-2 text-center">
+                  {hadith.narrator}
+                </h3>
+              )}
+
+              <p className="text-white/90 text-lg text-center">
                 {truncate(hadith.content)}
               </p>
-              <div className="mt-auto text-center">
-                <span className="inline-block mt-4 px-4 py-2 bg-neutral-200 text-background hover:text-[#6c857d] rounded hover:bg-neutral-300 transition-colors duration-200">
-                  Read More
-                </span>
-              </div>
-            </motion.div>
+            </motion.article>
           ))}
         </div>
       )}
 
-      {/* Modal */}
+      {/* MODAL */}
       <AnimatePresence>
         {activeHadith && (
           <motion.div
@@ -102,8 +101,6 @@ export default function Hadith() {
             exit={{ opacity: 0 }}
             aria-modal="true"
             role="dialog"
-            aria-labelledby="modal-title"
-            aria-describedby="modal-description"
             onClick={() => setActiveHadith(null)}
           >
             <motion.div
@@ -125,28 +122,15 @@ export default function Hadith() {
                 </button>
               </div>
 
-              <h3
-                id="modal-title"
-                className="text-2xl font-bold text-center mb-4"
-              >
-                {activeHadith.title}
-              </h3>
-              <p
-                id="modal-description"
-                className="text-lg leading-relaxed text-center whitespace-pre-wrap"
-              >
+              {activeHadith.narrator && (
+                <h3 className="text-2xl font-semibold text-[#b9e1d4] mb-2 text-center">
+                  {activeHadith.narrator}
+                </h3>
+              )}
+
+              <p className="text-lg leading-relaxed text-center whitespace-pre-wrap">
                 {activeHadith.content}
               </p>
-              <div className="text-center mt-6">
-                <a
-                  href={activeHadith.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-green-300 underline hover:text-green-400"
-                >
-                  Source
-                </a>
-              </div>
             </motion.div>
           </motion.div>
         )}
