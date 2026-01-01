@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiX } from "react-icons/fi";
 
 export default function Hadith() {
   const [hadiths, setHadiths] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [activeHadith, setActiveHadith] = useState(null);
-  const closeButtonRef = useRef(null);
+
+  const [lang, setLang] = useState({});
+  const [expanded, setExpanded] = useState({});
 
   useEffect(() => {
     const loadHadiths = async () => {
@@ -27,24 +27,26 @@ export default function Hadith() {
     loadHadiths();
   }, []);
 
-  useEffect(() => {
-    document.body.classList.toggle("overflow-hidden", !!activeHadith);
-    if (activeHadith && closeButtonRef.current) {
-      closeButtonRef.current.focus();
-    }
-  }, [activeHadith]);
+  const toggleLang = (i) => {
+    setLang((prev) => ({
+      ...prev,
+      [i]: prev[i] === "ar" ? "en" : "ar",
+    }));
+  };
 
-  const truncate = (text, limit = 260) =>
-    text && text.length > limit ? `${text.slice(0, limit)}…` : text;
+  const toggleExpand = (i) => {
+    setExpanded((prev) => ({
+      ...prev,
+      [i]: !prev[i],
+    }));
+  };
 
   return (
     <section
       id="hadith"
-      className="relative py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto scroll-mt-16"
-      aria-labelledby="hadith-heading"
+      className="relative py-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto scroll-mt-16"
     >
       <motion.h2
-        id="hadith-heading"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
@@ -59,82 +61,112 @@ export default function Hadith() {
       ) : error ? (
         <p className="text-red-500 text-center">{error}</p>
       ) : (
-        <div className="flex flex-col gap-10">
-          {hadiths.map((hadith, i) => (
-            <motion.article
-              key={`${hadith.title}-${i}`}
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: i * 0.05 }}
-              viewport={{ once: true }}
-              whileHover={{ scale: 1.01 }}
-              whileTap={{ scale: 0.985 }}
-              className="cursor-pointer bg-white/5 backdrop-blur-md rounded-xl border border-white/10 p-6 flex flex-col shadow-md hover:shadow-lg transition-shadow"
-              onClick={() => setActiveHadith(hadith)}
-              tabIndex={0}
-              role="button"
-              aria-label="Open full hadith"
-              onKeyDown={(e) => e.key === "Enter" && setActiveHadith(hadith)}
-            >
-              {/* NARRATOR  */}
-              {hadith.narrator && (
-                <h3 className="text-2xl font-semibold text-[#b9e1d4] mb-2 text-center">
-                  {hadith.narrator}
-                </h3>
-              )}
+        <div className="flex flex-col gap-12">
+          {hadiths.map((hadith, i) => {
+            const currentLang = lang[i] || "en";
+            const showArabic = currentLang === "ar" && hadith.arabic;
+            const isExpanded = !!expanded[i];
+            const text = showArabic ? hadith.arabic : hadith.content;
 
-              <p className="text-white/90 text-lg text-center">
-                {truncate(hadith.content)}
-              </p>
-            </motion.article>
-          ))}
+            return (
+              <motion.article
+                key={`${hadith.title}-${i}`}
+                layout
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4 }}
+                viewport={{ once: true }}
+                className="
+                  relative cursor-pointer
+                  bg-white/5 backdrop-blur-md
+                  rounded-2xl
+                  border border-white/10
+                  px-6 sm:px-10 py-8
+                  shadow-md
+                "
+                onClick={() => toggleExpand(i)}
+              >
+                {/* LANGUAGE TOGGLE */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleLang(i);
+                  }}
+                  className="
+                    absolute top-4 right-4
+                    text-xs font-semibold
+                    px-3 py-1
+                    rounded-full
+                    border border-white/20
+                    text-white/80
+                    hover:text-white
+                    hover:border-white/40
+                    transition
+                  "
+                  aria-label="Toggle language"
+                >
+                  {currentLang === "en" ? "AR" : "EN"}
+                </button>
+
+                {/* NARRATOR */}
+                {hadith.narrator && (
+                  <h3 className="text-2xl font-semibold text-[#b9e1d4] text-center mb-6">
+                    {hadith.narrator}
+                  </h3>
+                )}
+
+                {/* HADITH TEXT */}
+                <motion.p
+                  layout
+                  className={`
+                    text-lg leading-[2.15]
+                    whitespace-pre-wrap
+                    max-w-3xl mx-auto
+                    py-1 overflow-hidden
+                    ${showArabic ? "text-right font-arabic" : "text-left"}
+                    ${!isExpanded ? "line-clamp-4" : ""}
+                  `}
+                >
+                  {text}
+                </motion.p>
+
+                {/* ELLIPSIS HINT */}
+                {!isExpanded && text.length > 400 && (
+                  <p className="text-xs text-white/40 text-center mt-3">
+                    Tap to read more
+                  </p>
+                )}
+
+                {/* EXPANDED EXTRAS */}
+                <AnimatePresence>
+                  {isExpanded && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.25 }}
+                    >
+                      <div className="w-12 h-px bg-white/20 mx-auto my-8" />
+
+                      {Array.isArray(hadith.sources) &&
+                        hadith.sources.length > 0 && (
+                          <p className="text-xs text-white/50 text-center">
+                            Narrated in:{" "}
+                            {hadith.sources
+                              .map(
+                                (s) => s.charAt(0).toUpperCase() + s.slice(1)
+                              )
+                              .join(" · ")}
+                          </p>
+                        )}
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.article>
+            );
+          })}
         </div>
       )}
-
-      {/* MODAL */}
-      <AnimatePresence>
-        {activeHadith && (
-          <motion.div
-            className="fixed inset-0 z-50 bg-black/70 flex items-center justify-center px-4 sm:px-6"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            aria-modal="true"
-            role="dialog"
-            onClick={() => setActiveHadith(null)}
-          >
-            <motion.div
-              className="relative bg-background text-white rounded-xl p-4 sm:p-6 max-w-2xl w-full z-10 shadow-lg border border-white/10 max-h-[90vh] overflow-y-auto"
-              initial={{ y: 80, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: 80, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="w-full flex justify-end mb-4">
-                <button
-                  ref={closeButtonRef}
-                  onClick={() => setActiveHadith(null)}
-                  className="text-white hover:text-red-400 transition"
-                  aria-label="Close hadith modal"
-                >
-                  <FiX className="w-10 h-10" />
-                </button>
-              </div>
-
-              {activeHadith.narrator && (
-                <h3 className="text-2xl font-semibold text-[#b9e1d4] mb-2 text-center">
-                  {activeHadith.narrator}
-                </h3>
-              )}
-
-              <p className="text-lg leading-relaxed text-center whitespace-pre-wrap">
-                {activeHadith.content}
-              </p>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </section>
   );
 }
