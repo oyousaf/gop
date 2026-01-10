@@ -33,15 +33,37 @@ export default function News() {
   }, [lang]);
 
   /* ---------------------------------------------
-     Text cleaning
+     Text cleaning (Arabic-safe)
   --------------------------------------------- */
-  const cleanText = (text = "") =>
-    text
-      .replace(/<[^>]*>/g, "")
-      .replace(/list of \d+ items?/gi, "")
-      .replace(/\[\+\d+\schars\]/gi, "")
-      .replace(/\s+/g, " ")
-      .trim();
+  const cleanText = (text = "") => {
+    // 1. Strip HTML
+    const stripped = text.replace(/<[^>]*>/g, "");
+
+    // 2. Hard-remove CMS list markers
+    const noLists = stripped.replace(/\blist\s*\d+\s*of\s*\d+\b/gi, "");
+
+    // 3. Split into sentence-like chunks
+    const chunks = noLists
+      .split(/(?<=[.!؟\n])\s+/)
+      .map((c) => c.trim())
+      .filter(Boolean);
+
+    // 4. Filter out junk-heavy chunks
+    const cleaned = chunks.filter((chunk) => {
+      const letters = chunk.match(/[\p{L}]/gu)?.length || 0;
+      const digits = chunk.match(/\d/gu)?.length || 0;
+
+      // Reject numeric / CMS noise
+      if (digits > letters) return false;
+
+      // Reject very short fragments
+      if (chunk.length < 15) return false;
+
+      return true;
+    });
+
+    return cleaned.join(" ");
+  };
 
   const getFullText = (a) =>
     cleanText(`${a?.description || ""}\n\n${a?.content || ""}`);
