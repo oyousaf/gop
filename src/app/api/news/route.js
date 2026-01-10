@@ -6,7 +6,6 @@ export async function GET(request) {
   }
 
   try {
-    // Extract query params in app-router style
     const { searchParams } = new URL(request.url);
     const lang = searchParams.get("lang") === "ar" ? "ar" : "en";
 
@@ -43,8 +42,39 @@ export async function GET(request) {
     const seenUrls = new Set();
     const seenTitles = new Set();
 
-    const cleanText = (text) =>
-      !text ? "" : text.replace(/\[\+\d+\schars\]/g, "").trim();
+    /* ---------------------------------------------
+       Robust sanitation (Arabic-safe)
+    --------------------------------------------- */
+    const cleanText = (text = "") => {
+      // Strip HTML
+      let t = text.replace(/<[^>]*>/g, "");
+
+      // Kill CMS list markers explicitly
+      t = t.replace(
+        /\b(list\s*\d+\s*of\s*\d+|item\s*\d+|end\s*of\s*list)\b/gi,
+        ""
+      );
+
+      // Split into chunks
+      const chunks = t
+        .split(/(?<=[.!؟\n])\s+/)
+        .map((c) => c.trim())
+        .filter(Boolean);
+
+      // Filter low-signal chunks
+      const cleaned = chunks.filter((chunk) => {
+        const letters = chunk.match(/[\p{L}]/gu)?.length || 0;
+        const digits = chunk.match(/\d/gu)?.length || 0;
+
+        if (digits > letters) return false;
+        if (chunk.length < 20) return false;
+        if (/\b(list|item|end of)\b/i.test(chunk)) return false;
+
+        return true;
+      });
+
+      return cleaned.join(" ");
+    };
 
     const filtered = articles.filter((article) => {
       const isValid =
@@ -56,15 +86,19 @@ export async function GET(request) {
       if (!isValid) return false;
 
       const cleanUrl = article.url.split("?")[0].trim();
-      const title = article.title.trim().toLowerCase();
+      const titleKey = article.title.trim().toLowerCase();
 
-      if (seenUrls.has(cleanUrl) || seenTitles.has(title)) return false;
+      if (seenUrls.has(cleanUrl) || seenTitles.has(titleKey)) return false;
 
       seenUrls.add(cleanUrl);
-      seenTitles.add(title);
+      seenTitles.add(titleKey);
 
+      article.title = cleanText(article.title);
       article.description = cleanText(article.description);
       article.content = cleanText(article.content);
+
+      // Drop articles that became empty after cleaning
+      if (!article.description && !article.content) return false;
 
       return true;
     });
