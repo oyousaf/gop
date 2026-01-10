@@ -76,24 +76,27 @@ export default function Hadith() {
   return (
     <section
       id="hadith"
-      className="relative py-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto scroll-mt-16"
+      className="relative py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto scroll-mt-16"
     >
+      {/* Heading — unchanged */}
       <motion.h2
-        initial={{ opacity: 0, y: 20 }}
+        initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.5 }}
         viewport={{ once: true }}
-        className="text-4xl md:text-5xl font-bold text-center mb-12 text-white"
+        className="text-4xl md:text-5xl font-semibold text-center mb-14 text-white"
       >
         Hadith
       </motion.h2>
 
       {loading ? (
-        <p className="text-white text-center animate-pulse">Loading hadiths…</p>
+        <p className="text-white/70 text-center animate-pulse">
+          Loading hadiths…
+        </p>
       ) : error ? (
-        <p className="text-red-500 text-center">{error}</p>
+        <p className="text-red-400 text-center">{error}</p>
       ) : (
-        <div className="flex flex-col gap-12">
+        <div className="flex flex-col gap-14">
           {hadiths.map((hadith, i) => {
             const arabic =
               typeof hadith.arabic === "string" ? hadith.arabic.trim() : "";
@@ -113,14 +116,13 @@ export default function Hadith() {
                 key={`${hadith.narrator || "hadith"}-${i}`}
                 className="
                   relative
-                  bg-white/5 backdrop-blur-md
                   rounded-2xl
-                  border border-white/10
-                  px-6 sm:px-10 py-8
+                  px-6 sm:px-10 py-10
                   shadow-md
                 "
+                style={{ backgroundColor: "#b9e1d4" }}
               >
-                {/* LANGUAGE TOGGLE — TEXT ONLY */}
+                {/* LANGUAGE TOGGLE */}
                 {hasArabic && (
                   <button
                     type="button"
@@ -128,9 +130,9 @@ export default function Hadith() {
                     className="
                       absolute top-4 right-4 z-20
                       text-xs font-semibold
-                      px-3 py-1 rounded-full border
-                      border-white/20 text-white/80
-                      hover:text-white hover:border-white/40
+                      px-3 py-1 rounded-full
+                      bg-black/5 text-black/80
+                      hover:bg-black/10
                       transition
                     "
                   >
@@ -140,7 +142,7 @@ export default function Hadith() {
 
                 {/* NARRATOR */}
                 {hadith.narrator && (
-                  <h3 className="text-2xl font-semibold text-[#b9e1d4] text-center mb-6">
+                  <h3 className="text-2xl font-semibold text-black/85 text-center mb-6">
                     {hadith.narrator}
                   </h3>
                 )}
@@ -153,7 +155,7 @@ export default function Hadith() {
                     text-lg leading-[2.15]
                     whitespace-pre-wrap
                     max-w-3xl mx-auto
-                    overflow-hidden
+                    text-black/90
                     ${
                       currentLang === "ar"
                         ? "text-right font-arabic"
@@ -169,7 +171,7 @@ export default function Hadith() {
                   {text}
                 </motion.p>
 
-                {/* EXPAND ANIMATION */}
+                {/* EXPAND DIVIDER */}
                 <AnimatePresence>
                   {isExpanded && (
                     <motion.div
@@ -177,17 +179,17 @@ export default function Hadith() {
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 8 }}
                       transition={{ duration: 0.2 }}
-                      className="mt-6"
+                      className="mt-8"
                     >
-                      <div className="w-12 h-px bg-white/20 mx-auto mb-4" />
+                      <div className="w-12 h-px bg-black/25 mx-auto" />
                     </motion.div>
                   )}
                 </AnimatePresence>
 
-                {/* SOURCE BADGES — EN / AR + SAHIHAYN GOLD */}
+                {/* SOURCE BADGES */}
                 {Array.isArray(hadith.sources) &&
                   hadith.sources.length > 0 && (
-                    <div className="mt-6 flex flex-wrap justify-center gap-2">
+                    <div className="mt-8 flex flex-wrap justify-center gap-2">
                       {hadith.sources.map((s) => {
                         const meta = COLLECTION_LABELS[s];
                         const label = meta?.[currentLang] || s;
@@ -196,11 +198,11 @@ export default function Hadith() {
                           <span
                             key={s}
                             className={`
-                              text-xs px-3 py-1 rounded-full border backdrop-blur
+                              text-xs px-3 py-1 rounded-full border
                               ${
                                 meta?.sahihayn
-                                  ? "border-amber-400/60 text-amber-300 bg-amber-400/10"
-                                  : "border-white/15 text-white/70 bg-white/5"
+                                  ? "border-amber-400 text-amber-900 bg-amber-300/40"
+                                  : "border-black/20 text-black/70 bg-black/5"
                               }
                             `}
                           >

@@ -50,7 +50,7 @@ export default function News() {
       id="news"
       className="relative max-w-7xl mx-auto px-4 py-20 scroll-mt-16"
     >
-      {/* Heading */}
+      {/* Heading — unchanged */}
       <motion.h2
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -94,7 +94,7 @@ export default function News() {
           {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
-              className="h-[28rem] rounded-2xl bg-stone-900/50 animate-pulse"
+              className="h-[28rem] rounded-2xl bg-orange-200/40 animate-pulse"
             />
           ))}
         </div>
@@ -111,28 +111,27 @@ export default function News() {
             return (
               <motion.article
                 key={i}
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.25 }}
                 className="
                   relative rounded-2xl
-                  border border-stone-700/30
-                  bg-gradient-to-b from-stone-900/80 to-stone-950
                   p-6
                   flex flex-col
-                  hover:from-stone-900 hover:to-stone-900
-                  transition
+                  shadow-md
                 "
+                style={{ backgroundColor: "#f3c6a6" }}
                 dir={lang === "ar" ? "rtl" : "ltr"}
               >
-                <h3 className="text-xl font-semibold text-neutral-100 mb-4">
+                <h3 className="text-xl font-semibold text-black/90 mb-4">
                   {article.title}
                 </h3>
 
                 <div
                   className={`
-                    text-sm text-neutral-300 leading-relaxed
+                    text-sm leading-relaxed
+                    text-black/80
                     space-y-3
                     max-h-[18rem] overflow-y-auto
                     pr-2
@@ -142,7 +141,7 @@ export default function News() {
                   {text}
                 </div>
 
-                {/* Source button */}
+                {/* Source */}
                 {article.url && (
                   <div
                     className={`mt-4 ${
@@ -155,8 +154,8 @@ export default function News() {
                       rel="noopener noreferrer"
                       className="
                         inline-block text-xs font-medium
-                        text-teal-400 underline
-                        hover:text-neutral-100
+                        text-orange-900 underline
+                        hover:opacity-70
                         transition
                       "
                     >
