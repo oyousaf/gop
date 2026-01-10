@@ -4,35 +4,16 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const PREVIEW_CHAR_LIMIT = 420;
+const PREVIEW_HEIGHT = 160;
 
 // Canonical collection labels
 const COLLECTION_LABELS = {
-  bukhari: {
-    en: "Sahih al-Bukhari",
-    ar: "صحيح البخاري",
-    sahihayn: true,
-  },
-  muslim: {
-    en: "Sahih Muslim",
-    ar: "صحيح مسلم",
-    sahihayn: true,
-  },
-  tirmidhi: {
-    en: "Jami‘ at-Tirmidhi",
-    ar: "جامع الترمذي",
-  },
-  nasai: {
-    en: "Sunan an-Nasa’i",
-    ar: "سنن النسائي",
-  },
-  ibnmajah: {
-    en: "Sunan Ibn Majah",
-    ar: "سنن ابن ماجه",
-  },
-  abudawud: {
-    en: "Sunan Abi Dawud",
-    ar: "سنن أبي داود",
-  },
+  bukhari: { en: "Sahih al-Bukhari", ar: "صحيح البخاري", sahihayn: true },
+  muslim: { en: "Sahih Muslim", ar: "صحيح مسلم", sahihayn: true },
+  tirmidhi: { en: "Jami‘ at-Tirmidhi", ar: "جامع الترمذي" },
+  nasai: { en: "Sunan an-Nasa’i", ar: "سنن النسائي" },
+  ibnmajah: { en: "Sunan Ibn Majah", ar: "سنن ابن ماجه" },
+  abudawud: { en: "Sunan Abi Dawud", ar: "سنن أبي داود" },
 };
 
 export default function Hadith() {
@@ -60,17 +41,11 @@ export default function Hadith() {
   }, []);
 
   const toggleLang = (i) => {
-    setLang((prev) => ({
-      ...prev,
-      [i]: prev[i] === "ar" ? "en" : "ar",
-    }));
+    setLang((prev) => ({ ...prev, [i]: prev[i] === "ar" ? "en" : "ar" }));
   };
 
   const toggleExpand = (i) => {
-    setExpanded((prev) => ({
-      ...prev,
-      [i]: !prev[i],
-    }));
+    setExpanded((prev) => ({ ...prev, [i]: !prev[i] }));
   };
 
   return (
@@ -78,7 +53,6 @@ export default function Hadith() {
       id="hadith"
       className="relative py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto scroll-mt-16"
     >
-      {/* Heading — unchanged */}
       <motion.h2
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -104,9 +78,7 @@ export default function Hadith() {
 
             const currentLang = lang[i] || "en";
             const text =
-              currentLang === "ar" && hasArabic
-                ? arabic
-                : hadith.content || "";
+              currentLang === "ar" && hasArabic ? arabic : hadith.content || "";
 
             const canExpand = text.length > PREVIEW_CHAR_LIMIT;
             const isExpanded = !!expanded[i];
@@ -114,12 +86,7 @@ export default function Hadith() {
             return (
               <article
                 key={`${hadith.narrator || "hadith"}-${i}`}
-                className="
-                  relative
-                  rounded-2xl
-                  px-6 sm:px-10 py-10
-                  shadow-md
-                "
+                className="relative rounded-2xl px-6 sm:px-10 py-10 shadow-md"
                 style={{ backgroundColor: "#b9e1d4" }}
               >
                 {/* LANGUAGE TOGGLE */}
@@ -132,8 +99,7 @@ export default function Hadith() {
                       text-xs font-semibold
                       px-3 py-1 rounded-full
                       bg-black/5 text-black/80
-                      hover:bg-black/10
-                      transition
+                      hover:bg-black/10 transition
                     "
                   >
                     {currentLang === "en" ? "AR" : "EN"}
@@ -147,37 +113,47 @@ export default function Hadith() {
                   </h3>
                 )}
 
-                {/* HADITH TEXT */}
-                <motion.p
-                  onClick={() => canExpand && toggleExpand(i)}
-                  layout
+                {/* TEXT WRAPPER */}
+                <motion.div
+                  initial={false}
+                  animate={{
+                    height: isExpanded ? "auto" : PREVIEW_HEIGHT,
+                    opacity: 1,
+                  }}
+                  transition={{
+                    duration: 0.35,
+                    ease: [0.25, 0.1, 0.25, 1],
+                  }}
                   className={`
-                    text-lg leading-[2.15]
-                    whitespace-pre-wrap
+                    overflow-hidden
                     max-w-3xl mx-auto
-                    text-black/90
-                    ${
-                      currentLang === "ar"
-                        ? "text-right font-arabic"
-                        : "text-left"
-                    }
-                    ${
-                      !isExpanded && canExpand
-                        ? "line-clamp-4 cursor-pointer"
-                        : ""
-                    }
+                    ${canExpand ? "cursor-pointer" : ""}
                   `}
+                  onClick={() => canExpand && toggleExpand(i)}
                 >
-                  {text}
-                </motion.p>
+                  <p
+                    className={`
+                      text-lg leading-[2.15]
+                      whitespace-pre-wrap
+                      text-black/90
+                      ${
+                        currentLang === "ar"
+                          ? "text-right font-arabic"
+                          : "text-left"
+                      }
+                    `}
+                  >
+                    {text}
+                  </p>
+                </motion.div>
 
-                {/* EXPAND DIVIDER */}
+                {/* DIVIDER ON EXPAND */}
                 <AnimatePresence>
                   {isExpanded && (
                     <motion.div
-                      initial={{ opacity: 0, y: 8 }}
+                      initial={{ opacity: 0, y: 6 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 8 }}
+                      exit={{ opacity: 0, y: 6 }}
                       transition={{ duration: 0.2 }}
                       className="mt-8"
                     >
@@ -187,17 +163,16 @@ export default function Hadith() {
                 </AnimatePresence>
 
                 {/* SOURCE BADGES */}
-                {Array.isArray(hadith.sources) &&
-                  hadith.sources.length > 0 && (
-                    <div className="mt-8 flex flex-wrap justify-center gap-2">
-                      {hadith.sources.map((s) => {
-                        const meta = COLLECTION_LABELS[s];
-                        const label = meta?.[currentLang] || s;
+                {Array.isArray(hadith.sources) && hadith.sources.length > 0 && (
+                  <div className="mt-8 flex flex-wrap justify-center gap-2">
+                    {hadith.sources.map((s) => {
+                      const meta = COLLECTION_LABELS[s];
+                      const label = meta?.[currentLang] || s;
 
-                        return (
-                          <span
-                            key={s}
-                            className={`
+                      return (
+                        <span
+                          key={s}
+                          className={`
                               text-xs px-3 py-1 rounded-full border
                               ${
                                 meta?.sahihayn
@@ -205,13 +180,13 @@ export default function Hadith() {
                                   : "border-black/20 text-black/70 bg-black/5"
                               }
                             `}
-                          >
-                            {label}
-                          </span>
-                        );
-                      })}
-                    </div>
-                  )}
+                        >
+                          {label}
+                        </span>
+                      );
+                    })}
+                  </div>
+                )}
               </article>
             );
           })}

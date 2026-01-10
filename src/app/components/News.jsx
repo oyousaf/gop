@@ -9,6 +9,10 @@ export default function News() {
   const [error, setError] = useState(null);
   const [lang, setLang] = useState("en");
 
+  const canHover =
+    typeof window !== "undefined" &&
+    window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+
   /* ---------------------------------------------
      Fetch
   --------------------------------------------- */
@@ -113,9 +117,13 @@ export default function News() {
                 key={i}
                 initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
+                whileHover={canHover ? { y: -6 } : undefined}
                 viewport={{ once: true }}
-                transition={{ duration: 0.25 }}
-                className="relative rounded-2xl p-6 flex flex-col shadow-md"
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="
+                  relative rounded-2xl p-6 flex flex-col
+                  shadow-md hover:shadow-lg
+                "
                 style={{ backgroundColor: "#f3c6a6" }}
                 dir={lang === "ar" ? "rtl" : "ltr"}
               >
