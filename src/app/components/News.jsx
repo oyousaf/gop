@@ -50,7 +50,7 @@ export default function News() {
       id="news"
       className="relative max-w-7xl mx-auto px-4 py-20 scroll-mt-16"
     >
-      {/* Heading — unchanged */}
+      {/* Heading */}
       <motion.h2
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
@@ -115,26 +115,23 @@ export default function News() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.25 }}
-                className="
-                  relative rounded-2xl
-                  p-6
-                  flex flex-col
-                  shadow-md
-                "
+                className="relative rounded-2xl p-6 flex flex-col shadow-md"
                 style={{ backgroundColor: "#f3c6a6" }}
                 dir={lang === "ar" ? "rtl" : "ltr"}
               >
-                <h3 className="text-xl font-semibold text-black/90 mb-4">
+                {/* Title */}
+                <h3 className="text-xl font-semibold text-black/90 mb-4 text-center">
                   {article.title}
                 </h3>
 
+                {/* Body */}
                 <div
                   className={`
                     text-sm leading-relaxed
                     text-black/80
                     space-y-3
                     max-h-[18rem] overflow-y-auto
-                    pr-2
+                    max-w-prose mx-auto
                     ${lang === "ar" ? "text-right" : "text-left"}
                   `}
                 >
@@ -143,11 +140,7 @@ export default function News() {
 
                 {/* Source */}
                 {article.url && (
-                  <div
-                    className={`mt-4 ${
-                      lang === "ar" ? "text-left" : "text-right"
-                    }`}
-                  >
+                  <div className="mt-4 text-center">
                     <a
                       href={article.url}
                       target="_blank"
