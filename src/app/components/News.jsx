@@ -128,16 +128,17 @@ export default function News() {
                 dir={lang === "ar" ? "rtl" : "ltr"}
               >
                 {/* Title */}
-                <h3 className="text-xl font-semibold text-black/90 mb-4 text-center">
+                <h3 className="text-lg md:text-xl font-semibold leading-snug text-black/90 mb-4 text-center">
                   {article.title}
                 </h3>
 
                 {/* Body */}
                 <div
                   className={`
-                    text-sm leading-relaxed
-                    text-black/80
-                    space-y-3
+                    text-base md:text-lg
+                    leading-[1.8]
+                    text-black/85
+                    space-y-4
                     max-h-[18rem] overflow-y-auto
                     max-w-prose mx-auto
                     ${lang === "ar" ? "text-right" : "text-left"}
