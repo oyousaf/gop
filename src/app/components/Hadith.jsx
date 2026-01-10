@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const PREVIEW_CHAR_LIMIT = 420;
 const PREVIEW_HEIGHT = 160;
+const EXPANDED_MAX_HEIGHT = 2000;
 
 // Canonical collection labels
 const COLLECTION_LABELS = {
@@ -25,28 +26,18 @@ export default function Hadith() {
   const [expanded, setExpanded] = useState({});
 
   useEffect(() => {
-    const loadHadiths = async () => {
-      try {
-        const res = await fetch("/api/hadith");
-        if (!res.ok) throw new Error("Failed to fetch hadith");
-        const data = await res.json();
-        setHadiths(Array.isArray(data) ? data : []);
-      } catch (err) {
-        setError(err.message || "Unexpected error");
-      } finally {
-        setLoading(false);
-      }
-    };
-    loadHadiths();
+    fetch("/api/hadith")
+      .then((r) => r.json())
+      .then((d) => setHadiths(Array.isArray(d) ? d : []))
+      .catch((e) => setError(e.message))
+      .finally(() => setLoading(false));
   }, []);
 
-  const toggleLang = (i) => {
-    setLang((prev) => ({ ...prev, [i]: prev[i] === "ar" ? "en" : "ar" }));
-  };
+  const toggleLang = (i) =>
+    setLang((p) => ({ ...p, [i]: p[i] === "ar" ? "en" : "ar" }));
 
-  const toggleExpand = (i) => {
-    setExpanded((prev) => ({ ...prev, [i]: !prev[i] }));
-  };
+  const toggleExpand = (i) =>
+    setExpanded((p) => ({ ...p, [i]: !p[i] }));
 
   return (
     <section
@@ -71,26 +62,29 @@ export default function Hadith() {
         <p className="text-red-400 text-center">{error}</p>
       ) : (
         <div className="flex flex-col gap-14">
-          {hadiths.map((hadith, i) => {
-            const arabic =
-              typeof hadith.arabic === "string" ? hadith.arabic.trim() : "";
-            const hasArabic = arabic.length > 0;
-
+          {hadiths.map((h, i) => {
             const currentLang = lang[i] || "en";
-            const text =
-              currentLang === "ar" && hasArabic ? arabic : hadith.content || "";
 
-            const canExpand = text.length > PREVIEW_CHAR_LIMIT;
+            const raw =
+              currentLang === "ar" && h.arabic ? h.arabic : h.content || "";
+
+            // Preserve text exactly, only split into paragraphs
+            const paragraphs = raw
+              .split(/\n{2,}/)
+              .map((p) => p.trim())
+              .filter(Boolean);
+
+            const canExpand = raw.length > PREVIEW_CHAR_LIMIT;
             const isExpanded = !!expanded[i];
 
             return (
               <article
-                key={`${hadith.narrator || "hadith"}-${i}`}
+                key={`${h.narrator || "hadith"}-${i}`}
                 className="relative rounded-2xl px-6 sm:px-10 py-10 shadow-md"
                 style={{ backgroundColor: "#b9e1d4" }}
               >
                 {/* LANGUAGE TOGGLE */}
-                {hasArabic && (
+                {h.arabic && (
                   <button
                     type="button"
                     onClick={() => toggleLang(i)}
@@ -99,7 +93,8 @@ export default function Hadith() {
                       text-xs font-semibold
                       px-3 py-1 rounded-full
                       bg-black/5 text-black/80
-                      hover:bg-black/10 transition
+                      hover:bg-black/10
+                      transition
                     "
                   >
                     {currentLang === "en" ? "AR" : "EN"}
@@ -107,18 +102,19 @@ export default function Hadith() {
                 )}
 
                 {/* NARRATOR */}
-                {hadith.narrator && (
+                {h.narrator && (
                   <h3 className="text-2xl font-semibold text-black/85 text-center mb-6">
-                    {hadith.narrator}
+                    {h.narrator}
                   </h3>
                 )}
 
-                {/* TEXT WRAPPER */}
+                {/* TEXT CONTAINER */}
                 <motion.div
                   initial={false}
                   animate={{
-                    height: isExpanded ? "auto" : PREVIEW_HEIGHT,
-                    opacity: 1,
+                    maxHeight: isExpanded
+                      ? EXPANDED_MAX_HEIGHT
+                      : PREVIEW_HEIGHT,
                   }}
                   transition={{
                     duration: 0.35,
@@ -131,10 +127,9 @@ export default function Hadith() {
                   `}
                   onClick={() => canExpand && toggleExpand(i)}
                 >
-                  <p
+                  <div
                     className={`
                       text-lg leading-[2.15]
-                      whitespace-pre-wrap
                       text-black/90
                       ${
                         currentLang === "ar"
@@ -143,11 +138,15 @@ export default function Hadith() {
                       }
                     `}
                   >
-                    {text}
-                  </p>
+                    {paragraphs.map((p, idx) => (
+                      <p key={idx} className="mb-6 last:mb-0">
+                        {p}
+                      </p>
+                    ))}
+                  </div>
                 </motion.div>
 
-                {/* DIVIDER ON EXPAND */}
+                {/* EXPAND DIVIDER */}
                 <AnimatePresence>
                   {isExpanded && (
                     <motion.div
@@ -163,9 +162,9 @@ export default function Hadith() {
                 </AnimatePresence>
 
                 {/* SOURCE BADGES */}
-                {Array.isArray(hadith.sources) && hadith.sources.length > 0 && (
+                {Array.isArray(h.sources) && h.sources.length > 0 && (
                   <div className="mt-8 flex flex-wrap justify-center gap-2">
-                    {hadith.sources.map((s) => {
+                    {h.sources.map((s) => {
                       const meta = COLLECTION_LABELS[s];
                       const label = meta?.[currentLang] || s;
 
@@ -173,13 +172,13 @@ export default function Hadith() {
                         <span
                           key={s}
                           className={`
-                              text-xs px-3 py-1 rounded-full border
-                              ${
-                                meta?.sahihayn
-                                  ? "border-amber-400 text-amber-900 bg-amber-300/40"
-                                  : "border-black/20 text-black/70 bg-black/5"
-                              }
-                            `}
+                            text-xs px-3 py-1 rounded-full border
+                            ${
+                              meta?.sahihayn
+                                ? "border-amber-400 text-amber-900 bg-amber-300/40"
+                                : "border-black/20 text-black/70 bg-black/5"
+                            }
+                          `}
                         >
                           {label}
                         </span>
