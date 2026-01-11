@@ -26,9 +26,6 @@ export default function Hadith() {
 
   const contentRefs = useRef({});
 
-  /* ------------------------------
-     Fetch
-  ------------------------------ */
   useEffect(() => {
     fetch("/api/hadith")
       .then((r) => r.json())
@@ -37,9 +34,6 @@ export default function Hadith() {
       .finally(() => setLoading(false));
   }, []);
 
-  /* ------------------------------
-     Measure overflow
-  ------------------------------ */
   useEffect(() => {
     const next = {};
     Object.entries(contentRefs.current).forEach(([i, el]) => {
@@ -49,9 +43,6 @@ export default function Hadith() {
     setCanExpand(next);
   }, [hadiths, lang]);
 
-  /* ------------------------------
-     Force clean reflow on lang switch
-  ------------------------------ */
   useEffect(() => {
     requestAnimationFrame(() => {
       setExpanded((p) => ({ ...p }));
@@ -101,22 +92,14 @@ export default function Hadith() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-120px" }}
               transition={{ duration: 0.35, ease: "easeOut" }}
-              className="relative rounded-2xl px-6 sm:px-10 py-10 shadow-md"
-              style={{ backgroundColor: "#b9e1d4" }}
+              className="relative rounded-2xl px-6 sm:px-10 py-10 bg-teal-100 shadow-md"
             >
               {/* Language toggle */}
               {h.arabic && (
                 <button
                   type="button"
                   onClick={() => toggleLang(i)}
-                  className="
-                    absolute top-4 right-4
-                    text-xs font-semibold
-                    px-3 py-1 rounded-full
-                    bg-black/5 text-black/80
-                    hover:bg-black/10
-                    transition
-                  "
+                  className="absolute top-4 right-4 text-xs font-semibold px-3 py-1 rounded-full bg-teal-900/10 text-teal-900 hover:bg-teal-900/20 transition"
                 >
                   {currentLang === "en" ? "AR" : "EN"}
                 </button>
@@ -124,7 +107,7 @@ export default function Hadith() {
 
               {/* Narrator */}
               {h.narrator && (
-                <h3 className="text-2xl font-semibold text-black/85 text-center mb-6">
+                <h3 className="text-2xl font-semibold text-teal-900 text-center mb-6">
                   {h.narrator}
                 </h3>
               )}
@@ -138,19 +121,16 @@ export default function Hadith() {
                     ? contentRefs.current[i]?.scrollHeight ?? "auto"
                     : PREVIEW_HEIGHT,
                 }}
-                transition={{
-                  duration: 0.35,
-                  ease: [0.4, 0, 0.2, 1],
-                }}
+                transition={{ duration: 0.35, ease: [0.4, 0, 0.2, 1] }}
                 className="overflow-hidden max-w-3xl mx-auto"
               >
                 <div
                   ref={(el) => (contentRefs.current[i] = el)}
-                  className={`text-lg leading-[2.15] text-black/90 ${
+                  className={
                     currentLang === "ar"
-                      ? "text-right font-arabic"
-                      : "text-left"
-                  }`}
+                      ? "text-xl leading-[2.35] text-teal-800 text-right font-arabic tracking-normal"
+                      : "text-lg leading-[2.15] text-teal-800 text-left"
+                  }
                 >
                   {paragraphs.map((p, idx) => (
                     <p key={idx} className="mb-6 last:mb-0">
@@ -167,13 +147,7 @@ export default function Hadith() {
                     type="button"
                     onClick={() => toggleExpand(i)}
                     aria-expanded={isExpanded}
-                    className="
-                      w-10 h-10 rounded-full
-                      flex items-center justify-center
-                      bg-black/5 text-black/70
-                      hover:bg-black/10
-                      transition
-                    "
+                    className="w-10 h-10 rounded-full flex items-center justify-center bg-teal-900/10 text-teal-900 hover:bg-teal-900/20 transition"
                   >
                     <motion.span
                       animate={{ rotate: isExpanded ? 180 : 0 }}
@@ -195,14 +169,11 @@ export default function Hadith() {
                     return (
                       <span
                         key={s}
-                        className={`
-                          text-xs px-3 py-1 rounded-full border
-                          ${
-                            meta?.sahihayn
-                              ? "border-amber-400 text-amber-900 bg-amber-300/40"
-                              : "border-black/20 text-black/70 bg-black/5"
-                          }
-                        `}
+                        className={
+                          meta?.sahihayn
+                            ? "text-xs px-3 py-1 rounded-full border border-amber-400/70 bg-amber-300/40 text-amber-900"
+                            : "text-xs px-3 py-1 rounded-full border border-teal-900/20 bg-teal-900/10 text-teal-900"
+                        }
                       >
                         {label}
                       </span>

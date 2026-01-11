@@ -32,53 +32,53 @@ export default function Divestment() {
 
   return (
     <section
-      className="max-w-7xl mx-auto p-6 py-12 scroll-mt-16"
       id="divestment"
-      aria-labelledby="divestment-heading"
       role="region"
+      aria-labelledby="divestment-heading"
+      className="max-w-7xl mx-auto px-4 py-20 scroll-mt-16"
     >
-      {/* Animated Heading */}
+      {/* Heading */}
       <motion.h2
         id="divestment-heading"
-        className="text-4xl md:text-5xl font-bold text-center mb-8 text-white"
-        initial={{ opacity: 0, y: 20 }}
+        className="text-4xl md:text-5xl font-semibold text-center mb-8 text-white"
+        initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
         viewport={{ once: true }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
       >
         Divestment
       </motion.h2>
 
-      {/* Intro Text */}
+      {/* Intro */}
       <motion.div
-        className="max-w-5xl mx-auto text-center space-y-6 text-white/90 text-lg md:text-2xl leading-relaxed"
+        className="max-w-5xl mx-auto text-center space-y-6 text-white/90 text-lg md:text-xl leading-relaxed"
         initial="hidden"
         whileInView="visible"
-        transition={{ staggerChildren: 0.2 }}
         viewport={{ once: true }}
+        transition={{ staggerChildren: 0.15 }}
         variants={{ hidden: {}, visible: {} }}
       >
         {[
-          "The growing discourse around divesting in Israeli products and companies supporting Israel has gained momentum, especially during the current crisis. Esteemed Islamic scholars are advocating for Muslims to avoid such brands, highlighting the profound spiritual and historical significance of Masjid Al-Aqsa, one of Islam’s holiest sites.",
-          "The following brands are known to either provide significant support to Israel or receive funding from Israeli sources.",
+          "The growing discourse around divesting from companies supporting Israel has gained momentum, particularly during the current crisis. Esteemed Islamic scholars urge Muslims to avoid such brands, citing the profound spiritual and historical significance of Masjid Al-Aqsa.",
+          "The following brands are known to either provide direct support to Israel or receive funding from Israeli sources.",
         ].map((text, i) => (
           <motion.p
             key={i}
             variants={{
-              hidden: { opacity: 0, y: 20 },
+              hidden: { opacity: 0, y: 16 },
               visible: { opacity: 1, y: 0 },
             }}
-            transition={{ duration: 0.6, delay: i * 0.1 }}
+            transition={{ duration: 0.4, delay: i * 0.08 }}
           >
             {text}
           </motion.p>
         ))}
       </motion.div>
 
-      {/* Brand Cards */}
+      {/* Cards */}
       <ul
-        className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mt-12 list-none"
         aria-label="Boycott brands"
+        className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-6 mt-14 list-none"
       >
         <AnimatePresence>
           {boycott
@@ -87,22 +87,23 @@ export default function Divestment() {
             .map((brand, index) => (
               <motion.li
                 key={brand.name}
-                className="bg-red-700/60 backdrop-blur-lg shadow-md rounded-lg p-6 border border-white/10 flex flex-col text-white text-center"
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{
-                  duration: 0.3,
-                  delay: Math.min(index * 0.015, 0.15),
-                }}
-                tabIndex={0}
                 role="listitem"
+                tabIndex={0}
                 aria-label={`Brand: ${brand.name}`}
+                className="rounded-xl p-6 flex flex-col text-center bg-red-900/70 border border-red-800/40 shadow-md focus:outline-none focus:ring-2 focus:ring-red-400/60"
+                initial={{ opacity: 0, scale: 0.96 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.96 }}
+                transition={{
+                  duration: 0.25,
+                  delay: Math.min(index * 0.015, 0.12),
+                }}
+                whileHover={{ y: -4 }}
               >
-                <h3 className="md:text-3xl text-2xl font-semibold mb-4">
+                <h3 className="text-xl md:text-2xl font-semibold mb-3 text-red-200">
                   {brand.name}
                 </h3>
-                <p className="md:text-2xl text-lg flex-grow text-white">
+                <p className="text-base md:text-lg text-red-100/90 flex-grow">
                   {brand.reason}
                 </p>
               </motion.li>
@@ -110,32 +111,32 @@ export default function Divestment() {
         </AnimatePresence>
       </ul>
 
-      {/* Lazy Loader Trigger */}
+      {/* Lazy trigger */}
       {visibleCount < boycott.length && (
         <div ref={observerRef} className="h-10 mt-10" aria-hidden="true" />
       )}
 
-      {/* Closing Text */}
+      {/* Closing */}
       <motion.div
-        className="max-w-5xl mx-auto text-center space-y-6 text-white/90 text-lg md:text-2xl leading-relaxed mt-12"
+        className="max-w-5xl mx-auto text-center space-y-6 text-white/90 text-lg md:text-xl leading-relaxed mt-14"
         initial="hidden"
         whileInView="visible"
-        transition={{ staggerChildren: 0.2 }}
         viewport={{ once: true }}
+        transition={{ staggerChildren: 0.15 }}
         variants={{ hidden: {}, visible: {} }}
       >
         {[
-          "A significant number of brands either directly support Israel or receive funding from Israeli sources. If uncertain, a simple verification method is to examine the barcode—any barcode beginning with ‘729’ is associated with Israel.",
-          "Consumers possess considerable influence over both political and economic landscapes. Boycotting Israeli products is not merely an economic choice but a moral stance—an unequivocal act of solidarity with the Palestinian people.",
-          "The Blessed Prophet ﷺ instructed: “When one witnesses injustice, they must strive to rectify it through action; if not, then through speech; and if even that is not possible, one must at least denounce it within their heart.” — *40 Hadith an-Nawawi*",
+          "Many brands either directly support Israel or receive Israeli funding. If uncertain, a simple check is the barcode—those beginning with ‘729’ are associated with Israel.",
+          "Consumers hold significant power in shaping economic and political outcomes. Boycotting such products is not merely economic but a moral stance of solidarity.",
+          "The Prophet ﷺ said: “Whoever among you sees an injustice, let them change it with their hand; if they cannot, then with their tongue; if they cannot, then with their heart.” — 40 Hadith an-Nawawi",
         ].map((text, i) => (
           <motion.p
             key={i}
             variants={{
-              hidden: { opacity: 0, y: 20 },
+              hidden: { opacity: 0, y: 16 },
               visible: { opacity: 1, y: 0 },
             }}
-            transition={{ duration: 0.6, delay: i * 0.1 }}
+            transition={{ duration: 0.4, delay: i * 0.08 }}
           >
             {text}
           </motion.p>
