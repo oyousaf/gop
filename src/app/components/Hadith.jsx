@@ -26,6 +26,9 @@ export default function Hadith() {
 
   const contentRefs = useRef({});
 
+  /* ------------------------------
+     Fetch
+  ------------------------------ */
   useEffect(() => {
     fetch("/api/hadith")
       .then((r) => r.json())
@@ -34,7 +37,9 @@ export default function Hadith() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Measure real overflow (mobile + desktop correct)
+  /* ------------------------------
+     Measure overflow
+  ------------------------------ */
   useEffect(() => {
     const next = {};
     Object.entries(contentRefs.current).forEach(([i, el]) => {
@@ -44,11 +49,19 @@ export default function Hadith() {
     setCanExpand(next);
   }, [hadiths, lang]);
 
+  /* ------------------------------
+     Force clean reflow on lang switch
+  ------------------------------ */
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      setExpanded((p) => ({ ...p }));
+    });
+  }, [lang]);
+
   const toggleLang = (i) =>
     setLang((p) => ({ ...p, [i]: p[i] === "ar" ? "en" : "ar" }));
 
-  const toggleExpand = (i) =>
-    setExpanded((p) => ({ ...p, [i]: !p[i] }));
+  const toggleExpand = (i) => setExpanded((p) => ({ ...p, [i]: !p[i] }));
 
   return (
     <section
@@ -81,8 +94,13 @@ export default function Hadith() {
           const showArrow = !!canExpand[i];
 
           return (
-            <article
+            <motion.article
               key={`${h.narrator || "hadith"}-${i}`}
+              layout
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-120px" }}
+              transition={{ duration: 0.35, ease: "easeOut" }}
               className="relative rounded-2xl px-6 sm:px-10 py-10 shadow-md"
               style={{ backgroundColor: "#b9e1d4" }}
             >
@@ -113,13 +131,16 @@ export default function Hadith() {
 
               {/* Text container */}
               <motion.div
+                layout
                 initial={false}
                 animate={{
-                  maxHeight: isExpanded ? 2000 : PREVIEW_HEIGHT,
+                  height: isExpanded
+                    ? contentRefs.current[i]?.scrollHeight ?? "auto"
+                    : PREVIEW_HEIGHT,
                 }}
                 transition={{
-                  duration: 0.4,
-                  ease: "easeInOut",
+                  duration: 0.35,
+                  ease: [0.4, 0, 0.2, 1],
                 }}
                 className="overflow-hidden max-w-3xl mx-auto"
               >
@@ -189,7 +210,7 @@ export default function Hadith() {
                   })}
                 </div>
               )}
-            </article>
+            </motion.article>
           );
         })}
       </div>

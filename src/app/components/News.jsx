@@ -8,13 +8,19 @@ export default function News() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [lang, setLang] = useState("en");
-
-  const canHover =
-    typeof window !== "undefined" &&
-    window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const [canHover, setCanHover] = useState(false);
 
   /* ---------------------------------------------
-     Fetch (already-clean API)
+     Detect real hover capability (hydration-safe)
+  --------------------------------------------- */
+  useEffect(() => {
+    setCanHover(
+      window.matchMedia("(hover: hover) and (pointer: fine)").matches
+    );
+  }, []);
+
+  /* ---------------------------------------------
+     Fetch
   --------------------------------------------- */
   useEffect(() => {
     const load = async () => {
@@ -42,10 +48,10 @@ export default function News() {
     >
       {/* Heading */}
       <motion.h2
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
+        initial={{ opacity: 0, y: 12 }}
+        whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.4, ease: "easeOut" }}
         className="text-4xl md:text-5xl font-semibold text-center text-neutral-100 mb-10"
         dir={lang === "ar" ? "rtl" : "ltr"}
       >
@@ -56,9 +62,9 @@ export default function News() {
       <div className="relative mx-auto mb-10 flex w-48 rounded-full bg-white/10 p-1">
         <motion.div
           layout
-          className="absolute inset-y-1 w-1/2 rounded-full bg-white"
-          style={{ left: lang === "en" ? "4px" : "50%" }}
+          animate={{ x: lang === "en" ? 0 : "100%" }}
           transition={{ type: "spring", stiffness: 400, damping: 30 }}
+          className="absolute inset-y-1 w-1/2 rounded-full bg-white"
         />
         <button
           onClick={() => setLang("en")}
@@ -95,9 +101,9 @@ export default function News() {
       {/* Grid */}
       {!loading && !error && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
-          {news.map((article, i) => (
+          {news.map((article) => (
             <motion.article
-              key={i}
+              key={article.url || article.title}
               initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               whileHover={canHover ? { y: -6 } : undefined}
@@ -105,7 +111,7 @@ export default function News() {
               transition={{ duration: 0.25, ease: "easeOut" }}
               className="
                 relative rounded-2xl p-6 flex flex-col
-                shadow-md hover:shadow-lg
+                shadow-md
               "
               style={{ backgroundColor: "#f3c6a6" }}
               dir={lang === "ar" ? "rtl" : "ltr"}
@@ -115,14 +121,14 @@ export default function News() {
                 {article.title}
               </h3>
 
-              {/* Body (preview only) */}
+              {/* Body (preview only, no inner scroll) */}
               <div
                 className={`
                   text-base md:text-lg
                   leading-[1.8]
                   text-black/85
                   space-y-4
-                  max-h-[18rem] overflow-y-auto
+                  max-h-[18rem] overflow-hidden
                   max-w-prose mx-auto
                   ${lang === "ar" ? "text-right" : "text-left"}
                 `}
