@@ -29,9 +29,15 @@ export default function Home() {
       <ScrollToTop />
 
       <main>
+        <Hero />
+        <Banner />
+        <Makkah />
+        <Madinah />
+        <Aqsa />
         <Knowledge />
         <Hadith />
         <News />
+        <Divestment />
       </main>
 
       <Footer />
