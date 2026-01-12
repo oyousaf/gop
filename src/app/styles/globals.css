@@ -30,7 +30,6 @@
     overflow-x: hidden;
   }
 
-  /* Reduce motion for accessibility */
   @media (prefers-reduced-motion: reduce) {
     html:focus-within {
       scroll-behavior: auto;
@@ -66,7 +65,7 @@
   background-color: #6c857d;
 }
 
-/* Restrict image interaction for protection */
+/* Media protection */
 img,
 picture,
 video,

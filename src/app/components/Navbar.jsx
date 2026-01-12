@@ -18,9 +18,7 @@ const fastSpring = {
 
 const desktopList = {
   hidden: {},
-  show: {
-    transition: { staggerChildren: 0.06 },
-  },
+  show: { transition: { staggerChildren: 0.06 } },
 };
 
 const desktopItem = {
@@ -29,6 +27,15 @@ const desktopItem = {
     y: 0,
     opacity: 1,
     transition: { duration: 0.25, ease: "easeOut" },
+  },
+};
+
+const desktopSocialItem = {
+  hidden: { y: 10, opacity: 0 },
+  show: {
+    y: 0,
+    opacity: 1,
+    transition: { duration: 0.22, ease: "easeOut" },
   },
 };
 
@@ -42,10 +49,7 @@ const mobilePanel = {
   hidden: { opacity: 0 },
   show: {
     opacity: 1,
-    transition: {
-      when: "beforeChildren",
-      staggerChildren: 0.04, // faster
-    },
+    transition: { when: "beforeChildren", staggerChildren: 0.04 },
   },
   exit: { opacity: 0 },
 };
@@ -55,10 +59,7 @@ const mobileItem = {
   show: {
     y: 0,
     opacity: 1,
-    transition: {
-      duration: 0.22, // faster
-      ease: "easeOut",
-    },
+    transition: { duration: 0.22, ease: "easeOut" },
   },
 };
 
@@ -111,7 +112,8 @@ export default function Navbar() {
         hasScrolled ? "bg-[#9d8770]/90 backdrop-blur-md" : "bg-[#9d8770]"
       }`}
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
+      <div className="max-w-7xl mx-auto grid grid-cols-[auto_1fr_auto] items-center px-4 py-3">
+        {/* Logo */}
         <button
           onClick={() => handleScroll("hero")}
           className="hover:opacity-90 transition focus:outline-none"
@@ -120,8 +122,8 @@ export default function Navbar() {
           <Image
             src="/logo.png"
             alt="Site logo"
-            width={200}
-            height={100}
+            width={180}
+            height={90}
             priority
             draggable={false}
           />
@@ -132,7 +134,7 @@ export default function Navbar() {
           variants={desktopList}
           initial={reduceMotion ? false : "hidden"}
           animate={reduceMotion || !mounted ? false : "show"}
-          className="hidden md:flex items-center space-x-2"
+          className="hidden md:flex justify-center items-center space-x-2"
         >
           {navLinks.map((item) => (
             <motion.li key={item.id} variants={desktopItem}>
@@ -141,7 +143,7 @@ export default function Navbar() {
                 whileHover={
                   reduceMotion
                     ? undefined
-                    : { y: -2, scale: 1.1, transition: fastSpring }
+                    : { y: -1, scale: 1.04, transition: fastSpring }
                 }
                 className="py-2 px-4 text-neutral-200 hover:text-white transition-colors duration-150 focus:outline-none"
               >
@@ -151,39 +153,54 @@ export default function Navbar() {
           ))}
         </motion.ul>
 
-        <div className="flex items-center space-x-4">
-          <ul className="hidden md:flex items-center space-x-4">
-            {socialLinks.map((item) => (
-              <motion.li key={item.name}>
-                <motion.a
-                  href={item.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  whileHover={
-                    reduceMotion
-                      ? undefined
-                      : { y: -2, scale: 1.1, transition: fastSpring }
-                  }
-                  className="text-neutral-200 hover:text-white transition-colors duration-150 focus:outline-none"
-                  aria-label={`Visit our ${item.name}`}
-                >
+        {/* Desktop Socials */}
+        <motion.ul
+          variants={desktopList}
+          initial={reduceMotion ? false : "hidden"}
+          animate={reduceMotion || !mounted ? false : "show"}
+          className="hidden md:flex items-center space-x-4 justify-end"
+        >
+          {socialLinks.map((item) => (
+            <motion.li
+              key={item.name}
+              variants={desktopSocialItem}
+              className="flex items-center"
+            >
+              <motion.a
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`Visit our ${item.name}`}
+                className="text-neutral-200 hover:text-white transition-colors duration-150 focus:outline-none inline-flex items-center"
+                whileHover={
+                  reduceMotion
+                    ? undefined
+                    : { y: -1, scale: 1.05, transition: fastSpring }
+                }
+                style={{
+                  willChange: "transform",
+                  transformOrigin: "50% 50%",
+                }}
+              >
+                <span className="inline-flex items-center justify-center leading-none">
                   {item.icon}
-                </motion.a>
-              </motion.li>
-            ))}
-          </ul>
+                </span>
+              </motion.a>
+            </motion.li>
+          ))}
+        </motion.ul>
 
-          <motion.button
-            ref={toggleRef}
-            whileTap={!reduceMotion ? { scale: 0.9 } : undefined}
-            onClick={toggleMenu}
-            className="md:hidden text-white focus:outline-none"
-            aria-expanded={isMenuOpen}
-            aria-label="Open menu"
-          >
-            <AiOutlineMenu className="text-4xl" />
-          </motion.button>
-        </div>
+        {/* Mobile Toggle */}
+        <motion.button
+          ref={toggleRef}
+          whileTap={!reduceMotion ? { scale: 0.9 } : undefined}
+          onClick={toggleMenu}
+          className="md:hidden text-white focus:outline-none justify-self-end"
+          aria-expanded={isMenuOpen}
+          aria-label="Open menu"
+        >
+          <AiOutlineMenu className="text-4xl" />
+        </motion.button>
       </div>
 
       {/* Mobile Menu */}
@@ -223,11 +240,6 @@ export default function Navbar() {
                   <motion.button
                     key={item.id}
                     variants={mobileItem}
-                    whileHover={
-                      reduceMotion
-                        ? undefined
-                        : { y: -2, scale: 1.08, transition: fastSpring }
-                    }
                     onClick={() => {
                       handleScroll(item.href.slice(1));
                       toggleMenu();
@@ -244,11 +256,6 @@ export default function Navbar() {
                   <motion.a
                     key={item.name}
                     variants={mobileItem}
-                    whileHover={
-                      reduceMotion
-                        ? undefined
-                        : { y: -2, scale: 1.08, transition: fastSpring }
-                    }
                     href={item.url}
                     target="_blank"
                     rel="noopener noreferrer"
