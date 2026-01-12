@@ -7,20 +7,40 @@ import Hero from "./components/Hero";
 import Footer from "./components/Footer";
 import Banner from "./components/Banner";
 
-const Makkah = dynamic(() => import("./components/Makkah"));
-const Madinah = dynamic(() => import("./components/Madinah"));
-const Aqsa = dynamic(() => import("./components/Aqsa"));
-const Knowledge = dynamic(() => import("./components/Knowledge"));
-const Hadith = dynamic(() => import("./components/Hadith"));
-const News = dynamic(() => import("./components/News"));
-const Divestment = dynamic(() => import("./components/Divestment"));
+/* ---------------------------------
+   LAZY SECTIONS (non-critical)
+---------------------------------- */
+const Makkah = dynamic(() => import("./components/Makkah"), {
+  loading: () => null,
+});
+const Madinah = dynamic(() => import("./components/Madinah"), {
+  loading: () => null,
+});
+const Aqsa = dynamic(() => import("./components/Aqsa"), {
+  loading: () => null,
+});
+const Knowledge = dynamic(() => import("./components/Knowledge"), {
+  loading: () => null,
+});
+const Hadith = dynamic(() => import("./components/Hadith"), {
+  loading: () => null,
+});
+const News = dynamic(() => import("./components/News"), {
+  loading: () => null,
+});
+const Divestment = dynamic(() => import("./components/Divestment"), {
+  loading: () => null,
+});
+
+/* Client-only utility */
 const ScrollToTop = dynamic(() => import("./components/ScrollToTop"), {
   ssr: false,
 });
 
 export default function Home() {
   return (
-    <div className="bg-background text-foreground min-h-screen">
+    <div className="min-h-screen">
+      {/* SEO / Screen readers */}
       <h1 className="sr-only">
         حدائق الجنة – Reviving the Ummah through Sacred Islamic Knowledge
       </h1>
@@ -29,15 +49,38 @@ export default function Home() {
       <ScrollToTop />
 
       <main>
+        {/* Above-the-fold */}
         <Hero />
         <Banner />
-        <Makkah />
-        <Madinah />
-        <Aqsa />
-        <Knowledge />
-        <Hadith />
-        <News />
-        <Divestment />
+
+        {/* Deferred content */}
+        <section>
+          <Makkah />
+        </section>
+
+        <section>
+          <Madinah />
+        </section>
+
+        <section>
+          <Aqsa />
+        </section>
+
+        <section>
+          <Knowledge />
+        </section>
+
+        <section>
+          <Hadith />
+        </section>
+
+        <section>
+          <News />
+        </section>
+
+        <section>
+          <Divestment />
+        </section>
       </main>
 
       <Footer />
