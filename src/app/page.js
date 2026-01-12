@@ -4,8 +4,9 @@ import dynamic from "next/dynamic";
 
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
-import Footer from "./components/Footer";
 import Banner from "./components/Banner";
+import Knowledge from "./components/Knowledge";
+import Footer from "./components/Footer";
 
 /* ---------------------------------
    LAZY SECTIONS (non-critical)
@@ -17,9 +18,6 @@ const Madinah = dynamic(() => import("./components/Madinah"), {
   loading: () => null,
 });
 const Aqsa = dynamic(() => import("./components/Aqsa"), {
-  loading: () => null,
-});
-const Knowledge = dynamic(() => import("./components/Knowledge"), {
   loading: () => null,
 });
 const Hadith = dynamic(() => import("./components/Hadith"), {
@@ -40,7 +38,7 @@ const ScrollToTop = dynamic(() => import("./components/ScrollToTop"), {
 export default function Home() {
   return (
     <div className="min-h-screen">
-      {/* SEO / Screen readers */}
+      {/* SEO / screen readers */}
       <h1 className="sr-only">
         حدائق الجنة – Reviving the Ummah through Sacred Islamic Knowledge
       </h1>
@@ -53,6 +51,9 @@ export default function Home() {
         <Hero />
         <Banner />
 
+        {/* Static content */}
+        <Knowledge />
+
         {/* Deferred content */}
         <section>
           <Makkah />
@@ -64,10 +65,6 @@ export default function Home() {
 
         <section>
           <Aqsa />
-        </section>
-
-        <section>
-          <Knowledge />
         </section>
 
         <section>
