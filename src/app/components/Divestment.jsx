@@ -1,21 +1,29 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { boycott } from "../utils/constants";
 import { AnimatePresence, motion } from "framer-motion";
 
-const BATCH_SIZE = 16;
+const BATCH_SIZE = 20;
 
 export default function Divestment() {
   const [visibleCount, setVisibleCount] = useState(BATCH_SIZE);
 
+  const sortedBoycott = useMemo(
+    () => [...boycott].sort((a, b) => a.name.localeCompare(b.name)),
+    []
+  );
+
   const loadMore = useCallback(() => {
-    setVisibleCount((prev) => Math.min(prev + BATCH_SIZE, boycott.length));
-  }, []);
+    setVisibleCount((prev) =>
+      Math.min(prev + BATCH_SIZE, sortedBoycott.length)
+    );
+  }, [sortedBoycott.length]);
 
   const observerRef = useCallback(
     (node) => {
-      if (!node || visibleCount >= boycott.length) return;
+      if (!node || visibleCount >= sortedBoycott.length) return;
+
       const observer = new IntersectionObserver(
         ([entry]) => {
           if (entry.isIntersecting) {
@@ -25,9 +33,10 @@ export default function Divestment() {
         },
         { threshold: 1 }
       );
+
       observer.observe(node);
     },
-    [loadMore, visibleCount]
+    [loadMore, visibleCount, sortedBoycott.length]
   );
 
   return (
@@ -81,38 +90,46 @@ export default function Divestment() {
         className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-5 gap-6 mt-14 list-none"
       >
         <AnimatePresence>
-          {boycott
-            .sort((a, b) => a.name.localeCompare(b.name))
-            .slice(0, visibleCount)
-            .map((brand, index) => (
-              <motion.li
-                key={brand.name}
-                role="listitem"
-                tabIndex={0}
-                aria-label={`Brand: ${brand.name}`}
-                className="rounded-xl p-6 flex flex-col text-center bg-red-900/70 border border-red-800/40 shadow-md focus:outline-none focus:ring-2 focus:ring-red-400/60"
-                initial={{ opacity: 0, scale: 0.96 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.96 }}
-                transition={{
+          {sortedBoycott.slice(0, visibleCount).map((brand, index) => (
+            <motion.li
+              key={brand.name}
+              role="listitem"
+              tabIndex={0}
+              aria-label={`Brand: ${brand.name}`}
+              className="
+                rounded-xl p-6 flex flex-col text-center
+                bg-red-950
+                border border-red-900
+                shadow-lg
+                focus:outline-none
+                focus:ring-2 focus:ring-red-500
+              "
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 12 }}
+              transition={{
+                default: {
                   duration: 0.25,
                   delay: Math.min(index * 0.015, 0.12),
-                }}
-                whileHover={{ y: -4 }}
-              >
-                <h3 className="text-xl md:text-2xl font-semibold mb-3 text-red-200">
-                  {brand.name}
-                </h3>
-                <p className="text-base md:text-lg text-red-100/90 flex-grow">
-                  {brand.reason}
-                </p>
-              </motion.li>
-            ))}
+                  ease: "easeOut",
+                },
+                y: { type: "spring", stiffness: 420, damping: 32 },
+              }}
+              whileHover={{ y: -2 }}
+            >
+              <h3 className="text-xl md:text-2xl font-semibold mb-3 text-red-300">
+                {brand.name}
+              </h3>
+              <p className="text-base md:text-lg text-red-100 flex-grow">
+                {brand.reason}
+              </p>
+            </motion.li>
+          ))}
         </AnimatePresence>
       </ul>
 
       {/* Lazy trigger */}
-      {visibleCount < boycott.length && (
+      {visibleCount < sortedBoycott.length && (
         <div ref={observerRef} className="h-10 mt-10" aria-hidden="true" />
       )}
 

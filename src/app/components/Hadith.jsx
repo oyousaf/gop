@@ -90,16 +90,20 @@ export default function Hadith() {
               layout
               initial={{ opacity: 0, y: 14 }}
               whileInView={{ opacity: 1, y: 0 }}
+              whileHover={{ y: -2 }}
               viewport={{ once: true, margin: "-120px" }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
-              className="relative rounded-2xl px-6 sm:px-10 py-10 bg-teal-100 shadow-md"
+              transition={{
+                default: { duration: 0.35, ease: "easeOut" },
+                y: { type: "spring", stiffness: 420, damping: 32 },
+              }}
+              className="relative rounded-2xl px-6 sm:px-10 py-10 bg-teal-200 ring-1 ring-teal-300 shadow-lg"
             >
               {/* Language toggle */}
               {h.arabic && (
                 <button
                   type="button"
                   onClick={() => toggleLang(i)}
-                  className="absolute top-4 right-4 text-xs font-semibold px-3 py-1 rounded-full bg-teal-900/10 text-teal-900 hover:bg-teal-900/20 transition"
+                  className="absolute top-4 right-4 text-xs font-semibold px-3 py-1 rounded-full bg-teal-900 text-teal-50 hover:bg-teal-800 transition"
                 >
                   {currentLang === "en" ? "AR" : "EN"}
                 </button>
@@ -128,8 +132,8 @@ export default function Hadith() {
                   ref={(el) => (contentRefs.current[i] = el)}
                   className={
                     currentLang === "ar"
-                      ? "text-xl leading-[2.35] text-teal-800 text-right font-arabic tracking-normal"
-                      : "text-lg leading-[2.15] text-teal-800 text-left"
+                      ? "text-xl leading-[2.05] font-bold text-teal-900 text-right font-arabic"
+                      : "text-lg leading-[2.15] text-teal-900 text-left"
                   }
                 >
                   {paragraphs.map((p, idx) => (
@@ -147,7 +151,7 @@ export default function Hadith() {
                     type="button"
                     onClick={() => toggleExpand(i)}
                     aria-expanded={isExpanded}
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-teal-900/10 text-teal-900 hover:bg-teal-900/20 transition"
+                    className="w-10 h-10 rounded-full flex items-center justify-center bg-teal-900 text-teal-50 hover:bg-teal-800 transition"
                   >
                     <motion.span
                       animate={{ rotate: isExpanded ? 180 : 0 }}
@@ -171,8 +175,8 @@ export default function Hadith() {
                         key={s}
                         className={
                           meta?.sahihayn
-                            ? "text-xs px-3 py-1 rounded-full border border-amber-400/70 bg-amber-300/40 text-amber-900"
-                            : "text-xs px-3 py-1 rounded-full border border-teal-900/20 bg-teal-900/10 text-teal-900"
+                            ? "text-xs px-3 py-1 rounded-full border border-amber-500 bg-amber-400 text-amber-950"
+                            : "text-xs px-3 py-1 rounded-full border border-teal-700 bg-teal-300 text-teal-950"
                         }
                       >
                         {label}
