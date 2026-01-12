@@ -51,9 +51,6 @@ export default function Home() {
         <Hero />
         <Banner />
 
-        {/* Static content */}
-        <Knowledge />
-
         {/* Deferred content */}
         <section>
           <Makkah />
@@ -66,6 +63,9 @@ export default function Home() {
         <section>
           <Aqsa />
         </section>
+
+        {/* Static content */}
+        <Knowledge />
 
         <section>
           <Hadith />
