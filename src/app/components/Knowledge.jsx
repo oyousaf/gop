@@ -29,7 +29,7 @@ export default function Knowledge() {
           viewport={{ once: true }}
           className="block mt-4"
         >
-          طلب العلم من المهد إلى اللحد
+          طلب العلم فريضة على كل مسلم
         </motion.span>
       </motion.div>
     </section>
