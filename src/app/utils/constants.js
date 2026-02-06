@@ -1,6 +1,3 @@
-import Image from "next/image";
-import { PiMosqueFill } from "react-icons/pi";
-
 export const navLinks = [
   { id: "home", type: "text", label: "Home", href: "/hero" },
   { id: "makkah", type: "emoji", label: "🕋", href: "/makkah" },
