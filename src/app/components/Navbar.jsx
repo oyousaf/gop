@@ -105,21 +105,13 @@ export default function Navbar() {
                 whileHover={
                   !reduceMotion ? { y: -1, transition: springSoft } : undefined
                 }
-                className="
-                  group relative px-4 py-2 rounded-full
-                  text-2xl font-medium text-white/80 hover:text-white
-                  hover:bg-white/12 transition-colors
-                  grid place-items-center
-                "
+                className="group relative px-4 py-2 rounded-full text-2xl font-medium text-white/80 hover:text-white
+                  hover:bg-white/12 transition-colors grid place-items-center"
               >
                 <NavItem item={n} />
                 <span
-                  className="
-                    absolute left-1/2 bottom-[2px] h-[2px] w-5
-                    -translate-x-1/2 rounded-full bg-white/80
-                    opacity-0 scale-x-50 transition-all duration-200
-                    group-hover:opacity-100 group-hover:scale-x-100
-                  "
+                  className="absolute left-1/2 bottom-[2px] h-[2px] w-5 -translate-x-1/2 rounded-full bg-white/80
+                    opacity-0 scale-x-50 transition-all duration-200 group-hover:opacity-100 group-hover:scale-x-100"
                 />
               </motion.button>
             </motion.li>
@@ -141,12 +133,8 @@ export default function Navbar() {
                     : undefined
                 }
                 whileTap={!reduceMotion ? { scale: 0.95 } : undefined}
-                className="
-                  grid place-items-center h-10 w-10 rounded-full
-                  bg-white/10 hover:bg-white/20 text-white
-                  hover:shadow-[0_4px_12px_rgba(255,255,255,0.25)]
-                  transition-colors
-                "
+                className="grid place-items-center h-10 w-10 rounded-full bg-white/10 hover:bg-white/20 text-white
+                  hover:shadow-[0_4px_12px_rgba(255,255,255,0.25)] transition-colors"
               >
                 {s.icon}
               </motion.a>
@@ -159,10 +147,7 @@ export default function Navbar() {
           ref={toggleRef}
           onClick={() => setOpen(true)}
           aria-label="Open menu"
-          className="
-            md:hidden ml-auto grid place-items-center
-            h-11 w-11 rounded-full bg-white/10 hover:bg-white/20
-          "
+          className="md:hidden ml-auto grid place-items-center h-11 w-11 rounded-full bg-white/10 hover:bg-white/20"
         >
           <AiOutlineMenu className="text-2xl text-white" />
         </button>
@@ -191,20 +176,13 @@ export default function Navbar() {
               className="fixed inset-0 z-[100] flex flex-col"
             >
               <div
-                className="
-    relative mx-2 mb-2 mt-auto rounded-3xl
-    bg-[#9d8770]/95 backdrop-blur-xl
-    border border-white/10
-    px-6 pt-5 pb-[calc(env(safe-area-inset-bottom)+1.5rem)]
-  "
+                className="relative mx-2 mb-2 mt-auto rounded-3xl bg-[#9d8770]/95 backdrop-blur-xl
+                 border border-white/10 px-6 pt-5 pb-[calc(env(safe-area-inset-bottom)+1.5rem)]"
               >
                 <button
                   onClick={() => setOpen(false)}
                   aria-label="Close menu"
-                  className="
-                    absolute right-4 top-4 grid place-items-center
-                    h-9 w-9 rounded-full bg-white/10 hover:bg-white/20
-                  "
+                  className="absolute right-4 top-4 grid place-items-center h-9 w-9 rounded-full bg-white/10 hover:bg-white/20"
                 >
                   <AiOutlineClose className="text-xl text-white" />
                 </button>
@@ -219,12 +197,8 @@ export default function Navbar() {
                         handleScroll(n.href.slice(1));
                         setOpen(false);
                       }}
-                      className="
-                        w-full max-w-xs rounded-xl px-4 py-3
-                        text-center text-2xl font-medium
-                        text-white/90 hover:bg-white/10
-                        grid place-items-center
-                      "
+                      className="w-full max-w-xs rounded-xl px-4 py-3  text-center text-2xl font-medium
+                        text-white/90 hover:bg-white/10 grid place-items-center"
                     >
                       <NavItem item={n} />
                     </button>
@@ -244,10 +218,7 @@ export default function Navbar() {
                           ? { scale: 1.1, transition: springSoft }
                           : undefined
                       }
-                      className="
-                        grid place-items-center h-11 w-11 rounded-full
-                        bg-white/15 hover:bg-white/25 text-white
-                      "
+                      className="grid place-items-center h-11 w-11 rounded-full bg-white/15 hover:bg-white/25 text-white"
                     >
                       {s.icon}
                     </motion.a>
