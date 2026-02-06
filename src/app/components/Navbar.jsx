@@ -16,7 +16,7 @@ const springSoft = { type: "spring", stiffness: 360, damping: 28 };
 const fadeUp = { hidden: { y: 6, opacity: 0 }, show: { y: 0, opacity: 1 } };
 
 /* ------------------------------
-   NAV ITEM RENDERER (KEY FIX)
+   NAV ITEM RENDERER
 ------------------------------ */
 function NavItem({ item }) {
   switch (item.type) {
