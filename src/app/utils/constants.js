@@ -2,23 +2,16 @@ import Image from "next/image";
 import { PiMosqueFill } from "react-icons/pi";
 
 export const navLinks = [
-  { id: "home", name: "Home", href: "/hero" },
-  { id: "makkah", name: "🕋", href: "/makkah" },
-  { id: "madinah", name: "🕌", href: "/madinah" },
-  { id: "aqsa", name: <PiMosqueFill />, href: "/aqsa" },
-  { id: "hadith", name: "Hadith", href: "/hadith" },
-  { id: "news", name: "News", href: "/news" },
+  { id: "home", type: "text", label: "Home", href: "/hero" },
+  { id: "makkah", type: "emoji", label: "🕋", href: "/makkah" },
+  { id: "madinah", type: "emoji", label: "🕌", href: "/madinah" },
+  { id: "aqsa", type: "icon", icon: "aqsa", href: "/aqsa" },
+  { id: "hadith", type: "text", label: "Hadith", href: "/hadith" },
+  { id: "news", type: "text", label: "News", href: "/news" },
   {
     id: "divestment",
-    name: (
-      <Image
-        src="/images/palestineflag.png"
-        alt="Palestine Flag"
-        width={30}
-        height={30}
-        className="object-contain w-auto h-auto"
-      />
-    ),
+    type: "image",
+    src: "/images/palestineflag.png",
     href: "/divestment",
   },
 ];

@@ -2,48 +2,39 @@
 
 import { useState, useEffect, useRef } from "react";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
+import { PiMosqueFill } from "react-icons/pi";
 import { navLinks, socialLinks } from "../utils/constants";
 import { handleScroll } from "../utils/scroll";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import Image from "next/image";
 
 /* ------------------------------
-   MOTION CONFIG
+   MOTION
 ------------------------------ */
-const fastSpring = {
-  type: "spring",
-  stiffness: 420,
-  damping: 26,
-};
+const springSnappy = { type: "spring", stiffness: 520, damping: 34 };
+const springSoft = { type: "spring", stiffness: 360, damping: 28 };
+const fadeUp = { hidden: { y: 6, opacity: 0 }, show: { y: 0, opacity: 1 } };
 
-const desktopList = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.06 } },
-};
+/* ------------------------------
+   NAV ITEM RENDERER (KEY FIX)
+------------------------------ */
+function NavItem({ item }) {
+  switch (item.type) {
+    case "emoji":
+      return <span className="leading-none">{item.label}</span>;
 
-const item = {
-  hidden: { y: 10, opacity: 0 },
-  show: {
-    y: 0,
-    opacity: 1,
-    transition: { duration: 0.22, ease: "easeOut" },
-  },
-};
+    case "icon":
+      return <PiMosqueFill className="text-[1.4em]" />;
 
-const backdrop = {
-  hidden: { opacity: 0 },
-  show: { opacity: 1 },
-  exit: { opacity: 0 },
-};
+    case "image":
+      return (
+        <Image src={item.src} alt="" width={26} height={26} className="block" />
+      );
 
-const panel = {
-  hidden: { opacity: 0 },
-  show: {
-    opacity: 1,
-    transition: { when: "beforeChildren", staggerChildren: 0.04 },
-  },
-  exit: { opacity: 0 },
-};
+    default:
+      return <span>{item.label}</span>;
+  }
+}
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -52,29 +43,18 @@ export default function Navbar() {
   const panelRef = useRef(null);
   const reduceMotion = useReducedMotion();
 
-  /* ------------------------------
-     SCROLL STATE
-  ------------------------------ */
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
+    const onScroll = () => setScrolled(window.scrollY > 16);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  /* ------------------------------
-     LOCK BODY SCROLL
-  ------------------------------ */
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
+    return () => (document.body.style.overflow = "");
   }, [open]);
 
-  /* ------------------------------
-     ESC TO CLOSE
-  ------------------------------ */
   useEffect(() => {
     if (!open) return;
     const onKey = (e) => {
@@ -91,155 +71,188 @@ export default function Navbar() {
   return (
     <nav
       aria-label="Main navigation"
-      className={`fixed top-0 left-0 w-full z-[100] text-white text-2xl
-      border-b border-white/10 shadow-md
-      transition-colors duration-300
-      ${scrolled ? "bg-[#9d8770]/90 backdrop-blur-md" : "bg-[#9d8770]"}`}
+      className={`
+        fixed top-4 left-1/2 -translate-x-1/2 z-[100]
+        w-[calc(100%-2rem)] max-w-7xl rounded-2xl
+        border border-white/10 shadow-xl shadow-black/10
+        transition-all duration-300
+        ${scrolled ? "bg-[#9d8770]/75 backdrop-blur-xl" : "bg-[#9d8770]/90"}
+      `}
     >
-      <div className="max-w-7xl mx-auto grid grid-cols-[auto_1fr_auto] items-center px-4 py-3">
+      <div className="grid grid-cols-[auto_1fr_auto] items-center px-4 py-3">
         {/* Logo */}
-        <button
-          onClick={() => handleScroll("hero")}
-          aria-label="Scroll to top"
-          className="focus:outline-none"
-        >
+        <button onClick={() => handleScroll("hero")} aria-label="Scroll to top">
           <Image
             src="/logo.png"
             alt="Site logo"
             width={180}
             height={90}
             priority
-            draggable={false}
           />
         </button>
 
-        {/* Desktop Nav */}
-        <motion.ul
-          variants={desktopList}
-          initial={reduceMotion ? false : "hidden"}
-          animate={reduceMotion ? false : "show"}
-          className="hidden md:flex justify-center items-center space-x-2"
-        >
+        {/* ---------------- DESKTOP NAV ---------------- */}
+        <ul className="hidden md:flex justify-center items-center gap-2">
           {navLinks.map((n) => (
-            <motion.li key={n.id} variants={item}>
+            <motion.li
+              key={n.id}
+              variants={fadeUp}
+              initial="hidden"
+              animate="show"
+            >
               <motion.button
                 onClick={() => handleScroll(n.href.slice(1))}
                 whileHover={
-                  reduceMotion
-                    ? undefined
-                    : { y: -1, scale: 1.04, transition: fastSpring }
+                  !reduceMotion ? { y: -1, transition: springSoft } : undefined
                 }
-                className="py-2 px-4 text-neutral-200 hover:text-white transition-colors focus:outline-none"
+                className="
+                  group relative px-4 py-2 rounded-full
+                  text-2xl font-medium text-white/80 hover:text-white
+                  hover:bg-white/12 transition-colors
+                  grid place-items-center
+                "
               >
-                {n.name}
+                <NavItem item={n} />
+                <span
+                  className="
+                    absolute left-1/2 bottom-[2px] h-[2px] w-5
+                    -translate-x-1/2 rounded-full bg-white/80
+                    opacity-0 scale-x-50 transition-all duration-200
+                    group-hover:opacity-100 group-hover:scale-x-100
+                  "
+                />
               </motion.button>
             </motion.li>
           ))}
-        </motion.ul>
+        </ul>
 
-        {/* Desktop Socials */}
-        <motion.ul
-          variants={desktopList}
-          initial={reduceMotion ? false : "hidden"}
-          animate={reduceMotion ? false : "show"}
-          className="hidden md:flex items-center space-x-4 justify-end"
-        >
+        {/* ---------------- DESKTOP SOCIALS ---------------- */}
+        <ul className="hidden md:flex items-center gap-2">
           {socialLinks.map((s) => (
-            <motion.li key={s.name} variants={item}>
+            <motion.li key={s.name}>
               <motion.a
                 href={s.url}
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={s.name}
                 whileHover={
-                  reduceMotion
-                    ? undefined
-                    : { y: -1, scale: 1.05, transition: fastSpring }
+                  !reduceMotion
+                    ? { scale: 1.15, transition: springSnappy }
+                    : undefined
                 }
-                className="text-neutral-200 hover:text-white focus:outline-none"
+                whileTap={!reduceMotion ? { scale: 0.95 } : undefined}
+                className="
+                  grid place-items-center h-10 w-10 rounded-full
+                  bg-white/10 hover:bg-white/20 text-white
+                  hover:shadow-[0_4px_12px_rgba(255,255,255,0.25)]
+                  transition-colors
+                "
               >
                 {s.icon}
               </motion.a>
             </motion.li>
           ))}
-        </motion.ul>
+        </ul>
 
         {/* Mobile Toggle */}
-        <motion.button
+        <button
           ref={toggleRef}
           onClick={() => setOpen(true)}
-          whileTap={!reduceMotion ? { scale: 0.9 } : undefined}
-          aria-expanded={open}
           aria-label="Open menu"
-          className="md:hidden text-white focus:outline-none justify-self-end"
+          className="
+            md:hidden ml-auto grid place-items-center
+            h-11 w-11 rounded-full bg-white/10 hover:bg-white/20
+          "
         >
-          <AiOutlineMenu className="text-4xl" />
-        </motion.button>
+          <AiOutlineMenu className="text-2xl text-white" />
+        </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* ---------------- MOBILE MENU ---------------- */}
       <AnimatePresence>
         {open && (
           <>
             <motion.div
-              variants={backdrop}
-              initial="hidden"
-              animate="show"
-              exit="exit"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               className="fixed inset-0 bg-black/40 z-[99]"
-              aria-hidden
+              onClick={() => setOpen(false)}
             />
 
             <motion.div
               ref={panelRef}
-              tabIndex={-1}
               role="dialog"
               aria-modal="true"
-              variants={panel}
-              initial="hidden"
-              animate="show"
-              exit="exit"
-              className="fixed inset-0 h-[100dvh] bg-[#9d8770]/95 backdrop-blur-sm
-              z-[100] flex flex-col items-center pt-28 pb-16 focus:outline-none"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 20 }}
+              transition={{ duration: 0.25, ease: "easeOut" }}
+              className="fixed inset-0 z-[100] flex flex-col"
             >
-              <button
-                onClick={() => setOpen(false)}
-                aria-label="Close menu"
-                className="absolute top-5 right-5 p-2 rounded-full bg-black/30 text-white focus:outline-none"
+              <div
+                className="
+    relative mx-2 mb-2 mt-auto rounded-3xl
+    bg-[#9d8770]/95 backdrop-blur-xl
+    border border-white/10
+    px-6 pt-5 pb-[calc(env(safe-area-inset-bottom)+1.5rem)]
+  "
               >
-                <AiOutlineClose className="text-3xl" />
-              </button>
+                <button
+                  onClick={() => setOpen(false)}
+                  aria-label="Close menu"
+                  className="
+                    absolute right-4 top-4 grid place-items-center
+                    h-9 w-9 rounded-full bg-white/10 hover:bg-white/20
+                  "
+                >
+                  <AiOutlineClose className="text-xl text-white" />
+                </button>
 
-              <div className="flex flex-1 flex-col justify-center items-center space-y-6">
-                {navLinks.map((n) => (
-                  <motion.button
-                    key={n.id}
-                    variants={item}
-                    onClick={() => {
-                      handleScroll(n.href.slice(1));
-                      setOpen(false);
-                    }}
-                    className="text-3xl uppercase text-neutral-200 hover:text-white focus:outline-none"
-                  >
-                    {n.name}
-                  </motion.button>
-                ))}
-              </div>
+                <div className="mx-auto mb-6 h-1 w-10 rounded-full bg-white/30" />
 
-              <div className="flex justify-center space-x-6 mt-12">
-                {socialLinks.map((s) => (
-                  <motion.a
-                    key={s.name}
-                    variants={item}
-                    href={s.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label={s.name}
-                    className="text-3xl text-neutral-200 hover:text-white focus:outline-none"
-                  >
-                    {s.icon}
-                  </motion.a>
-                ))}
+                <div className="flex flex-col items-center gap-4">
+                  {navLinks.map((n) => (
+                    <button
+                      key={n.id}
+                      onClick={() => {
+                        handleScroll(n.href.slice(1));
+                        setOpen(false);
+                      }}
+                      className="
+                        w-full max-w-xs rounded-xl px-4 py-3
+                        text-center text-2xl font-medium
+                        text-white/90 hover:bg-white/10
+                        grid place-items-center
+                      "
+                    >
+                      <NavItem item={n} />
+                    </button>
+                  ))}
+                </div>
+
+                <div className="mt-16 flex justify-center gap-4">
+                  {socialLinks.map((s) => (
+                    <motion.a
+                      key={s.name}
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={s.name}
+                      whileHover={
+                        !reduceMotion
+                          ? { scale: 1.1, transition: springSoft }
+                          : undefined
+                      }
+                      className="
+                        grid place-items-center h-11 w-11 rounded-full
+                        bg-white/15 hover:bg-white/25 text-white
+                      "
+                    >
+                      {s.icon}
+                    </motion.a>
+                  ))}
+                </div>
               </div>
             </motion.div>
           </>
