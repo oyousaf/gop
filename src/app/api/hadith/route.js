@@ -4,15 +4,15 @@ import moment from "moment-hijri";
 import { NextResponse } from "next/server";
 
 let HADITH_DATA = null;
-let RESULT_CACHE = {};
+let MONTH_CACHE = {};
 
 /* ---------------------------------------------
-   🔒 Safe string
+   Safe string
 --------------------------------------------- */
 const safe = (v) => (typeof v === "string" ? v : v ? String(v) : "");
 
 /* ---------------------------------------------
-   📅 Hijri Month Keywords
+   Hijri Month Keywords
 --------------------------------------------- */
 const hijriMonthKeywords = {
   1: ["Muharram", "Ashura", "fasting", "repentance", "charity"],
@@ -32,7 +32,7 @@ const hijriMonthKeywords = {
 const GLOBAL_FALLBACK = ["mercy", "charity", "faith"];
 
 /* ---------------------------------------------
-   🧹 Normalize text for deduplication
+   Normalize
 --------------------------------------------- */
 function normalize(text) {
   return text
@@ -43,7 +43,7 @@ function normalize(text) {
 }
 
 /* ---------------------------------------------
-   📚 Load hadith corpus (ENRICHED)
+   Load Hadith Corpus
 --------------------------------------------- */
 function loadHadithData() {
   if (HADITH_DATA) return;
@@ -74,35 +74,31 @@ function loadHadithData() {
     const arr = Array.isArray(raw)
       ? raw
       : Array.isArray(raw?.hadiths)
-      ? raw.hadiths
-      : [];
+        ? raw.hadiths
+        : [];
 
     for (const h of arr) {
       const english =
         h?.english?.text || h?.text?.english || h?.hadith?.text || "";
-
       if (!english) continue;
 
       const arabic =
         typeof h?.arabic === "string"
           ? h.arabic
           : typeof h?.hadith?.arabic === "string"
-          ? h.hadith.arabic
-          : typeof h?.text?.arabic === "string"
-          ? h.text.arabic
-          : "";
+            ? h.hadith.arabic
+            : typeof h?.text?.arabic === "string"
+              ? h.text.arabic
+              : "";
 
       const key = normalize(english);
 
       const narrator = safe(
-        h?.narrator || h?.english?.narrator || h?.hadith?.narrator || ""
+        h?.narrator || h?.english?.narrator || h?.hadith?.narrator || "",
       );
 
       if (!map.has(key)) {
         map.set(key, {
-          collection,
-          book: safe(h.bookId || h?.reference?.book || ""),
-          number: safe(h.idInBook || h.hadithnumber || ""),
           text: english.toLowerCase(),
           original: english,
           arabic: arabic || null,
@@ -123,61 +119,73 @@ function loadHadithData() {
 }
 
 /* ---------------------------------------------
-   🔎 Keyword search
+   Build Month Results (cached)
 --------------------------------------------- */
-function searchKeyword(keyword) {
-  const k = keyword.toLowerCase();
-  const results = [];
-
-  for (const h of HADITH_DATA) {
-    if (!h.text.includes(k)) continue;
-
-    results.push({
-      content: h.original,
-      arabic: h.arabic || null,
-      narrator: h.narrator || null,
-      sources: h.sources,
-      collectionTitles: h.collectionTitles,
-    });
-
-    if (results.length >= 20) break;
-  }
-
-  return results;
-}
-
-/* ---------------------------------------------
-   🕌 MAIN ROUTE
---------------------------------------------- */
-export async function GET() {
-  loadHadithData();
-
-  const month = moment().iMonth() + 1;
-  const keywords = hijriMonthKeywords[month] || ["faith"];
+function buildMonthResults(month) {
   const cacheKey = `month-${month}`;
 
-  if (RESULT_CACHE[cacheKey] && Date.now() < RESULT_CACHE[cacheKey].expiry) {
-    return NextResponse.json(RESULT_CACHE[cacheKey].results);
+  if (MONTH_CACHE[cacheKey] && Date.now() < MONTH_CACHE[cacheKey].expiry) {
+    return MONTH_CACHE[cacheKey].data;
   }
 
-  let results = [];
+  const keywords = hijriMonthKeywords[month] || ["faith"];
+
+  let matched = [];
+
+  const search = (keyword) => {
+    const k = keyword.toLowerCase();
+    return HADITH_DATA.filter((h) => h.text.includes(k));
+  };
 
   for (const k of keywords) {
-    results = searchKeyword(k);
-    if (results.length) break;
+    matched = search(k);
+    if (matched.length) break;
   }
 
-  if (!results.length) {
+  if (!matched.length) {
     for (const k of GLOBAL_FALLBACK) {
-      results = searchKeyword(k);
-      if (results.length) break;
+      matched = search(k);
+      if (matched.length) break;
     }
   }
 
-  RESULT_CACHE[cacheKey] = {
-    results,
+  const formatted = matched.map((h) => ({
+    content: h.original,
+    arabic: h.arabic,
+    narrator: h.narrator,
+    sources: h.sources,
+    collectionTitles: h.collectionTitles,
+  }));
+
+  MONTH_CACHE[cacheKey] = {
+    data: formatted,
     expiry: Date.now() + 6 * 60 * 60 * 1000,
   };
 
-  return NextResponse.json(results);
+  return formatted;
+}
+
+/* ---------------------------------------------
+   GET Route (pagination)
+--------------------------------------------- */
+export async function GET(req) {
+  loadHadithData();
+
+  const { searchParams } = new URL(req.url);
+  const limit = parseInt(searchParams.get("limit")) || 20;
+  const offset = parseInt(searchParams.get("offset")) || 0;
+
+  const month = moment().iMonth() + 1;
+
+  const monthResults = buildMonthResults(month);
+
+  const paged = monthResults.slice(offset, offset + limit);
+
+  return NextResponse.json({
+    month,
+    total: monthResults.length,
+    offset,
+    limit,
+    results: paged,
+  });
 }
