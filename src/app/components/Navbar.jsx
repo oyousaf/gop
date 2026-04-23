@@ -110,7 +110,7 @@ export default function Navbar() {
               >
                 <NavItem item={n} />
                 <span
-                  className="absolute left-1/2 bottom-0.5 h-[2px] w-5 -translate-x-1/2 rounded-full bg-white/80
+                  className="absolute left-1/2 bottom-0.5 h-0.5 w-5 -translate-x-1/2 rounded-full bg-white/80
                     opacity-0 scale-x-50 transition-all duration-200 group-hover:opacity-100 group-hover:scale-x-100"
                 />
               </motion.button>
@@ -161,7 +161,7 @@ export default function Navbar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/40 z-[99]"
+              className="fixed inset-0 bg-black/40 z-99"
               onClick={() => setOpen(false)}
             />
 
@@ -173,7 +173,7 @@ export default function Navbar() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 20 }}
               transition={{ duration: 0.25, ease: "easeOut" }}
-              className="fixed inset-0 z-[100] flex flex-col"
+              className="fixed inset-0 z-100 flex flex-col"
             >
               <div
                 className="relative mx-2 mb-2 mt-auto rounded-3xl bg-[#9d8770]/95 backdrop-blur-xl

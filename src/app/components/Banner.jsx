@@ -6,10 +6,10 @@ export default function Banner() {
       id="welcome"
       role="region"
       aria-label="Welcome Banner"
-      className="w-full h-72 mt-[100px] flex justify-center items-center bg-gradient-to-r from-background to-teal-700 relative overflow-hidden shadow-lg"
+      className="w-full h-72 mt-25 flex justify-center items-center bg-linear-to-r from-background to-teal-700 relative overflow-hidden shadow-lg"
     >
       {/* Background Overlay */}
-      <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-r from-black/60 to-black/30 z-0"></div>
+      <div className="absolute top-0 left-0 w-full h-full bg-linear-to-r from-black/60 to-black/30 z-0"></div>
 
       {/* Optional screen-reader-only heading */}
       <h2 className="sr-only">Welcome Section</h2>

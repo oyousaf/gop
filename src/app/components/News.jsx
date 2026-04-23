@@ -80,7 +80,7 @@ export default function News() {
           {Array.from({ length: 6 }).map((_, i) => (
             <div
               key={i}
-              className="h-[28rem] rounded-2xl bg-amber-700 ring-1 ring-amber-900 animate-pulse"
+              className="h-112 rounded-2xl bg-amber-700 ring-1 ring-amber-900 animate-pulse"
             />
           ))}
         </div>
@@ -121,8 +121,8 @@ export default function News() {
               <div
                 className={
                   lang === "ar"
-                    ? "text-xl leading-[2.05] font-bold text-right font-arabic text-amber-100 max-h-[18rem] overflow-hidden max-w-prose mx-auto"
-                    : "text-base md:text-lg leading-[1.8] text-amber-200 max-h-[18rem] overflow-hidden max-w-prose mx-auto"
+                    ? "text-xl leading-[2.05] font-bold text-right font-arabic text-amber-100 max-h-72 overflow-hidden max-w-prose mx-auto"
+                    : "text-base md:text-lg leading-[1.8] text-amber-200 max-h-72 overflow-hidden max-w-prose mx-auto"
                 }
               >
                 {article.description || article.content}
