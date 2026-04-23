@@ -11,8 +11,8 @@ module.exports = {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        primary: "#9d8770", // earth-tone
-        accent: "#c4ac92", // hover/active
+        primary: "#9d8770",
+        accent: "#c4ac92",
         muted: "#bba58d",
         dark: "#2e2e2e",
         light: "#f4f4f4",
