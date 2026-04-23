@@ -72,7 +72,7 @@ export default function Navbar() {
     <nav
       aria-label="Main navigation"
       className={`
-        fixed top-4 left-1/2 -translate-x-1/2 z-[100]
+        fixed top-4 left-1/2 -translate-x-1/2 z-100
         w-[calc(100%-2rem)] max-w-7xl rounded-2xl
         border border-white/10 shadow-xl shadow-black/10
         transition-all duration-300
@@ -110,7 +110,7 @@ export default function Navbar() {
               >
                 <NavItem item={n} />
                 <span
-                  className="absolute left-1/2 bottom-[2px] h-[2px] w-5 -translate-x-1/2 rounded-full bg-white/80
+                  className="absolute left-1/2 bottom-0.5 h-[2px] w-5 -translate-x-1/2 rounded-full bg-white/80
                     opacity-0 scale-x-50 transition-all duration-200 group-hover:opacity-100 group-hover:scale-x-100"
                 />
               </motion.button>
