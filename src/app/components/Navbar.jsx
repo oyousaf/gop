@@ -88,6 +88,7 @@ export default function Navbar() {
             width={180}
             height={90}
             priority
+            className="h-auto w-auto max-w-45"
           />
         </button>
 
