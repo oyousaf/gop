@@ -40,7 +40,6 @@ Designed to support rich media, structured content ingestion, and a calm, intent
 
 - 📊 **Google Analytics 4**
 - ⚡ **@vercel/analytics**
-- 🧭 **react-scroll**
 - 🎨 **react-icons**
 
 ---
