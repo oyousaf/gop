@@ -12,16 +12,16 @@ const oleo = Oleo_Script({
 
 // Static site description
 const description =
-  "Discover the beauty of Islam with resources on Quran, Hadith, spiritual growth, and authentic Islamic education.";
+  "Explore Quran and Sunnah, authentic Hadith, Islamic spirituality, prayer times, live views of Makkah, Madinah and Al-Aqsa, and thoughtful resources for Muslims worldwide.";
 
 // JSON-LD structured data
 const structuredData = {
   "@context": "https://schema.org",
-  "@type": "Organization",
+  "@type": "EducationalOrganization",
   name: "حدائق الجنة",
   url: "https://oyousaf.uk",
   logo: "https://oyousaf.uk/apple-touch-icon.png",
-  sameAs: ["https://x.com/oyousaf_", "https://oyousaf.uk"],
+  sameAs: ["https://x.com/oyousaf_", "https://www.youtube.com/@oyousaf_"],
   description,
   founder: {
     "@type": "Person",
@@ -47,13 +47,22 @@ export const metadata = {
   category: "Religion & Spirituality",
   keywords: [
     "Islamic knowledge",
+    "learn Islam online",
     "Quran and Sunnah",
-    "Authentic Hadith",
+    "authentic Hadith",
+    "Hadith in English and Arabic",
     "Islamic spirituality",
-    "Fiqh and Seerah",
-    "Learn Islam online",
-    "Sacred Islamic teachings",
-    "Tazkiyah and Tawheed",
+    "tazkiyah and tawheed",
+    "fiqh and seerah",
+    "daily prayer times",
+    "Makkah live stream",
+    "Madinah live stream",
+    "Al Aqsa live stream",
+    "Masjid al Haram",
+    "Masjid an Nabawi",
+    "Palestine solidarity",
+    "BDS boycott guide",
+    "Islamic resources worldwide",
   ],
   openGraph: {
     type: "website",
@@ -97,6 +106,10 @@ export const metadata = {
   },
   alternates: {
     canonical: "https://oyousaf.uk",
+    languages: {
+      "en-GB": "https://oyousaf.uk",
+      "x-default": "https://oyousaf.uk",
+    },
   },
 };
 

@@ -69,7 +69,7 @@ export default function Divestment() {
       >
         {[
           "The growing discourse around divesting from companies supporting Israel has gained momentum, particularly during the current crisis. Esteemed Islamic scholars urge Muslims to avoid such brands, citing the profound spiritual and historical significance of Masjid Al-Aqsa.",
-          "The following brands are known to either provide direct support to Israel or receive funding from Israeli sources.",
+          "This reference list reflects the BDS Movement guide retrieved on 3 September 2026. Priority targets and grassroots campaigns are labelled separately; check the linked source for the latest guidance.",
         ].map((text, i) => (
           <motion.p
             key={i}
@@ -123,6 +123,14 @@ export default function Divestment() {
               <p className="text-base md:text-lg text-red-100 flex-grow">
                 {brand.reason}
               </p>
+              <a
+                href={brand.source}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 text-sm text-red-200 underline underline-offset-4"
+              >
+                View source
+              </a>
             </motion.li>
           ))}
         </AnimatePresence>
