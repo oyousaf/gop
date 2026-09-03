@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --background: #9d8770;
+  --background: #173f3b;
   --foreground: #ffffff;
+  --surface: rgba(255, 255, 255, 0.08);
+  --surface-border: rgba(255, 255, 255, 0.14);
+  --accent: #f6c453;
 }
 
 html {
@@ -12,11 +15,18 @@ html {
 }
 
 body {
-  background-color: var(--background);
+  background:
+    radial-gradient(circle at 10% 0%, rgba(246, 196, 83, 0.14), transparent 28rem),
+    linear-gradient(145deg, #173f3b 0%, #102d2b 55%, #0b211f 100%);
   color: var(--foreground);
   -webkit-touch-callout: none;
   pointer-events: auto;
   overflow-x: hidden;
+}
+
+::selection {
+  background: var(--accent);
+  color: #173f3b;
 }
 
 button,

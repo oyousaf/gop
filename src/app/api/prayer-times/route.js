@@ -1,64 +1,57 @@
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const city = (searchParams.get("city") || "Makkah").trim().slice(0, 80);
-
-  const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
-  const RAPIDAPI_HOST = "muslimsalat.p.rapidapi.com";
-
-  if (!RAPIDAPI_KEY) {
-    console.error("Missing RapidAPI key.");
-    return Response.json({ error: "Missing RapidAPI key." }, { status: 500 });
-  }
-
-  const endpoint = `https://${RAPIDAPI_HOST}/${encodeURIComponent(city)}.json`;
+  const country = (searchParams.get("country") || "Saudi Arabia")
+    .trim()
+    .slice(0, 80);
+  const endpoint =
+    `https://api.aladhan.com/v1/timingsByCity?city=${encodeURIComponent(city)}` +
+    `&country=${encodeURIComponent(country)}&method=4`;
 
   try {
     const response = await fetch(endpoint, {
       signal: AbortSignal.timeout(8000),
-      headers: {
-        "x-rapidapi-key": RAPIDAPI_KEY,
-        "x-rapidapi-host": RAPIDAPI_HOST,
-        Accept: "application/json",
-      },
+      headers: { Accept: "application/json" },
     });
 
     if (!response.ok) {
-      const errorBody = await response.text();
-      console.error("Failed to fetch prayer times:", errorBody);
-
       return Response.json(
-        { error: "Failed to fetch prayer times." },
-        { status: response.status }
+        { error: "Prayer times are temporarily unavailable." },
+        { status: 502 },
       );
     }
 
     const data = await response.json();
-    const item = data?.items?.[0];
+    const timings = data?.data?.timings;
 
-    if (!item) {
-      console.warn("No items in prayer time data response.");
+    if (!timings) {
       return Response.json(
         { error: "No prayer timings found." },
-        { status: 404 }
+        { status: 502 },
       );
     }
 
     return Response.json(
       {
-        Fajr: item.fajr,
-        Sunrise: item.shurooq,
-        Dhuhr: item.dhuhr,
-        Asr: item.asr,
-        Maghrib: item.maghrib,
-        Isha: item.isha,
+        Fajr: timings.Fajr,
+        Sunrise: timings.Sunrise,
+        Dhuhr: timings.Dhuhr,
+        Asr: timings.Asr,
+        Maghrib: timings.Maghrib,
+        Isha: timings.Isha,
       },
-      { status: 200 }
+      {
+        status: 200,
+        headers: {
+          "Cache-Control": "public, s-maxage=1800, stale-while-revalidate=7200",
+        },
+      },
     );
   } catch (error) {
     console.error("Prayer time fetch error:", error);
     return Response.json(
-      { error: "Prayer time fetch failed." },
-      { status: 500 }
+      { error: "Prayer times are temporarily unavailable." },
+      { status: 502 },
     );
   }
 }

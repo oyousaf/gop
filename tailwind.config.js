@@ -3,9 +3,10 @@ const config = {
   theme: {
     extend: {
       colors: {
-        primary: "#9d8770",
-        accent: "#c4ac92",
-        muted: "#bba58d",
+        background: "#173f3b",
+        primary: "#173f3b",
+        accent: "#f6c453",
+        muted: "#a8c5bd",
         dark: "#2e2e2e",
         light: "#f4f4f4",
       },

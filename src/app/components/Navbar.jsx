@@ -55,6 +55,7 @@ const NavItem = memo(function NavItem({ item }) {
           width={26}
           height={26}
           className="block h-auto w-auto"
+          style={{ width: "auto", height: "auto" }}
         />
       );
 
@@ -171,6 +172,7 @@ export default function Navbar() {
               <motion.button
                 type="button"
                 onClick={() => handleScroll(n.href.slice(1))}
+                aria-label={`Go to ${n.id} section`}
                 whileHover={
                   !reduceMotion
                     ? {
@@ -299,6 +301,7 @@ export default function Navbar() {
                         handleScroll(n.href.slice(1));
                         setOpen(false);
                       }}
+                      aria-label={`Go to ${n.id} section`}
                       className="grid w-full max-w-xs place-items-center rounded-xl px-4 py-3 text-center text-2xl font-medium
                         text-white/90 transition-colors hover:bg-white/10"
                     >

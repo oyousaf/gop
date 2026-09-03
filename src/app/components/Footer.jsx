@@ -36,7 +36,8 @@ export default function Footer() {
             alt="Palestine flag"
             width={24}
             height={24}
-            className="object-contain"
+            className="h-5 w-auto object-contain"
+            style={{ width: "auto" }}
           />
           <span>Free Palestine 🍉</span>
         </div>

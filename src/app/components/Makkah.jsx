@@ -61,7 +61,7 @@ export default function Makkah() {
         setLocation({ city, country });
 
         const prayerRes = await fetch(
-          `/api/prayer-times?city=${city}&country=${country}`
+          `/api/prayer-times?city=${encodeURIComponent(city)}&country=${encodeURIComponent(country)}`
         );
         const timings = await prayerRes.json();
         if (!timings.error) setPrayerTimes(timings);
