@@ -11,12 +11,12 @@ export default function Divestment() {
 
   const sortedBoycott = useMemo(
     () => [...boycott].sort((a, b) => a.name.localeCompare(b.name)),
-    []
+    [],
   );
 
   const loadMore = useCallback(() => {
     setVisibleCount((prev) =>
-      Math.min(prev + BATCH_SIZE, sortedBoycott.length)
+      Math.min(prev + BATCH_SIZE, sortedBoycott.length),
     );
   }, [sortedBoycott.length]);
 
@@ -31,12 +31,12 @@ export default function Divestment() {
             observer.disconnect();
           }
         },
-        { threshold: 1 }
+        { threshold: 1 },
       );
 
       observer.observe(node);
     },
-    [loadMore, visibleCount, sortedBoycott.length]
+    [loadMore, visibleCount, sortedBoycott.length],
   );
 
   return (
@@ -120,7 +120,7 @@ export default function Divestment() {
               <h3 className="text-xl md:text-2xl font-semibold mb-3 text-red-300">
                 {brand.name}
               </h3>
-              <p className="text-base md:text-lg text-red-100 flex-grow">
+              <p className="text-base md:text-lg text-red-100 grow">
                 {brand.reason}
               </p>
               <a

@@ -1002,4 +1002,27 @@ export const boycott = [
     reason: "Sources its black seed oil directly from Israel.",
   },
   { name: "Zus Coffee", reason: "Collaborated with Adidas for an event." },
+  {
+    name: "Chevron",
+    reason:
+      "Listed by the BDS Movement as a consumer boycott priority target, including Caltex and Texaco.",
+  },
+  {
+    name: "Dell Technologies",
+    reason: "Listed by the BDS Movement as a consumer boycott priority target.",
+  },
+  {
+    name: "Disney+",
+    reason: "Listed by the BDS Movement as a consumer boycott priority target.",
+  },
+  {
+    name: "Papa John’s",
+    reason:
+      "Listed by the BDS Movement as an organic grassroots boycott target it actively supports.",
+  },
+  {
+    name: "Israeli produce",
+    reason:
+      "The BDS Movement calls for shoppers to boycott produce from Israel and request its removal from shelves.",
+  },
 ];
