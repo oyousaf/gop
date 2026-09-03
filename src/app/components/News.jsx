@@ -43,6 +43,7 @@ export default function News() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.4, ease: "easeOut" }}
+        id="news-heading"
         className="text-4xl md:text-5xl font-semibold text-center mb-10 text-white"
         dir={lang === "ar" ? "rtl" : "ltr"}
       >
@@ -53,6 +54,7 @@ export default function News() {
       <div className="mx-auto mb-12 flex w-48 rounded-full bg-amber-800 p-1 ring-1 ring-amber-900">
         {["en", "ar"].map((code) => (
           <button
+            type="button"
             key={code}
             onClick={() => setLang(code)}
             aria-pressed={lang === code}

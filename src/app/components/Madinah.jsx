@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 
@@ -24,6 +24,7 @@ export default function Madinah() {
   const [videoId, setVideoId] = useState(null);
   const [useFallback, setUseFallback] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
+  const handleStreamError = useCallback(() => setUseFallback(true), []);
 
   useEffect(() => setHasMounted(true), []);
 
@@ -43,11 +44,6 @@ export default function Madinah() {
       }
     })();
   }, [useFallback, videoId]);
-
-  const handleStreamError = () => {
-    console.warn("⚠️ Madinah HLS stream failed. Switching to YouTube.");
-    setUseFallback(true);
-  };
 
   if (!hasMounted) {
     return (
@@ -71,6 +67,7 @@ export default function Madinah() {
         className="max-w-5xl mx-auto flex flex-col justify-center items-center h-full z-10 px-4 text-center"
       >
         <motion.h2
+          id="madinah-heading"
           className="md:text-5xl text-3xl font-bold mb-6 p-3 text-white"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

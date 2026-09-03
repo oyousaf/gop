@@ -14,12 +14,19 @@ export async function GET(request) {
   }
 
   // Accept single or comma-separated multiple IDs
-  const channelIds = channelId.split(",").map((id) => id.trim());
+  const channelIds = channelId
+    .split(",")
+    .map((id) => id.trim())
+    .filter((id) => /^UC[\w-]{20,}$/.test(id))
+    .slice(0, 5);
+  if (!channelIds.length) {
+    return Response.json({ error: "Invalid channelId" }, { status: 400 });
+  }
   const queryParam = query ? `&q=${encodeURIComponent(query)}` : "";
 
   const fetchVideoId = async (url) => {
     try {
-      const r = await fetch(url);
+      const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
       const data = await r.json();
 
       if (data?.error) {
@@ -44,7 +51,7 @@ export async function GET(request) {
         console.log(`✅ Live stream found on channel ${id}`);
         return Response.json(
           { videoId, channelId: id, type: "live" },
-          { status: 200 }
+          { status: 200, headers: { "Cache-Control": "public, s-maxage=300" } }
         );
       }
     }
@@ -65,7 +72,7 @@ export async function GET(request) {
           channelId: fallbackId,
           type: "latest",
         },
-        { status: 200 }
+        { status: 200, headers: { "Cache-Control": "public, s-maxage=300" } }
       );
     }
 

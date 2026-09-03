@@ -32,7 +32,9 @@ export async function GET(request) {
       ","
     )}&apiKey=${API_KEY}`;
 
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      signal: AbortSignal.timeout(10000),
+    });
     if (!response.ok) {
       throw new Error("Failed to fetch news data");
     }
@@ -103,7 +105,12 @@ export async function GET(request) {
       return true;
     });
 
-    return Response.json(filtered.slice(0, 15), { status: 200 });
+    return Response.json(filtered.slice(0, 15), {
+      status: 200,
+      headers: {
+        "Cache-Control": "public, s-maxage=900, stale-while-revalidate=3600",
+      },
+    });
   } catch (error) {
     console.error("News fetch error:", error);
     return Response.json({ error: error.message }, { status: 500 });

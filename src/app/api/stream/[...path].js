@@ -26,6 +26,10 @@ export async function GET(request, { params }) {
     return Response.json({ error: "Missing stream location" }, { status: 400 });
   }
 
+  if (rest.some((part) => !/^[\w.-]+$/.test(part))) {
+    return Response.json({ error: "Invalid stream path" }, { status: 400 });
+  }
+
   let streamList = DIRECT_STREAMS[loc.toLowerCase()];
   if (!streamList) {
     return Response.json({ error: "Unknown stream location" }, { status: 404 });

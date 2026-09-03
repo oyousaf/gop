@@ -69,7 +69,7 @@ export default function ScrollToTop() {
             transition-colors duration-200 hover:bg-[#e7ccaf] hover:text-[#6c857d] focus-visible:outline-none focus-visible:ring-2
              focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#9d8770]"
         >
-          <FaArrowUp className="text-2xl" />
+          <FaArrowUp aria-hidden="true" className="text-2xl" />
         </motion.button>
       )}
     </AnimatePresence>

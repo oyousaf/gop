@@ -172,8 +172,14 @@ export async function GET(req) {
   loadHadithData();
 
   const { searchParams } = new URL(req.url);
-  const limit = parseInt(searchParams.get("limit")) || 20;
-  const offset = parseInt(searchParams.get("offset")) || 0;
+  const requestedLimit = Number.parseInt(searchParams.get("limit"), 10);
+  const requestedOffset = Number.parseInt(searchParams.get("offset"), 10);
+  const limit = Number.isFinite(requestedLimit)
+    ? Math.min(Math.max(requestedLimit, 1), 50)
+    : 20;
+  const offset = Number.isFinite(requestedOffset)
+    ? Math.max(requestedOffset, 0)
+    : 0;
 
   const month = moment().iMonth() + 1;
 
@@ -181,11 +187,12 @@ export async function GET(req) {
 
   const paged = monthResults.slice(offset, offset + limit);
 
-  return NextResponse.json({
-    month,
-    total: monthResults.length,
-    offset,
-    limit,
-    results: paged,
-  });
+  return NextResponse.json(
+    { month, total: monthResults.length, offset, limit, results: paged },
+    {
+      headers: {
+        "Cache-Control": "public, s-maxage=21600, stale-while-revalidate=86400",
+      },
+    },
+  );
 }

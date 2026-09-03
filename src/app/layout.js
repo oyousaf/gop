@@ -37,7 +37,10 @@ const structuredData = {
 // Metadata for SEO & socials
 export const metadata = {
   metadataBase: new URL("https://oyousaf.uk"),
-  title: "حدائق الجنة – Sacred Islamic Knowledge",
+  title: {
+    default: "حدائق الجنة | Sacred Islamic Knowledge",
+    template: "%s | حدائق الجنة",
+  },
   description,
   applicationName: "حدائق الجنة",
   authors: [{ name: "oyousaf", url: "https://oyousaf.uk" }],
@@ -57,7 +60,7 @@ export const metadata = {
     locale: "en_GB",
     url: "https://oyousaf.uk",
     siteName: "حدائق الجنة",
-    title: "حدائق الجنة – Sacred Islamic Knowledge",
+    title: "حدائق الجنة | Sacred Islamic Knowledge",
     description,
     images: [
       {
@@ -122,13 +125,12 @@ export default function RootLayout({ children }) {
         />
       </head>
       <body className="bg-background text-white antialiased scroll-smooth">
+        <a className="skip-link" href="#main-content">
+          Skip to main content
+        </a>
         <GA />
         <Analytics />
-        <main>
-          {/* Hidden H1 to reinforce title for Google */}
-          <h1 className="sr-only">حدائق الجنة – Sacred Islamic Knowledge</h1>
-          {children}
-        </main>
+        <main id="main-content">{children}</main>
       </body>
     </html>
   );

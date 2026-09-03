@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import moment from "moment-hijri";
 import dynamic from "next/dynamic";
@@ -30,6 +30,7 @@ export default function Makkah() {
     city: "Makkah",
     country: "Saudi Arabia",
   });
+  const handleStreamError = useCallback(() => setUseFallback(true), []);
 
   useEffect(() => {
     setHasMounted(true);
@@ -114,6 +115,7 @@ export default function Makkah() {
         className="max-w-5xl mx-auto flex flex-col justify-center items-center h-full z-10 px-4 text-center"
       >
         <motion.h2
+          id="makkah-heading"
           className="md:text-5xl text-3xl font-bold mb-6 p-3 text-white"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -131,7 +133,7 @@ export default function Makkah() {
               sourceType="hls"
               source="/api/stream/makkah"
               videoId={videoId}
-              onError={() => setUseFallback(true)}
+              onError={handleStreamError}
             />
           )}
         </div>
@@ -182,6 +184,7 @@ function PrayerTimesCard({
           Today&apos;s Prayer Times
         </h3>
         <button
+          type="button"
           onClick={() => setIs24Hour(!is24Hour)}
           className="text-white/70 border px-3 py-1 rounded hover:bg-white/10 transition"
           aria-label="Toggle clock format"

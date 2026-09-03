@@ -38,47 +38,42 @@ const ScrollToTop = dynamic(() => import("./components/ScrollToTop"), {
 export default function Home() {
   return (
     <div className="min-h-screen">
-      {/* SEO / screen readers */}
-      <h1 className="sr-only">
-        حدائق الجنة – Reviving the Ummah through Sacred Islamic Knowledge
-      </h1>
-
       <Navbar />
       <ScrollToTop />
 
-      <main>
+      <div>
         {/* Above-the-fold */}
         <Hero />
         <Banner />
 
         {/* Deferred content */}
-        <section>
+        <section aria-labelledby="makkah-heading">
           <Makkah />
         </section>
 
-        <section>
+        <section aria-labelledby="madinah-heading">
           <Madinah />
         </section>
 
-        <section>
+        <section aria-labelledby="aqsa-heading">
           <Aqsa />
         </section>
 
         {/* Static content */}
         <Knowledge />
 
-        <section>
+        <section aria-labelledby="hadith-heading">
           <Hadith />
         </section>
 
-        <section>
+        <section aria-labelledby="news-heading">
           <News />
         </section>
 
-        <section>
+        <section aria-labelledby="divestment-heading">
           <Divestment />
         </section>
-      </main>
+      </div>
 
       <Footer />
     </div>

@@ -36,13 +36,11 @@ export default function Hero() {
         </h1>
 
         <p className="mt-4 text-xl md:text-2xl text-white/90">
-          <span className="sr-only">Reviving the Ummah</span>
-          <span aria-hidden>
-            Reviving the Ummah through Sacred Islamic Knowledge
-          </span>
+          Reviving the Ummah through Sacred Islamic Knowledge
         </p>
 
         <motion.button
+          type="button"
           onClick={() => handleScroll("welcome")}
           aria-label="Scroll to Welcome section"
           initial={false}
@@ -54,7 +52,7 @@ export default function Hero() {
           }
           className="mt-10 inline-flex justify-center text-white/90 hover:text-white focus:outline-none"
         >
-          <FaArrowDown size={40} />
+          <FaArrowDown aria-hidden="true" size={40} />
         </motion.button>
       </div>
 

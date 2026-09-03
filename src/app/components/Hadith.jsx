@@ -107,7 +107,7 @@ export default function Hadith() {
       id="hadith"
       className="relative py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto scroll-mt-16"
     >
-      <h2 className="text-4xl md:text-5xl font-semibold text-center mb-14 text-white">
+      <h2 id="hadith-heading" className="text-4xl md:text-5xl font-semibold text-center mb-14 text-white">
         Hadith
       </h2>
 
@@ -147,6 +147,8 @@ export default function Hadith() {
             >
               {h.arabic && (
                 <button
+                  type="button"
+                  aria-label={`Show ${currentLang === "en" ? "Arabic" : "English"} translation`}
                   onClick={() => toggleLang(i)}
                   className="absolute top-4 right-4 text-xs font-semibold px-3 py-1 rounded-full bg-teal-900 text-teal-50"
                 >
@@ -188,6 +190,8 @@ export default function Hadith() {
               {showArrow && (
                 <div className="mt-6 flex justify-center">
                   <button
+                    type="button"
+                    aria-label={`${isExpanded ? "Collapse" : "Expand"} hadith`}
                     onClick={() => toggleExpand(i)}
                     className="w-10 h-10 rounded-full flex items-center justify-center bg-teal-900 text-teal-50"
                   >
@@ -228,6 +232,7 @@ export default function Hadith() {
       {hadiths.length < total && (
         <div className="mt-12 flex justify-center">
           <button
+            type="button"
             onClick={loadMore}
             disabled={loadingMore}
             className="px-6 py-3 rounded-full bg-teal-900 text-teal-50 hover:bg-teal-800 transition"

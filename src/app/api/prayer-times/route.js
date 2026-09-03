@@ -1,6 +1,6 @@
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
-  const city = searchParams.get("city") || "Makkah";
+  const city = (searchParams.get("city") || "Makkah").trim().slice(0, 80);
 
   const RAPIDAPI_KEY = process.env.RAPIDAPI_KEY;
   const RAPIDAPI_HOST = "muslimsalat.p.rapidapi.com";
@@ -14,6 +14,7 @@ export async function GET(request) {
 
   try {
     const response = await fetch(endpoint, {
+      signal: AbortSignal.timeout(8000),
       headers: {
         "x-rapidapi-key": RAPIDAPI_KEY,
         "x-rapidapi-host": RAPIDAPI_HOST,

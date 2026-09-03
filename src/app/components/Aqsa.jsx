@@ -55,6 +55,7 @@ export default function Aqsa() {
         className="max-w-5xl mx-auto flex flex-col justify-center items-center h-full z-10 px-4 text-center"
       >
         <motion.h2
+          id="aqsa-heading"
           className="md:text-5xl text-3xl font-bold mb-6 p-3 text-white"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

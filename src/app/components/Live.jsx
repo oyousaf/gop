@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Hls from "hls.js";
 import { FaPlayCircle } from "react-icons/fa";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
@@ -16,6 +16,12 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
   const [userInteracted, setUserInteracted] = useState(false);
   const [isUnmuted, setIsUnmuted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+
+  const fallbackToYoutube = useCallback(() => {
+    setIsYoutube(true);
+    setLoading(true);
+    onError?.();
+  }, [onError]);
 
   // Intersection observer
   useEffect(() => {
@@ -129,7 +135,24 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
       .catch(() => fallbackToYoutube());
 
     return () => video.removeEventListener("canplay", onCanPlay);
-  }, [source, isYoutube]);
+  }, [source, isYoutube, fallbackToYoutube]);
+
+  const fadeInAudio = useCallback((media) => {
+    setIsUnmuted(true);
+    const step = media.setVolume ? 5 : 0.05;
+    let volume = 0;
+    const fade = setInterval(() => {
+      volume = Math.min(media.setVolume ? 100 : 1, volume + step);
+      if (media.setVolume) {
+        media.unMute?.();
+        media.setVolume(volume);
+      } else {
+        media.muted = false;
+        media.volume = volume;
+      }
+      if (volume >= (media.setVolume ? 100 : 1)) clearInterval(fade);
+    }, 75);
+  }, []);
 
   // Manage playback / mute
   useEffect(() => {
@@ -149,30 +172,14 @@ export default function Live({ sourceType = "hls", source, videoId, onError }) {
 
     if (yt && playerReady) yt.playVideo?.();
     if (video && !isYoutube) video.play().catch(() => {});
-  }, [isVisible, userInteracted, isUnmuted, isYoutube, playerReady]);
-
-  function fadeInAudio(media) {
-    setIsUnmuted(true);
-    const step = media.setVolume ? 5 : 0.05;
-    let volume = 0;
-    const fade = setInterval(() => {
-      volume = Math.min(media.setVolume ? 100 : 1, volume + step);
-      if (media.setVolume) {
-        media.unMute?.();
-        media.setVolume(volume);
-      } else {
-        media.muted = false;
-        media.volume = volume;
-      }
-      if (volume >= (media.setVolume ? 100 : 1)) clearInterval(fade);
-    }, 75);
-  }
-
-  function fallbackToYoutube() {
-    setIsYoutube(true);
-    setLoading(true);
-    onError?.();
-  }
+  }, [
+    fadeInAudio,
+    isVisible,
+    userInteracted,
+    isUnmuted,
+    isYoutube,
+    playerReady,
+  ]);
 
   return (
     <div

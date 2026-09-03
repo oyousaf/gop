@@ -141,6 +141,7 @@ export default function Navbar() {
             LOGO
         ---------------------------------- */}
         <button
+          type="button"
           onClick={() => handleScroll("hero")}
           aria-label="Scroll to top"
           className="shrink-0"
@@ -168,6 +169,7 @@ export default function Navbar() {
               animate="show"
             >
               <motion.button
+                type="button"
                 onClick={() => handleScroll(n.href.slice(1))}
                 whileHover={
                   !reduceMotion
@@ -230,6 +232,7 @@ export default function Navbar() {
             MOBILE TOGGLE
         ---------------------------------- */}
         <button
+          type="button"
           ref={toggleRef}
           onClick={() => setOpen(true)}
           aria-label="Open menu"
@@ -275,6 +278,7 @@ export default function Navbar() {
               >
                 {/* Close */}
                 <button
+                  type="button"
                   onClick={() => setOpen(false)}
                   aria-label="Close menu"
                   className="absolute right-4 top-4 grid h-9 w-9 place-items-center rounded-full bg-white/10 transition-colors
