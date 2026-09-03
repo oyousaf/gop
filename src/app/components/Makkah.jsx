@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import moment from "moment-hijri";
 import dynamic from "next/dynamic";
 
 // Lazy-load Live component with skeleton fallback
@@ -87,8 +86,14 @@ export default function Makkah() {
     setUpcomingPrayer("Fajr");
   }, [prayerTimes, clock]);
 
-  const gregorian = moment(clock).locale("en").format("dddd, Do MMMM YYYY");
-  const hijri = moment(clock).locale("ar-SA").format("iD iMMMM iYYYY");
+  const gregorian = new Intl.DateTimeFormat("en-GB", {
+    dateStyle: "full",
+  }).format(clock);
+  const hijri = new Intl.DateTimeFormat("ar-SA-u-ca-islamic", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  }).format(clock);
   const formattedClock = is24Hour
     ? clock?.toLocaleTimeString("en-GB")
     : clock?.toLocaleTimeString("en-US");

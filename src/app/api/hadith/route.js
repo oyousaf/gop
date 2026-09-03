@@ -1,6 +1,5 @@
 import fs from "fs";
 import path from "path";
-import moment from "moment-hijri";
 import { NextResponse } from "next/server";
 
 let HADITH_DATA = null;
@@ -181,7 +180,11 @@ export async function GET(req) {
     ? Math.max(requestedOffset, 0)
     : 0;
 
-  const month = moment().iMonth() + 1;
+  const month = Number(
+    new Intl.DateTimeFormat("en-u-ca-islamic", { month: "numeric" })
+      .formatToParts(new Date())
+      .find((part) => part.type === "month")?.value || 1,
+  );
 
   const monthResults = buildMonthResults(month);
 

@@ -17,6 +17,11 @@ Designed to support rich media, structured content ingestion, and a calm, intent
 - 📱 **Responsive, scroll-driven navigation**
 - 🔍 **SEO-aware architecture** with next-sitemap
 
+## 🛠️ Development runtime
+
+Use Node.js 24 LTS for local development and deployment. Node.js 22 LTS remains
+supported for environments that have not upgraded yet.
+
 ---
 
 ## 🧩 Tech Stack
