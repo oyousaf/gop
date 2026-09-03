@@ -3,12 +3,12 @@ const config = {
   theme: {
     extend: {
       colors: {
-        background: "#173f3b",
-        primary: "#173f3b",
-        accent: "#f6c453",
-        muted: "#a8c5bd",
-        dark: "#2e2e2e",
-        light: "#f4f4f4",
+        background: "#8f7a68",
+        primary: "#8f7a68",
+        accent: "#d8ad54",
+        muted: "#cbb9a4",
+        dark: "#3c332c",
+        light: "#f6f0e8",
       },
 
       boxShadow: {

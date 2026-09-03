@@ -1,5 +1,4 @@
 export const navLinks = [
-  { id: "home", type: "text", label: "Home", href: "/hero" },
   { id: "makkah", type: "emoji", label: "🕋", href: "/makkah" },
   { id: "madinah", type: "emoji", label: "🕌", href: "/madinah" },
   { id: "aqsa", type: "icon", icon: "aqsa", href: "/aqsa" },

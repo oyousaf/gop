@@ -65,9 +65,9 @@ export default function ScrollToTop() {
           }
           whileTap={reduceMotion ? undefined : { scale: 0.96 }}
           className="fixed bottom-6 right-6 md:bottom-8 md:right-8 z-40 inline-flex h-12 w-12 items-center justify-center rounded-full
-            border border-white/15 bg-[#bba58d]/95 text-white shadow-[0_10px_30px_rgba(0,0,0,0.22)] backdrop-blur-md
-            transition-colors duration-200 hover:bg-[#e7ccaf] hover:text-[#6c857d] focus-visible:outline-none focus-visible:ring-2
-             focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#9d8770]"
+            border border-white/15 bg-[#756354]/95 text-white shadow-[0_10px_30px_rgba(0,0,0,0.22)] backdrop-blur-md
+            transition-colors duration-200 hover:bg-[#d8ad54] hover:text-[#3c332c] focus-visible:outline-none focus-visible:ring-2
+             focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-[#8f7a68]"
         >
           <FaArrowUp aria-hidden="true" className="text-2xl" />
         </motion.button>

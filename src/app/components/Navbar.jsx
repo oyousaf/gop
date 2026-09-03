@@ -134,7 +134,7 @@ export default function Navbar() {
         fixed top-4 left-1/2 z-100 w-[calc(100%-2rem)]
         max-w-7xl -translate-x-1/2 rounded-2xl border
         border-white/10 shadow-xl shadow-black/10 transition-all duration-300
-        ${scrolled ? "bg-[#9d8770]/75 backdrop-blur-xl" : "bg-[#9d8770]/90"}
+        ${scrolled ? "bg-[#8f7a68]/75 backdrop-blur-xl" : "bg-[#8f7a68]/90"}
       `}
     >
       <div className="grid grid-cols-[auto_1fr_auto] items-center px-4 py-3">
@@ -144,7 +144,7 @@ export default function Navbar() {
         <button
           type="button"
           onClick={() => handleScroll("hero")}
-          aria-label="Scroll to top"
+          aria-label="Go to home"
           className="shrink-0"
         >
           <Image
@@ -275,7 +275,7 @@ export default function Navbar() {
               className="fixed inset-0 z-100 flex flex-col"
             >
               <div
-                className="relative mt-auto mx-2 mb-2 rounded-3xl border border-white/10 bg-[#9d8770]/95 px-6 pt-5
+                className="relative mt-auto mx-2 mb-2 rounded-3xl border border-white/10 bg-[#8f7a68]/95 px-6 pt-5
                 backdrop-blur-xl pb-[calc(env(safe-area-inset-bottom)+1.5rem)]"
               >
                 {/* Close */}

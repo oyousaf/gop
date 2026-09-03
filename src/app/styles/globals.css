@@ -1,11 +1,11 @@
 @import "tailwindcss";
 
 :root {
-  --background: #173f3b;
+  --background: #8f7a68;
   --foreground: #ffffff;
-  --surface: rgba(255, 255, 255, 0.08);
-  --surface-border: rgba(255, 255, 255, 0.14);
-  --accent: #f6c453;
+  --surface: rgba(255, 249, 240, 0.12);
+  --surface-border: rgba(255, 249, 240, 0.2);
+  --accent: #d8ad54;
 }
 
 html {
@@ -16,8 +16,8 @@ html {
 
 body {
   background:
-    radial-gradient(circle at 10% 0%, rgba(246, 196, 83, 0.14), transparent 28rem),
-    linear-gradient(145deg, #173f3b 0%, #102d2b 55%, #0b211f 100%);
+    radial-gradient(circle at 10% 0%, rgba(216, 173, 84, 0.2), transparent 28rem),
+    linear-gradient(145deg, #a28d75 0%, #8f7a68 55%, #6f5e50 100%);
   color: var(--foreground);
   -webkit-touch-callout: none;
   pointer-events: auto;
@@ -26,7 +26,7 @@ body {
 
 ::selection {
   background: var(--accent);
-  color: #173f3b;
+  color: #3c332c;
 }
 
 button,
@@ -35,7 +35,7 @@ a {
 }
 
 :focus-visible {
-  outline: 3px solid #f6c453;
+  outline: 3px solid #d8ad54;
   outline-offset: 3px;
 }
 
@@ -46,7 +46,7 @@ a {
   z-index: 200;
   transform: translateY(-200%);
   border-radius: 0.5rem;
-  background: #173f3b;
+  background: #3c332c;
   padding: 0.75rem 1rem;
   color: #fff;
   font-weight: 700;
@@ -88,7 +88,7 @@ a {
 }
 
 ::-webkit-scrollbar-track {
-  background-color: #6c857d;
+  background-color: #6f5e50;
 }
 
 /* Media protection */
