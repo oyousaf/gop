@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion } from "motion/react";
 import { FaArrowDown } from "react-icons/fa";
 import { handleScroll } from "../utils/scroll";
 
@@ -25,17 +25,23 @@ export default function Hero() {
       <div className="absolute inset-0 z-10 bg-black/45" />
 
       <div
-        className="relative z-20 w-full max-w-3xl 2xl:max-w-4xl text-center rounded-xl bg-white/10 backdrop-blur-md p-6 md:p-8 shadow-lg"
+        className="relative z-20 w-full max-w-3xl 2xl:max-w-4xl rounded-2xl border border-white/15 bg-white/10 p-6 text-center
+          shadow-lg backdrop-blur-md md:p-10"
         style={{ contain: "paint" }}
       >
+        <span className="inline-block rounded-full border border-accent/40 bg-accent/15 px-4 py-1 text-xs font-semibold
+          uppercase tracking-[0.2em] text-accent">
+          حدائق الجنة
+        </span>
+
         <h1
           dir="rtl"
-          className="text-4xl md:text-6xl font-extrabold leading-tight tracking-tight text-shadow"
+          className="mt-6 font-arabic text-4xl font-bold leading-tight tracking-tight text-shadow-lg md:text-6xl"
         >
           إحياء الأمة بعلم الدين المقدس
         </h1>
 
-        <p className="mt-4 text-xl md:text-2xl text-white/90">
+        <p className="mt-4 text-xl text-white/90 md:text-2xl">
           Reviving the Ummah through Sacred Islamic Knowledge
         </p>
 
@@ -44,15 +50,16 @@ export default function Hero() {
           onClick={() => handleScroll("welcome")}
           aria-label="Scroll to Welcome section"
           initial={false}
-          animate={reduceMotion ? undefined : { y: [0, 10, 0], opacity: 1 }}
+          animate={reduceMotion ? undefined : { y: [0, 8, 0] }}
           transition={
             reduceMotion
               ? undefined
               : { duration: 2.2, ease: "easeInOut", repeat: Infinity }
           }
-          className="mt-10 inline-flex justify-center text-white/90 hover:text-white focus:outline-none"
+          className="mt-10 inline-flex justify-center text-white/90 transition-colors hover:text-accent
+            focus-visible:outline-none"
         >
-          <FaArrowDown aria-hidden="true" size={40} />
+          <FaArrowDown aria-hidden="true" size={32} />
         </motion.button>
       </div>
 

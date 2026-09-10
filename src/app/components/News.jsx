@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 
 export default function News() {
   const [news, setNews] = useState([]);
@@ -123,8 +123,8 @@ export default function News() {
               <div
                 className={
                   lang === "ar"
-                    ? "text-xl leading-[2.05] font-bold text-right font-arabic text-amber-100 max-h-72 overflow-hidden max-w-prose mx-auto"
-                    : "text-base md:text-lg leading-[1.8] text-amber-200 max-h-72 overflow-hidden max-w-prose mx-auto"
+                    ? "text-xl leading-[2.05] font-bold text-right font-arabic text-amber-50 max-h-72 overflow-hidden max-w-prose mx-auto"
+                    : "text-base md:text-lg leading-[1.8] text-amber-50 max-h-72 overflow-hidden max-w-prose mx-auto"
                 }
               >
                 {article.description || article.content}

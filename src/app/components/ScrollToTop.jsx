@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { FaArrowUp } from "react-icons/fa";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 
 const SHOW_AFTER_PX = 800;
 

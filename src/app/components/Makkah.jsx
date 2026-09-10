@@ -1,8 +1,9 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import dynamic from "next/dynamic";
+import { StreamSection, StreamSectionWrapper } from "./StreamSection";
 
 // Lazy-load Live component with skeleton fallback
 const Live = dynamic(() => import("./Live"), {
@@ -100,69 +101,43 @@ export default function Makkah() {
 
   if (!hasMounted || !clock) {
     return (
-      <SectionWrapper>
+      <StreamSectionWrapper id="makkah" ariaLabel="Loading Makkah Stream">
         <p className="text-white/70 animate-pulse">Loading live stream...</p>
-      </SectionWrapper>
+      </StreamSectionWrapper>
     );
   }
 
   return (
-    <section
+    <StreamSection
       id="makkah"
-      className="relative py-16 min-h-screen scroll-mt-16"
-      role="region"
-      aria-label="Live Makkah Stream"
+      headingId="makkah-heading"
+      ariaLabel="Live Makkah Stream"
+      title="Live from Makkah al-Mukarramah"
     >
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7 }}
-        className="max-w-5xl mx-auto flex flex-col justify-center items-center h-full z-10 px-4 text-center"
-      >
-        <motion.h2
-          id="makkah-heading"
-          className="md:text-5xl text-3xl font-bold mb-6 p-3 text-white"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          Live from Makkah al-Mukarramah
-        </motion.h2>
+      <div className="w-full mb-8">
+        {useFallback && videoId ? (
+          <Live videoId={videoId} />
+        ) : (
+          <Live
+            sourceType="hls"
+            source="/api/stream/makkah"
+            videoId={videoId}
+            onError={handleStreamError}
+          />
+        )}
+      </div>
 
-        <div className="w-full mb-8">
-          {useFallback && videoId ? (
-            <Live videoId={videoId} />
-          ) : (
-            <Live
-              sourceType="hls"
-              source="/api/stream/makkah"
-              videoId={videoId}
-              onError={handleStreamError}
-            />
-          )}
-        </div>
-
-        <PrayerTimesCard
-          prayerTimes={prayerTimes}
-          upcomingPrayer={upcomingPrayer}
-          clock={clock}
-          is24Hour={is24Hour}
-          setIs24Hour={setIs24Hour}
-          gregorian={gregorian}
-          hijri={hijri}
-          formattedClock={formattedClock}
-        />
-      </motion.div>
-    </section>
-  );
-}
-
-function SectionWrapper({ children }) {
-  return (
-    <section className="relative py-16 min-h-screen flex justify-center items-center">
-      {children}
-    </section>
+      <PrayerTimesCard
+        prayerTimes={prayerTimes}
+        upcomingPrayer={upcomingPrayer}
+        clock={clock}
+        is24Hour={is24Hour}
+        setIs24Hour={setIs24Hour}
+        gregorian={gregorian}
+        hijri={hijri}
+        formattedClock={formattedClock}
+      />
+    </StreamSection>
   );
 }
 

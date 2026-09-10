@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, memo } from "react";
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai";
 import { PiMosqueFill } from "react-icons/pi";
-import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import Image from "next/image";
 
 import { navLinks, socialLinks } from "../utils/constants";
@@ -40,28 +40,28 @@ const fadeUp = {
    NAV ITEM
 ---------------------------------- */
 const NavItem = memo(function NavItem({ item }) {
-  switch (item.type) {
-    case "emoji":
-      return <span className="leading-none">{item.label}</span>;
-
-    case "icon":
-      return <PiMosqueFill className="text-[1.4em]" />;
-
-    case "image":
-      return (
-        <Image
-          src={item.src}
-          alt=""
-          width={26}
-          height={26}
-          className="block h-auto w-auto"
-          style={{ width: "auto", height: "auto" }}
-        />
-      );
-
-    default:
-      return <span>{item.label}</span>;
+  if (item.emoji) {
+    return <span className="leading-none">{item.emoji}</span>;
   }
+
+  if (item.type === "icon") {
+    return <PiMosqueFill className="text-[1.4em]" />;
+  }
+
+  if (item.type === "image") {
+    return (
+      <Image
+        src={item.src}
+        alt=""
+        width={26}
+        height={26}
+        className="block h-auto w-auto"
+        style={{ width: "auto", height: "auto" }}
+      />
+    );
+  }
+
+  return <span>{item.label}</span>;
 });
 
 export default function Navbar() {
@@ -172,7 +172,7 @@ export default function Navbar() {
               <motion.button
                 type="button"
                 onClick={() => handleScroll(n.href.slice(1))}
-                aria-label={`Go to ${n.id} section`}
+                aria-label={`Go to ${n.label} section`}
                 whileHover={
                   !reduceMotion
                     ? {
@@ -301,7 +301,7 @@ export default function Navbar() {
                         handleScroll(n.href.slice(1));
                         setOpen(false);
                       }}
-                      aria-label={`Go to ${n.id} section`}
+                      aria-label={`Go to ${n.label} section`}
                       className="grid w-full max-w-xs place-items-center rounded-xl px-4 py-3 text-center text-2xl font-medium
                         text-white/90 transition-colors hover:bg-white/10"
                     >

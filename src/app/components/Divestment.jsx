@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useMemo } from "react";
 import { boycott } from "../utils/constants";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion } from "motion/react";
 
 const BATCH_SIZE = 20;
 
@@ -123,14 +123,6 @@ export default function Divestment() {
               <p className="text-base md:text-lg text-red-100 grow">
                 {brand.reason}
               </p>
-              <a
-                href={brand.source}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-4 text-sm text-red-200 underline underline-offset-4"
-              >
-                View source
-              </a>
             </motion.li>
           ))}
         </AnimatePresence>

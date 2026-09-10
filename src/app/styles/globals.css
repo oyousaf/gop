@@ -1,5 +1,11 @@
 @import "tailwindcss";
 
+@theme inline {
+  --font-arabic: var(--font-noto-naskh), "Traditional Arabic", serif;
+  --color-background: var(--background);
+  --color-accent: var(--accent);
+}
+
 :root {
   --background: #8f7a68;
   --foreground: #ffffff;

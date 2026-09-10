@@ -1,8 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
+import { StreamSection, StreamSectionWrapper } from "./StreamSection";
 
 // Lazy-load Live component with fallback skeleton
 const Live = dynamic(() => import("./Live"), {
@@ -47,59 +47,30 @@ export default function Madinah() {
 
   if (!hasMounted) {
     return (
-      <SectionWrapper>
+      <StreamSectionWrapper id="madinah" ariaLabel="Loading Madinah Stream">
         <p className="text-white/70 animate-pulse">Loading Madinah stream...</p>
-      </SectionWrapper>
+      </StreamSectionWrapper>
     );
   }
 
   return (
-    <section
+    <StreamSection
       id="madinah"
-      className="relative py-16 min-h-screen scroll-mt-16"
-      role="region"
-      aria-label="Live Madinah Stream"
+      headingId="madinah-heading"
+      ariaLabel="Live Madinah Stream"
+      title="Live from Madinah al-Munawwarah"
     >
-      <motion.div
-        initial={{ opacity: 0, y: 40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7 }}
-        className="max-w-5xl mx-auto flex flex-col justify-center items-center h-full z-10 px-4 text-center"
-      >
-        <motion.h2
-          id="madinah-heading"
-          className="md:text-5xl text-3xl font-bold mb-6 p-3 text-white"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          viewport={{ once: true }}
-        >
-          Live from Madinah al-Munawwarah
-        </motion.h2>
-
-        <div className="w-full mb-8">
-          {useFallback && videoId ? (
-            <Live sourceType="youtube" videoId={videoId} />
-          ) : (
-            <Live
-              sourceType="hls"
-              source="/api/stream/madinah"
-              onError={handleStreamError}
-            />
-          )}
-        </div>
-      </motion.div>
-    </section>
-  );
-}
-
-function SectionWrapper({ children }) {
-  return (
-    <section
-      id="madinah"
-      className="relative py-16 min-h-screen flex justify-center items-center"
-    >
-      {children}
-    </section>
+      <div className="w-full mb-8">
+        {useFallback && videoId ? (
+          <Live sourceType="youtube" videoId={videoId} />
+        ) : (
+          <Live
+            sourceType="hls"
+            source="/api/stream/madinah"
+            onError={handleStreamError}
+          />
+        )}
+      </div>
+    </StreamSection>
   );
 }

@@ -7,7 +7,7 @@ const nextConfig = {
   compress: true,
 
   experimental: {
-    optimizePackageImports: ["react-icons", "framer-motion"],
+    optimizePackageImports: ["react-icons", "motion"],
   },
 
   images: {

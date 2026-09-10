@@ -1,13 +1,20 @@
-import { Oleo_Script } from "next/font/google";
+import { Oleo_Script, Noto_Naskh_Arabic } from "next/font/google";
 import GA from "./components/GA";
 import "./styles/globals.css";
 import { Analytics } from "@vercel/analytics/next";
 
-// Google Font
+// Google Fonts
 const oleo = Oleo_Script({
   subsets: ["latin"],
   weight: ["400", "700"],
   display: "swap",
+});
+
+const notoNaskhArabic = Noto_Naskh_Arabic({
+  subsets: ["arabic"],
+  weight: ["400", "700"],
+  display: "swap",
+  variable: "--font-noto-naskh",
 });
 
 // Static site description
@@ -126,7 +133,7 @@ export default function RootLayout({ children }) {
       lang="en-GB"
       dir="ltr"
       suppressHydrationWarning
-      className={oleo.className}
+      className={`${oleo.className} ${notoNaskhArabic.variable}`}
     >
       <head>
         {/* SEO structured data */}
