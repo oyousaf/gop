@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { StreamSection, StreamSectionWrapper } from "./StreamSection";
 
@@ -22,14 +22,13 @@ const CHANNEL_IDS = [
 
 export default function Madinah() {
   const [videoId, setVideoId] = useState(null);
-  const [useFallback, setUseFallback] = useState(false);
+  const [ytChecked, setYtChecked] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
-  const handleStreamError = useCallback(() => setUseFallback(true), []);
 
   useEffect(() => setHasMounted(true), []);
 
+  // YouTube is the primary source (higher quality); the HLS proxy is a quiet fallback.
   useEffect(() => {
-    if (!useFallback || videoId) return;
     (async () => {
       try {
         const res = await fetch(`/api/youtube?channelId=${CHANNEL_IDS}`);
@@ -37,13 +36,15 @@ export default function Madinah() {
         if (data.videoId) {
           setVideoId(data.videoId);
         } else {
-          console.warn("⚠️ No YouTube fallback video found.");
+          console.warn("⚠️ No live YouTube video found for Madinah.");
         }
       } catch (err) {
-        console.error("YouTube fallback fetch failed:", err);
+        console.error("Madinah YouTube fetch failed:", err);
+      } finally {
+        setYtChecked(true);
       }
     })();
-  }, [useFallback, videoId]);
+  }, []);
 
   if (!hasMounted) {
     return (
@@ -61,14 +62,14 @@ export default function Madinah() {
       title="Live from Madinah al-Munawwarah"
     >
       <div className="w-full mb-8">
-        {useFallback && videoId ? (
+        {!ytChecked ? (
+          <div className="aspect-video flex items-center justify-center rounded-xl bg-black/40 text-white">
+            <p className="animate-pulse text-lg">Loading Live Stream…</p>
+          </div>
+        ) : videoId ? (
           <Live sourceType="youtube" videoId={videoId} />
         ) : (
-          <Live
-            sourceType="hls"
-            source="/api/stream/madinah"
-            onError={handleStreamError}
-          />
+          <Live sourceType="hls" source="/api/stream/madinah" />
         )}
       </div>
     </StreamSection>

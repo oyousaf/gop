@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "motion/react";
 import dynamic from "next/dynamic";
 import { StreamSection, StreamSectionWrapper } from "./StreamSection";
@@ -20,17 +20,16 @@ const PRAYER_ORDER = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"];
 
 export default function Makkah() {
   const [videoId, setVideoId] = useState(null);
+  const [ytChecked, setYtChecked] = useState(false);
   const [prayerTimes, setPrayerTimes] = useState(null);
   const [clock, setClock] = useState(null);
   const [is24Hour, setIs24Hour] = useState(true);
   const [upcomingPrayer, setUpcomingPrayer] = useState("");
-  const [useFallback, setUseFallback] = useState(false);
   const [hasMounted, setHasMounted] = useState(false);
   const [location, setLocation] = useState({
     city: "Makkah",
     country: "Saudi Arabia",
   });
-  const handleStreamError = useCallback(() => setUseFallback(true), []);
 
   useEffect(() => {
     setHasMounted(true);
@@ -38,8 +37,8 @@ export default function Makkah() {
     return () => clearInterval(interval);
   }, []);
 
+  // YouTube is the primary source (higher quality); the HLS proxy is a quiet fallback.
   useEffect(() => {
-    if (!useFallback || videoId) return;
     (async () => {
       try {
         const res = await fetch(`/api/youtube?channelId=${CHANNEL_ID}`);
@@ -47,9 +46,11 @@ export default function Makkah() {
         if (data.videoId) setVideoId(data.videoId);
       } catch (err) {
         console.error("❌ Makkah YouTube fetch failed:", err);
+      } finally {
+        setYtChecked(true);
       }
     })();
-  }, [useFallback, videoId]);
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -115,15 +116,14 @@ export default function Makkah() {
       title="Live from Makkah al-Mukarramah"
     >
       <div className="w-full mb-8">
-        {useFallback && videoId ? (
-          <Live videoId={videoId} />
+        {!ytChecked ? (
+          <div className="aspect-video flex items-center justify-center rounded-xl bg-black/40 text-white">
+            <p className="animate-pulse text-lg">Loading Live Stream…</p>
+          </div>
+        ) : videoId ? (
+          <Live sourceType="youtube" videoId={videoId} />
         ) : (
-          <Live
-            sourceType="hls"
-            source="/api/stream/makkah"
-            videoId={videoId}
-            onError={handleStreamError}
-          />
+          <Live sourceType="hls" source="/api/stream/makkah" />
         )}
       </div>
 

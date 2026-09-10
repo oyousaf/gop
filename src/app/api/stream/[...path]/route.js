@@ -2,16 +2,18 @@ export const runtime = "nodejs";
 
 const DIRECT_STREAMS = {
   makkah: [
-    // "https://www.elahmad.com/tv/m3u8/online_live_14_tv.m3u8?id=qoran_tv&t=11111111",
-    // "https://cdn-globecast.akamaized.net/live/eds/saudi_quran/hls_roku/index.m3u8",
-    "https://media2.streambrothers.com:1936/8122/8122/playlist.m3u8",
-    "https://edge66.magictvbox.com/liveApple/al_majd/tracks-v1a1/mono.m3u8",
-    "https://playlist.fasttvcdn.com/pl/dlkqw1ftuvuuzkcb4pxdcg/Iqraafasttv2/playlist.m3u8",
+    // Saudi state "Al Quran Al Kareem TV" - live continuous broadcast from Masjid al-Haram
+    "http://m.live.net.sa:1935/live/quran/playlist.m3u8",
+    "https://cdn-globecast.akamaized.net/live/eds/saudi_quran/hls_roku/index.m3u8",
+    // "https://media2.streambrothers.com:1936/8122/8122/playlist.m3u8",
+    // "https://edge66.magictvbox.com/liveApple/al_majd/tracks-v1a1/mono.m3u8",
+    // "https://playlist.fasttvcdn.com/pl/dlkqw1ftuvuuzkcb4pxdcg/Iqraafasttv2/playlist.m3u8",
   ],
 
   madinah: [
-    // "https://www.elahmad.com/tv/m3u8/online_live_14_tv.m3u8?id=sunna_tv&t=11111111",
-    // "https://cdn-globecast.akamaized.net/live/eds/saudi_sunnah/hls_roku/index.m3u8",
+    // Saudi state "Al Sunnah Al Nabawiyah TV" - live continuous broadcast from Masjid an-Nabawi
+    "http://m.live.net.sa:1935/live/sunnah/playlist.m3u8",
+    "https://cdn-globecast.akamaized.net/live/eds/saudi_sunnah/hls_roku/index.m3u8",
     // "https://media2.streambrothers.com:1936/8122/8122/playlist.m3u8",
     // "https://edge66.magictvbox.com/liveApple/al_majd/tracks-v1a1/mono.m3u8",
     // "https://playlist.fasttvcdn.com/pl/dlkqw1ftuvuuzkcb4pxdcg/Iqraafasttv2/playlist.m3u8",
@@ -19,7 +21,7 @@ const DIRECT_STREAMS = {
 };
 
 export async function GET(request, { params }) {
-  const pathParts = params.path || [];
+  const { path: pathParts = [] } = await params;
   const [loc, ...rest] = pathParts;
 
   if (!loc) {
