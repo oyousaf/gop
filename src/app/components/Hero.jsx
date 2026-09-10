@@ -29,8 +29,8 @@ export default function Hero() {
           shadow-lg backdrop-blur-md md:p-10"
         style={{ contain: "paint" }}
       >
-        <span className="inline-block rounded-full border border-accent/40 bg-accent/15 px-4 py-1 text-xs font-semibold
-          uppercase tracking-[0.2em] text-accent">
+        <span className="inline-block rounded-full border border-accent/40 bg-accent/15 px-5 py-1.5 text-sm font-semibold
+          uppercase tracking-[0.2em] text-accent md:text-base">
           حدائق الجنة
         </span>
 
