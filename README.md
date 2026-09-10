@@ -59,17 +59,6 @@ npm run dev
 
 ---
 
-## 🔑 Environment variables
-
-Set in `.env.local` (never committed):
-
-- `NEWS_API_KEY` — used by `/api/news`
-- `YOUTUBE_API_KEY` — used by `/api/youtube`
-- `RAPIDAPI_KEY`, `HADITH_API_KEY` — currently unused by the codebase; safe to leave
-  unset unless a future feature needs them
-
----
-
 ## 🧠 Focus Areas
 
 - Calm, distraction-free, accessible UI (reduced-motion support, focus-visible states,
