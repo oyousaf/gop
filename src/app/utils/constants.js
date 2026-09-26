@@ -1026,4 +1026,72 @@ export const boycott = [
     reason:
       "The BDS Movement calls for shoppers to boycott produce from Israel and request its removal from shelves.",
   },
+  {
+    name: "RE/MAX",
+    reason:
+      "Its Israeli franchise sells and rents properties in illegal Israeli settlements in the occupied West Bank and East Jerusalem.",
+  },
+  {
+    name: "Hewlett Packard Enterprise (HPE)",
+    reason:
+      "Listed by the BDS Movement as a consumer boycott priority target for providing technology to the Israeli military, prisons and government.",
+  },
+  {
+    name: "Xbox",
+    reason:
+      "Owned by Microsoft, which supplies Azure cloud and AI services to the Israeli military.",
+  },
+  {
+    name: "Palantir",
+    reason:
+      "Targeted by the BDS Movement for providing technology used in Israel's military operations.",
+  },
+  {
+    name: "Lockheed Martin",
+    reason: "Manufactures the F-35 fighter jets sold to Israel.",
+  },
+  {
+    name: "FANUC",
+    reason: "Supplies robots to Israeli arms producer Elbit Systems.",
+  },
+  {
+    name: "Strauss Group",
+    reason:
+      "Israeli food company that has publicly funded Israeli army brigades.",
+  },
+  { name: "Elite Chocolate", reason: "Is a brand of the Strauss Group." },
+  { name: "Max Brenner", reason: "Owned by the Strauss Group." },
+  {
+    name: "JCB",
+    reason:
+      "Accused of its heavy machinery and diggers being used in human rights violations and demolitions in the Occupied Palestinian Territories.",
+  },
+  {
+    name: "Hikvision",
+    reason:
+      "Faces accusations of human rights abuses and mounting national security risks.",
+  },
+  {
+    name: "Mekorot",
+    reason:
+      "Israel's national water company, targeted by the BDS Movement over water apartheid.",
+  },
+  {
+    name: "UPS",
+    reason: "Found carrying military materiel destined for Israel.",
+  },
+  {
+    name: "MSC (Mediterranean Shipping Company)",
+    reason: "Targeted by the BDS Movement over transferring steel for Israeli arms.",
+  },
+  {
+    name: "Sequoia Capital",
+    reason:
+      "Backs Kela, a military tech start-up founded by Israeli military intelligence veterans.",
+  },
+  {
+    name: "Mubi",
+    reason:
+      "Took a $100 million investment from Sequoia Capital, which has financial ties to Kela, an Israeli defence-tech start-up developing military AI systems.",
+  },
 ];
