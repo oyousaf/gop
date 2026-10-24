@@ -1,44 +1,34 @@
-"use client";
-
-import { motion } from "motion/react";
-
-/* Shared full-bleed teal divider used to punctuate structural beats between
-   content sections (Welcome banner, Knowledge banner). */
+/* Jade band with a Rub el Hizb lattice, used to punctuate structural beats
+   between content sections (Welcome banner, Knowledge banner). */
 export default function SectionDivider({ id, label, lines, className = "" }) {
   return (
-    <section
-      id={id}
-      role="region"
-      aria-label={label}
-      className={`relative flex h-72 w-full items-center justify-center overflow-hidden bg-linear-to-r
-        from-teal-900 to-teal-700 shadow-lg ${className}`}
-    >
-      <div className="absolute inset-0 z-0 bg-linear-to-r from-black/60 to-black/30" />
-
-      <h2 className="sr-only">{label}</h2>
-
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true }}
-        transition={{ staggerChildren: 0.15 }}
-        variants={{ hidden: {}, visible: {} }}
-        className="relative z-10 px-6 text-center font-arabic text-4xl leading-tight text-white md:px-12 md:text-6xl"
+    <section id={id} aria-label={label} className={`px-4 ${className}`}>
+      <div
+        data-reveal
+        className="relative mx-auto flex min-h-64 max-w-6xl items-center justify-center overflow-hidden rounded-[2rem] bg-jade-deep
+          px-6 py-14 text-white shadow-[0_30px_80px_-40px_oklch(0.2_0.05_190/0.6)] md:min-h-80"
       >
-        {lines.map((line, i) => (
-          <motion.span
-            key={line}
-            variants={{
-              hidden: { opacity: 0, y: 10 },
-              visible: { opacity: 1, y: 0 },
-            }}
-            transition={{ duration: 0.6, delay: 0.15 + i * 0.15 }}
-            className={i > 0 ? "mt-4 block" : "block"}
-          >
-            {line}
-          </motion.span>
-        ))}
-      </motion.div>
+        <div aria-hidden="true" className="pattern-star absolute inset-0 opacity-[0.08]" />
+        <div
+          aria-hidden="true"
+          className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_30%,oklch(0.2_0.04_190/0.7)_100%)]"
+        />
+
+        <h2 className="sr-only">{label}</h2>
+
+        <div lang="ar" dir="rtl" className="relative text-center font-arabic-display leading-[1.4]">
+          {lines.map((line, i) => (
+            <span
+              key={line}
+              data-reveal
+              style={{ "--reveal-delay": `${200 + i * 150}ms` }}
+              className={`block ${i === 0 ? "text-5xl md:text-7xl" : "mt-2 text-3xl text-white/80 md:text-5xl"}`}
+            >
+              {line}
+            </span>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }

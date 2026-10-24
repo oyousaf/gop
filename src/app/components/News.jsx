@@ -1,148 +1,192 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion } from "motion/react";
+import { useEffect, useRef, useState } from "react";
+import { FiArrowUpRight } from "react-icons/fi";
+import SectionHeading from "./SectionHeading";
 
-export default function News() {
-  const [news, setNews] = useState([]);
-  const [loading, setLoading] = useState(true);
+const LANGS = [
+  { code: "en", label: "English" },
+  { code: "ar", label: "العربية" },
+];
+
+const relativeTime = (iso, lang) => {
+  const then = Date.parse(iso);
+  if (!then) return "";
+  const rtf = new Intl.RelativeTimeFormat(lang, { numeric: "auto" });
+  const mins = Math.round((then - Date.now()) / 60000);
+  if (Math.abs(mins) < 60) return rtf.format(mins, "minute");
+  const hrs = Math.round(mins / 60);
+  if (Math.abs(hrs) < 24) return rtf.format(hrs, "hour");
+  return rtf.format(Math.round(hrs / 24), "day");
+};
+
+/* `initial` is the English feed, rendered on the server so it's in the HTML */
+export default function News({ initial }) {
+  const [news, setNews] = useState(initial ?? []);
+  const [loading, setLoading] = useState(!initial);
   const [error, setError] = useState(null);
   const [lang, setLang] = useState("en");
-  const [canHover, setCanHover] = useState(false);
+  // Skip the first client fetch when the server already supplied the English feed
+  const skipFetch = useRef(Boolean(initial));
 
   useEffect(() => {
-    setCanHover(
-      window.matchMedia("(hover: hover) and (pointer: fine)").matches
-    );
-  }, []);
+    if (skipFetch.current) {
+      skipFetch.current = false;
+      return;
+    }
+    const controller = new AbortController();
+    setLoading(true);
+    setError(null);
 
-  useEffect(() => {
-    const load = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch(`/api/news?lang=${lang}`);
+    fetch(`/api/news?lang=${lang}`, { signal: controller.signal })
+      .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch news");
-        setNews(await res.json());
-      } catch (e) {
-        setError(e.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    load();
+        return res.json();
+      })
+      .then(setNews)
+      .catch((e) => e.name !== "AbortError" && setError(e.message))
+      .finally(() => !controller.signal.aborted && setLoading(false));
+
+    return () => controller.abort();
   }, [lang]);
+
+  const isArabic = lang === "ar";
 
   return (
     <section
       id="news"
-      className="relative max-w-7xl mx-auto px-4 py-20 scroll-mt-16"
+      aria-labelledby="news-heading"
+      className="relative mx-auto max-w-6xl px-4 py-24 md:py-32"
     >
-      {/* Heading */}
-      <motion.h2
-        initial={{ opacity: 0, y: 12 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
+      <SectionHeading
         id="news-heading"
-        className="text-4xl md:text-5xl font-semibold text-center mb-10 text-white"
-        dir={lang === "ar" ? "rtl" : "ltr"}
-      >
-        {lang === "ar" ? "الأخبار" : "News"}
-      </motion.h2>
+        eyebrow="News"
+        arabic="الأخبار"
+        title="Truth from the Ground"
+        lede="Stay informed, stand firm — recent reporting on Palestine and the Muslim world from trusted outlets."
+      />
 
-      {/* Language toggle */}
-      <div className="mx-auto mb-12 flex w-48 rounded-full bg-amber-800 p-1 ring-1 ring-amber-900">
-        {["en", "ar"].map((code) => (
-          <button
-            type="button"
-            key={code}
-            onClick={() => setLang(code)}
-            aria-pressed={lang === code}
-            className={`relative w-1/2 py-2 text-sm font-medium rounded-full ${
-              lang === code ? "text-amber-950" : "text-amber-200"
-            }`}
-          >
-            {lang === code && (
-              <motion.span
-                layoutId="lang-toggle"
-                transition={{ type: "spring", stiffness: 500, damping: 35 }}
-                className="absolute inset-0 rounded-full bg-amber-300"
-              />
-            )}
-            <span className="relative z-10">
-              {code === "en" ? "English" : "العربية"}
-            </span>
-          </button>
-        ))}
+      {/* Language toggle — the pill slides between options */}
+      <div data-reveal className="mb-12 flex justify-center">
+        <div
+          role="group"
+          aria-label="News language"
+          className="relative grid grid-cols-2 rounded-full bg-surface-2 p-1 ring-1 ring-line"
+        >
+          <span
+            aria-hidden="true"
+            className="absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-full bg-ink shadow transition-transform duration-500"
+            style={{ transform: `translateX(${isArabic ? 100 : 0}%)` }}
+          />
+          {LANGS.map(({ code, label }) => (
+            <button
+              type="button"
+              key={code}
+              onClick={() => setLang(code)}
+              aria-pressed={lang === code}
+              lang={code}
+              className={`relative z-10 min-w-28 rounded-full px-5 py-2 text-sm font-medium transition-colors duration-500 ${
+                lang === code ? "text-bg" : "text-ink-muted hover:text-ink"
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Loading */}
       {loading && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div aria-hidden="true" className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {Array.from({ length: 6 }).map((_, i) => (
-            <div
-              key={i}
-              className="h-112 rounded-2xl bg-amber-700 ring-1 ring-amber-900 animate-pulse"
-            />
+            <div key={i} className="h-96 animate-pulse rounded-[1.75rem] bg-surface-2" />
           ))}
         </div>
       )}
 
-      {error && <p className="text-center text-red-400">{error}</p>}
+      {error && <p className="text-center text-danger">{error}</p>}
 
-      {/* Cards */}
       {!loading && !error && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {news.map((article, index) => (
-            <motion.article
+            <article
               key={article.url || article.title}
-              initial={{ opacity: 0, y: 12 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              whileHover={canHover ? { y: -2 } : undefined}
-              viewport={{ once: true }}
-              transition={{
-                default: { duration: 0.25, ease: "easeOut" },
-                y: { type: "spring", stiffness: 420, damping: 32 },
-              }}
-              className="
-                relative rounded-2xl p-6 flex flex-col
-                bg-amber-700
-                ring-1 ring-amber-900
-                shadow-lg
-              "
-              dir={lang === "ar" ? "rtl" : "ltr"}
+              data-reveal
+              style={{ "--reveal-delay": `${(index % 3) * 90}ms` }}
+              dir={isArabic ? "rtl" : "ltr"}
+              lang={lang}
+              className="h-full"
             >
-              <h3
-                className={`text-lg md:text-xl font-semibold leading-snug mb-4 text-center text-amber-100 ${
-                  lang === "ar" ? "font-arabic" : ""
-                }`}
-              >
-                {article.title}
-              </h3>
+              <div className="group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-line bg-surface transition-[border-color,box-shadow] duration-500 hover:border-line-strong hover:shadow-[0_24px_60px_-36px_oklch(0.2_0.03_58/0.5)]">
+                {article.urlToImage && (
+                  <div className="aspect-video overflow-hidden bg-surface-2">
+                    {/* Remote images from many publishers, so a plain lazy <img> */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={article.urlToImage}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      referrerPolicy="no-referrer"
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
+                      onError={(e) => (e.currentTarget.parentElement.style.display = "none")}
+                    />
+                  </div>
+                )}
 
-              <div
-                className={
-                  lang === "ar"
-                    ? "text-xl leading-[2.05] font-bold text-right font-arabic text-amber-50 max-h-72 overflow-hidden max-w-prose mx-auto"
-                    : "text-base md:text-lg leading-[1.8] text-amber-50 max-h-72 overflow-hidden max-w-prose mx-auto"
-                }
-              >
-                {article.description || article.content}
-              </div>
+                <div className="flex grow flex-col p-6">
+                  <p className="mb-3 flex items-center gap-2 text-sm text-ink-subtle">
+                    <span className="font-medium text-accent-text">{article.source?.name}</span>
+                    {article.publishedAt && (
+                      <>
+                        <span aria-hidden="true">·</span>
+                        <time dateTime={article.publishedAt}>
+                          {relativeTime(article.publishedAt, lang)}
+                        </time>
+                      </>
+                    )}
+                  </p>
 
-              {article.url && (
-                <div className="mt-4 text-center">
-                  <a
-                    href={article.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-block text-xs font-medium text-amber-100 underline hover:opacity-70 transition"
+                  <h3
+                    className={`mb-3 text-ink ${
+                      isArabic
+                        ? "font-arabic text-xl font-semibold leading-relaxed"
+                        : "font-display text-2xl leading-snug"
+                    }`}
                   >
-                    {lang === "ar" ? "المصدر" : "Source"}
-                  </a>
+                    {article.url ? (
+                      <a
+                        href={article.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="after:absolute after:inset-0 after:content-['']"
+                      >
+                        {article.title}
+                      </a>
+                    ) : (
+                      article.title
+                    )}
+                  </h3>
+
+                  <p
+                    className={`line-clamp-4 text-ink-muted ${
+                      isArabic ? "font-arabic text-lg leading-loose" : "leading-relaxed"
+                    }`}
+                  >
+                    {article.description || article.content}
+                  </p>
+
+                  {article.url && (
+                    <span className="mt-auto inline-flex items-center gap-1 pt-5 text-sm font-medium text-ink">
+                      {isArabic ? "اقرأ المزيد" : "Read article"}
+                      <FiArrowUpRight
+                        aria-hidden="true"
+                        className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 rtl:-scale-x-100"
+                      />
+                    </span>
+                  )}
                 </div>
-              )}
-            </motion.article>
+              </div>
+            </article>
           ))}
         </div>
       )}

@@ -6,7 +6,7 @@ export default function Banner() {
       id="welcome"
       label="Welcome"
       lines={["مرحبا", "أهلا و سهلا"]}
-      className="mt-25"
+      className="pt-16 md:pt-24"
     />
   );
 }

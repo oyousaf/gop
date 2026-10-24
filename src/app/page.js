@@ -1,81 +1,66 @@
-"use client";
-
-import dynamic from "next/dynamic";
-
 import Navbar from "./components/Navbar";
 import Hero from "./components/Hero";
 import Banner from "./components/Banner";
+import PrayerProvider from "./components/PrayerProvider";
+import PrayerTimes from "./components/PrayerTimes";
+import LiveSection from "./components/LiveSection";
 import Knowledge from "./components/Knowledge";
+import Hadith from "./components/Hadith";
+import News from "./components/News";
+import Divestment from "./components/Divestment";
 import Footer from "./components/Footer";
+import ScrollToTop from "./components/ScrollToTop";
+import { getHadithPage } from "./lib/hadith";
+import { getNews } from "./lib/news";
+import { buildStructuredData } from "./lib/seo";
 
-/* ---------------------------------
-   LAZY SECTIONS (non-critical)
----------------------------------- */
-const Makkah = dynamic(() => import("./components/Makkah"), {
-  loading: () => null,
-});
-const Madinah = dynamic(() => import("./components/Madinah"), {
-  loading: () => null,
-});
-const Aqsa = dynamic(() => import("./components/Aqsa"), {
-  loading: () => null,
-});
-const Hadith = dynamic(() => import("./components/Hadith"), {
-  loading: () => null,
-});
-const News = dynamic(() => import("./components/News"), {
-  loading: () => null,
-});
-const Divestment = dynamic(() => import("./components/Divestment"), {
-  loading: () => null,
-});
+// Re-render at most every 15 minutes so news and the monthly hadith stay fresh
+export const revalidate = 900;
 
-/* Client-only utility */
-const ScrollToTop = dynamic(() => import("./components/ScrollToTop"), {
-  ssr: false,
-});
+const safely = async (fn) => {
+  try {
+    return await fn();
+  } catch (error) {
+    console.error("Server prefetch failed:", error.message);
+    return null;
+  }
+};
 
-export default function Home() {
+/* Server Component shell: static markup and the first hadith/news render on
+   the server (indexable), interactive sections hydrate as client islands. */
+export default async function Home() {
+  const [hadith, news] = await Promise.all([
+    safely(() => getHadithPage({ limit: 10, offset: 0 })),
+    safely(() => getNews("en")),
+  ]);
+
+  const jsonLd = buildStructuredData({ hadith: hadith?.results ?? [] });
+
   return (
-    <div className="min-h-screen">
+    <PrayerProvider>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
+
       <Navbar />
       <ScrollToTop />
 
-      <div>
-        {/* Above-the-fold */}
-        <Hero />
-        <Banner />
+      <Hero />
+      <Banner />
 
-        {/* Deferred content */}
-        <section aria-labelledby="makkah-heading">
-          <Makkah />
-        </section>
+      <PrayerTimes />
+      <LiveSection />
 
-        <section aria-labelledby="madinah-heading">
-          <Madinah />
-        </section>
+      <Knowledge />
 
-        <section aria-labelledby="aqsa-heading">
-          <Aqsa />
-        </section>
-
-        {/* Static content */}
-        <Knowledge />
-
-        <section aria-labelledby="hadith-heading">
-          <Hadith />
-        </section>
-
-        <section aria-labelledby="news-heading">
-          <News />
-        </section>
-
-        <section aria-labelledby="divestment-heading">
-          <Divestment />
-        </section>
-      </div>
+      <Hadith initial={hadith} />
+      <News initial={news} />
+      <Divestment />
 
       <Footer />
-    </div>
+    </PrayerProvider>
   );
 }

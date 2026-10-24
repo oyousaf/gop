@@ -1,220 +1,205 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import Hls from "hls.js";
-import { FaPlayCircle } from "react-icons/fa";
+import { FiVolume2 } from "react-icons/fi";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
-export default function Live({ sourceType = "hls", source, videoId, onError }) {
+/* Plays a YouTube live stream, or an HLS stream with YouTube as the fallback.
+   Starts muted (browser autoplay policy), pauses when scrolled out of view,
+   and only unmutes when the viewer asks to. */
+export default function Live({ sourceType = "hls", source, videoId, title }) {
   const containerRef = useRef(null);
   const videoRef = useRef(null);
   const ytRef = useRef(null);
+  const fadeRef = useRef(null);
 
   const [isYoutube, setIsYoutube] = useState(sourceType === "youtube");
   const [playerReady, setPlayerReady] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [userInteracted, setUserInteracted] = useState(false);
   const [isUnmuted, setIsUnmuted] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   const fallbackToYoutube = useCallback(() => {
-    setIsYoutube(true);
-    setLoading(true);
-    onError?.();
-  }, [onError]);
+    if (videoId) setIsYoutube(true);
+    else setFailed(true);
+  }, [videoId]);
 
-  // Intersection observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => setIsVisible(entry.isIntersecting),
-      { threshold: 0.6 }
+      { threshold: 0.5 },
     );
     if (containerRef.current) observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, []);
 
-  // Detect user interaction (to allow autoplay+unmute)
+  // YouTube IFrame API
   useEffect(() => {
-    const onClick = () => {
-      setUserInteracted(true);
-      window.removeEventListener("click", onClick);
-    };
-    window.addEventListener("click", onClick);
-    return () => window.removeEventListener("click", onClick);
-  }, []);
-
-  // Setup YouTube
-  useEffect(() => {
-    if (!isYoutube || !videoId || ytRef.current) return;
+    if (!isYoutube || !videoId) return;
     const id = `yt-player-${videoId}`;
+    let cancelled = false;
+    let interval;
 
     const initYT = () => {
-      const container = document.getElementById(id);
-      if (!container || ytRef.current || !window.YT?.Player) return false;
+      if (cancelled || ytRef.current) return true;
+      if (!window.YT?.Player || !document.getElementById(id)) return false;
 
       ytRef.current = new window.YT.Player(id, {
         videoId,
-        playerVars: {
-          autoplay: 0,
-          mute: 1,
-          playsinline: 1,
-          controls: 0,
-          modestbranding: 1,
-          rel: 0,
-        },
-        events: {
-          onReady: () => {
-            setPlayerReady(true);
-            setLoading(false);
-          },
-        },
+        playerVars: { autoplay: 0, mute: 1, playsinline: 1, rel: 0 },
+        events: { onReady: () => !cancelled && setPlayerReady(true) },
       });
       return true;
     };
 
-    if (!window.YT && !document.getElementById("yt-api")) {
+    if (!document.getElementById("yt-api")) {
       const script = document.createElement("script");
       script.id = "yt-api";
       script.src = "https://www.youtube.com/iframe_api";
       document.body.appendChild(script);
-      window.onYouTubeIframeAPIReady = initYT;
-    } else {
-      const ready = initYT();
-      if (!ready) {
-        const interval = setInterval(() => {
-          if (initYT()) clearInterval(interval);
-        }, 150);
-        return () => clearInterval(interval);
-      }
+    }
+    if (!initYT()) {
+      interval = setInterval(() => initYT() && clearInterval(interval), 150);
     }
 
     return () => {
-      delete window.onYouTubeIframeAPIReady;
+      cancelled = true;
+      clearInterval(interval);
+      ytRef.current?.destroy?.();
+      ytRef.current = null;
+      setPlayerReady(false);
     };
   }, [isYoutube, videoId]);
 
-  // Setup HLS
+  // HLS (native on Safari, hls.js elsewhere — loaded only when needed)
   useEffect(() => {
     if (isYoutube || !videoRef.current || !source) return;
     const video = videoRef.current;
+    let hls;
+    let cancelled = false;
 
-    const onCanPlay = () => {
-      setPlayerReady(true);
-      setLoading(false);
-    };
+    const onCanPlay = () => setPlayerReady(true);
     video.addEventListener("canplay", onCanPlay);
 
-    // First fetch to check for server fallback
-    fetch(source)
-      .then(async (res) => {
+    (async () => {
+      try {
+        const res = await fetch(source);
         if (res.headers.get("content-type")?.includes("application/json")) {
-          const data = await res.json();
-          if (data.fallback === "youtube") {
-            fallbackToYoutube();
-            return;
-          }
+          throw new Error("Stream unavailable");
         }
+        if (cancelled) return;
 
         if (video.canPlayType("application/vnd.apple.mpegurl")) {
           video.src = source;
-        } else if (Hls.isSupported()) {
-          const hls = new Hls();
-          hls.loadSource(source);
-          hls.attachMedia(video);
-          hls.on(Hls.Events.ERROR, (_, data) => {
-            if (data.fatal) {
-              hls.destroy();
-              fallbackToYoutube();
-            }
-          });
-          return () => hls.destroy();
-        } else {
-          fallbackToYoutube();
+          return;
         }
-      })
-      .catch(() => fallbackToYoutube());
+        const { default: Hls } = await import("hls.js");
+        if (cancelled) return;
+        if (!Hls.isSupported()) throw new Error("HLS unsupported");
 
-    return () => video.removeEventListener("canplay", onCanPlay);
+        hls = new Hls();
+        hls.loadSource(source);
+        hls.attachMedia(video);
+        hls.on(Hls.Events.ERROR, (_, data) => {
+          if (data.fatal) {
+            hls.destroy();
+            fallbackToYoutube();
+          }
+        });
+      } catch {
+        if (!cancelled) fallbackToYoutube();
+      }
+    })();
+
+    return () => {
+      cancelled = true;
+      hls?.destroy();
+      video.removeEventListener("canplay", onCanPlay);
+    };
   }, [source, isYoutube, fallbackToYoutube]);
 
-  const fadeInAudio = useCallback((media) => {
-    setIsUnmuted(true);
-    const step = media.setVolume ? 5 : 0.05;
-    let volume = 0;
-    const fade = setInterval(() => {
-      volume = Math.min(media.setVolume ? 100 : 1, volume + step);
-      if (media.setVolume) {
-        media.unMute?.();
-        media.setVolume(volume);
-      } else {
-        media.muted = false;
-        media.volume = volume;
-      }
-      if (volume >= (media.setVolume ? 100 : 1)) clearInterval(fade);
-    }, 75);
-  }, []);
-
-  // Manage playback / mute
+  // Play while on screen, pause when scrolled away
   useEffect(() => {
+    if (!playerReady) return;
     const yt = ytRef.current;
     const video = videoRef.current;
-
-    if (!isVisible) {
+    if (isVisible) {
+      if (isYoutube) yt?.playVideo?.();
+      else video?.play().catch(() => {});
+    } else {
       yt?.pauseVideo?.();
-      video?.pause?.();
-      return;
+      video?.pause();
+    }
+  }, [isVisible, isYoutube, playerReady]);
+
+  useEffect(() => () => clearInterval(fadeRef.current), []);
+
+  const unmute = () => {
+    setIsUnmuted(true);
+    const yt = isYoutube ? ytRef.current : null;
+    const video = videoRef.current;
+    let level = 0;
+
+    if (yt) {
+      yt.unMute?.();
+      yt.setVolume?.(0);
+    } else if (video) {
+      video.muted = false;
+      video.volume = 0;
     }
 
-    if (!isUnmuted && userInteracted) {
-      if (yt && playerReady) fadeInAudio(yt);
-      if (video && !isYoutube) fadeInAudio(video);
-    }
-
-    if (yt && playerReady) yt.playVideo?.();
-    if (video && !isYoutube) video.play().catch(() => {});
-  }, [
-    fadeInAudio,
-    isVisible,
-    userInteracted,
-    isUnmuted,
-    isYoutube,
-    playerReady,
-  ]);
+    clearInterval(fadeRef.current);
+    fadeRef.current = setInterval(() => {
+      level = Math.min(1, level + 0.05);
+      if (yt) yt.setVolume?.(level * 100);
+      else if (video) video.volume = level;
+      if (level >= 1) clearInterval(fadeRef.current);
+    }, 75);
+  };
 
   return (
     <div
       ref={containerRef}
-      className="relative aspect-video rounded-xl overflow-hidden shadow-xl backdrop-blur-md bg-white/10"
+      className="relative aspect-video w-full overflow-hidden rounded-3xl bg-black"
+      aria-label={title ? `${title} live stream` : "Live stream"}
       role="region"
-      aria-label="Live Stream Player"
     >
-      {loading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/30 z-10">
-          <AiOutlineLoading3Quarters className="text-white animate-spin text-3xl" />
+      {!playerReady && !failed && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/30">
+          <AiOutlineLoading3Quarters
+            aria-label="Loading stream"
+            className="animate-spin text-3xl text-white"
+          />
         </div>
       )}
 
-      {isYoutube && videoId ? (
-        <div
-          id={`yt-player-${videoId}`}
-          className="w-full h-full"
-          aria-label="YouTube Live Player"
-        />
+      {failed ? (
+        <div className="flex h-full items-center justify-center">
+          <p className="text-lg text-white/80">
+            The stream is unavailable right now. Please check back soon.
+          </p>
+        </div>
+      ) : isYoutube && videoId ? (
+        <div id={`yt-player-${videoId}`} className="h-full w-full" />
       ) : (
         <video
           ref={videoRef}
-          className="w-full h-full"
-          autoPlay
+          className="h-full w-full"
           muted
           playsInline
+          controls
           onError={fallbackToYoutube}
         />
       )}
 
-      {!playerReady && !loading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black text-white z-20">
-          <FaPlayCircle className="text-6xl opacity-60 hover:opacity-100 transition-opacity" />
-        </div>
+      {playerReady && !isUnmuted && (
+        <button
+          type="button"
+          onClick={unmute}
+          className="absolute bottom-14 left-1/2 z-20 inline-flex -translate-x-1/2 items-center gap-2 rounded-full bg-black/70 px-4 py-2 text-white backdrop-blur-sm transition hover:bg-black/85"
+        >
+          <FiVolume2 aria-hidden="true" /> Tap for sound
+        </button>
       )}
     </div>
   );

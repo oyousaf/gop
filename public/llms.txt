@@ -1,0 +1,11 @@
+# حدائق الجنة (Gardens of Paradise)
+
+> A single-page Islamic resource at https://oyousaf.uk: salaah (prayer) times for the visitor's own location, live streams from Masjid al-Haram (Makkah), Masjid an-Nabawi (Madinah) and Masjid al-Aqsa, authentic hadith in English and Arabic chosen for the current Hijri month, Palestine and Muslim-world news from trusted outlets, and a searchable BDS boycott reference list.
+
+## Sections
+
+- [Prayer times (Salaah)](https://oyousaf.uk/#prayer-times): Fajr, Sunrise, Dhuhr, Asr, Maghrib and Isha for the visitor's location, with a live countdown to the next prayer, the Hijri (Umm al-Qura) date and a choice of calculation method.
+- [Live from the Holy Mosques](https://oyousaf.uk/#live): live streams from Makkah, Madinah and Al-Aqsa.
+- [Hadith](https://oyousaf.uk/#hadith): hadith from Sahih al-Bukhari, Sahih Muslim, Jami` at-Tirmidhi, Sunan an-Nasa'i, Sunan Ibn Majah and Sunan Abi Dawud, in English and Arabic.
+- [News](https://oyousaf.uk/#news): recent reporting on Palestine and the Muslim world in English and Arabic.
+- [Divestment](https://oyousaf.uk/#divestment): a searchable list of brands and companies named in BDS Movement guidance, with the reason for each.

@@ -1,15 +1,14 @@
 export const navLinks = [
-  { id: "makkah", emoji: "🕋", label: "Makkah", href: "/makkah" },
-  { id: "madinah", emoji: "🕌", label: "Madinah", href: "/madinah" },
-  { id: "aqsa", type: "icon", label: "Al-Aqsa", href: "/aqsa" },
-  { id: "hadith", label: "Hadith", href: "/hadith" },
-  { id: "news", label: "News", href: "/news" },
+  { id: "prayer-times", label: "Salaah", href: "#prayer-times" },
+  { id: "live", label: "Live", href: "#live" },
+  { id: "hadith", label: "Hadith", href: "#hadith" },
+  { id: "news", label: "News", href: "#news" },
   {
     id: "divestment",
     type: "image",
     src: "/images/palestineflag.png",
     label: "Divestment",
-    href: "/divestment",
+    href: "#divestment",
   },
 ];
 

@@ -1,38 +1,113 @@
 @import "tailwindcss";
 
-@theme inline {
-  --font-arabic: var(--font-noto-naskh), "Traditional Arabic", serif;
-  --color-background: var(--background);
-  --color-accent: var(--accent);
-}
-
+/* ---------------------------------
+   Design tokens
+   Warm umber/parchment palette derived from the brand taupe (hue ≈ 60),
+   gold accent, jade secondary. Every colour has a light and dark value and
+   follows the visitor's system theme.
+---------------------------------- */
 :root {
-  --background: #8f7a68;
-  --foreground: #ffffff;
-  --surface: rgba(255, 249, 240, 0.12);
-  --surface-border: rgba(255, 249, 240, 0.2);
-  --accent: #d8ad54;
+  color-scheme: light dark;
+
+  --bg: light-dark(oklch(0.965 0.012 80), oklch(0.2 0.018 58));
+  --bg-deep: light-dark(oklch(0.93 0.016 78), oklch(0.16 0.016 58));
+  --surface: light-dark(oklch(0.995 0.004 80), oklch(0.25 0.02 58));
+  --surface-2: light-dark(oklch(0.94 0.014 78), oklch(0.29 0.022 58));
+  --line: light-dark(oklch(0.3 0.03 58 / 0.12), oklch(0.96 0.02 80 / 0.1));
+  --line-strong: light-dark(oklch(0.3 0.03 58 / 0.22), oklch(0.96 0.02 80 / 0.2));
+
+  --ink: light-dark(oklch(0.24 0.025 55), oklch(0.96 0.012 80));
+  --ink-muted: light-dark(oklch(0.4 0.028 55), oklch(0.84 0.02 75));
+  --ink-subtle: light-dark(oklch(0.5 0.025 55), oklch(0.72 0.02 70));
+
+  /* Gold: `accent` for fills, `accent-text` where gold is used as text */
+  --accent: oklch(0.8 0.12 80);
+  --accent-text: light-dark(oklch(0.52 0.11 70), oklch(0.83 0.12 82));
+  --accent-ink: oklch(0.24 0.03 60);
+  --accent-soft: light-dark(oklch(0.8 0.12 80 / 0.18), oklch(0.8 0.12 80 / 0.14));
+
+  --jade: light-dark(oklch(0.42 0.07 185), oklch(0.62 0.08 180));
+  --jade-deep: oklch(0.3 0.05 190);
+
+  /* Reading surface for hadith: parchment in both themes */
+  --paper: light-dark(oklch(0.995 0.006 85), oklch(0.93 0.025 82));
+  --paper-ink: oklch(0.26 0.03 55);
+  --paper-muted: oklch(0.45 0.03 55);
+
+  --danger: light-dark(oklch(0.5 0.17 25), oklch(0.72 0.15 25));
+  --danger-soft: light-dark(oklch(0.55 0.17 25 / 0.1), oklch(0.65 0.17 25 / 0.14));
 }
 
+@theme inline {
+  --font-sans: var(--font-geist), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-instrument), ui-serif, Georgia, serif;
+  --font-arabic: var(--font-noto-naskh), "Traditional Arabic", serif;
+  --font-arabic-display: var(--font-amiri), var(--font-noto-naskh), serif;
+
+  --color-bg: var(--bg);
+  --color-bg-deep: var(--bg-deep);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-ink-subtle: var(--ink-subtle);
+  --color-accent: var(--accent);
+  --color-accent-text: var(--accent-text);
+  --color-accent-ink: var(--accent-ink);
+  --color-accent-soft: var(--accent-soft);
+  --color-jade: var(--jade);
+  --color-jade-deep: var(--jade-deep);
+  --color-paper: var(--paper);
+  --color-paper-ink: var(--paper-ink);
+  --color-paper-muted: var(--paper-muted);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+
+  /* One motion language for the whole site: a soft expo-style ease-out */
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --default-transition-duration: 300ms;
+  --default-transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ---------------------------------
+   Base
+---------------------------------- */
 html {
-  font-family: Arial, Helvetica, sans-serif;
   scroll-behavior: smooth;
-  color-scheme: light;
+  /* Keeps anchored sections clear of the fixed navbar */
+  scroll-padding-top: 6rem;
+  text-size-adjust: 100%;
+}
+
+html:has(dialog[open]) {
+  overflow: hidden;
 }
 
 body {
   background:
-    radial-gradient(circle at 10% 0%, rgba(216, 173, 84, 0.2), transparent 28rem),
-    linear-gradient(145deg, #a28d75 0%, #8f7a68 55%, #6f5e50 100%);
-  color: var(--foreground);
-  -webkit-touch-callout: none;
-  pointer-events: auto;
-  overflow-x: hidden;
+    radial-gradient(60rem 40rem at 85% -10%, var(--accent-soft), transparent 70%),
+    var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+
+p {
+  text-wrap: pretty;
 }
 
 ::selection {
   background: var(--accent);
-  color: #3c332c;
+  color: var(--accent-ink);
 }
 
 button,
@@ -41,7 +116,7 @@ a {
 }
 
 :focus-visible {
-  outline: 3px solid #d8ad54;
+  outline: 2px solid var(--accent-text);
   outline-offset: 3px;
 }
 
@@ -51,16 +126,52 @@ a {
   top: 1rem;
   z-index: 200;
   transform: translateY(-200%);
-  border-radius: 0.5rem;
-  background: #3c332c;
-  padding: 0.75rem 1rem;
-  color: #fff;
-  font-weight: 700;
-  transition: transform 160ms ease;
+  border-radius: 999px;
+  background: var(--ink);
+  padding: 0.75rem 1.25rem;
+  color: var(--bg);
+  font-weight: 600;
+  transition: transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .skip-link:focus {
   transform: translateY(0);
+}
+
+/* Thin, theme-aware scrollbars */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+/* Rub el Hizb lattice used on the divider bands */
+.pattern-star {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='none' stroke='white' stroke-width='1'%3E%3Crect x='20' y='20' width='32' height='32'/%3E%3Crect x='20' y='20' width='32' height='32' transform='rotate(45 36 36)'/%3E%3Cpath d='M0 0l20 20M72 0L52 20M0 72l20-20M72 72L52 52'/%3E%3C/g%3E%3C/svg%3E");
+  background-size: 72px 72px;
+}
+
+/* ---------------------------------
+   Reveal on scroll
+   Elements with [data-reveal] fade/rise in once when they enter the viewport
+   (see RevealObserver). Hidden only once JS has flagged <html class="js">,
+   so content is never lost without JS.
+---------------------------------- */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-reveal] {
+    opacity: 0;
+    translate: 0 1.25rem;
+    transition:
+      opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+      translate 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--reveal-delay, 0ms);
+    will-change: opacity, translate;
+  }
+
+  .js [data-reveal][data-revealed] {
+    opacity: 1;
+    translate: 0 0;
+    will-change: auto;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -78,34 +189,97 @@ a {
   }
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 12px;
-  height: 12px;
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(8px);
+  }
 }
 
-::-webkit-scrollbar-thumb {
-  background-color: #bba58d;
-  border-radius: 8px;
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background-color: #c4ac92;
+/* Bottom-sheet <dialog>: enters from below, exits the same way */
+dialog.sheet {
+  opacity: 0;
+  translate: 0 1.25rem;
+  transition:
+    opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    translate 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    overlay 0.35s allow-discrete,
+    display 0.35s allow-discrete;
 }
 
-::-webkit-scrollbar-track {
-  background-color: #6f5e50;
+dialog.sheet[open] {
+  opacity: 1;
+  translate: 0 0;
+
+  @starting-style {
+    opacity: 0;
+    translate: 0 1.25rem;
+  }
 }
 
-/* Media protection */
-img,
-picture,
-video,
-canvas {
-  user-select: none;
-  -webkit-user-drag: none;
+dialog.sheet::backdrop {
+  opacity: 0;
+  background: oklch(0.15 0.02 58 / 0.5);
+  backdrop-filter: blur(4px);
+  transition:
+    opacity 0.35s,
+    overlay 0.35s allow-discrete,
+    display 0.35s allow-discrete;
 }
 
-img {
-  pointer-events: auto;
+dialog.sheet[open]::backdrop {
+  opacity: 1;
+
+  @starting-style {
+    opacity: 0;
+  }
+}
+
+/* Popovers (e.g. prayer settings): soft scale/fade in and out */
+[popover] {
+  opacity: 0;
+  scale: 0.97;
+  transition:
+    opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    scale 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+    overlay 0.35s allow-discrete,
+    display 0.35s allow-discrete;
+}
+
+[popover]:popover-open {
+  opacity: 1;
+  scale: 1;
+
+  @starting-style {
+    opacity: 0;
+    scale: 0.97;
+  }
+}
+
+[popover]::backdrop {
+  opacity: 0;
+  transition:
+    opacity 0.35s,
+    overlay 0.35s allow-discrete,
+    display 0.35s allow-discrete;
+}
+
+[popover]:popover-open::backdrop {
+  opacity: 1;
+
+  @starting-style {
+    opacity: 0;
+  }
 }

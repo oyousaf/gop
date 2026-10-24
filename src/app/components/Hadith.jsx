@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion } from "motion/react";
-import { FiChevronDown } from "react-icons/fi";
+import { FiCheck, FiChevronDown, FiShare2 } from "react-icons/fi";
+import SectionHeading from "./SectionHeading";
 
 const PREVIEW_HEIGHT = 160;
 const PAGE_SIZE = 10;
@@ -16,226 +16,247 @@ const COLLECTION_LABELS = {
   abudawud: { en: "Sunan Abi Dawud", ar: "سنن أبي داود" },
 };
 
-export default function Hadith() {
-  const [hadiths, setHadiths] = useState([]);
-  const [total, setTotal] = useState(0);
-  const [page, setPage] = useState(0);
+const toParagraphs = (raw = "") =>
+  raw
+    .split(/\n{2,}/)
+    .map((p) => p.trim())
+    .filter(Boolean);
 
-  const [loading, setLoading] = useState(true);
+function HadithCard({ hadith, index }) {
+  const [lang, setLang] = useState("en");
+  const [expanded, setExpanded] = useState(false);
+  const [fullHeight, setFullHeight] = useState(null);
+  const [copied, setCopied] = useState(false);
+  const contentRef = useRef(null);
+
+  // Track the natural height so expand/collapse can transition to exact pixels
+  useEffect(() => {
+    const el = contentRef.current;
+    if (!el) return;
+    const ro = new ResizeObserver(() => setFullHeight(el.scrollHeight));
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [lang]);
+
+  // Native share sheet where available (mobile), otherwise copy to clipboard
+  const share = async () => {
+    const source = hadith.sources?.map((s) => COLLECTION_LABELS[s]?.en || s).join(", ");
+    const text = [
+      hadith.narrator,
+      (isArabic ? hadith.arabic : hadith.content).replace(/\s+/g, " ").trim(),
+      source && `— ${source}`,
+    ]
+      .filter(Boolean)
+      .join("\n\n");
+    const url = `${window.location.origin}/#hadith`;
+
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "Hadith", text, url });
+        return;
+      }
+      await navigator.clipboard.writeText(`${text}\n\n${url}`);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // Share sheet dismissed or clipboard blocked: nothing to do
+    }
+  };
+
+  const isArabic = lang === "ar" && hadith.arabic;
+  const paragraphs = toParagraphs(isArabic ? hadith.arabic : hadith.content);
+  const canExpand = fullHeight !== null && fullHeight > PREVIEW_HEIGHT + 8;
+  const height = !canExpand
+    ? "auto"
+    : expanded
+      ? fullHeight
+      : PREVIEW_HEIGHT;
+
+  return (
+    <article
+      data-reveal
+      style={{ "--reveal-delay": `${(index % PAGE_SIZE) * 40}ms` }}
+      className="relative rounded-[2rem] bg-paper px-6 pb-10 pt-14 text-paper-ink shadow-[0_24px_60px_-36px_oklch(0.2_0.03_58/0.55)] ring-1 ring-black/5 sm:px-12"
+    >
+      <span
+        aria-hidden="true"
+        className="absolute left-6 top-2 font-display text-7xl leading-none text-[oklch(0.7_0.12_78)] sm:left-10"
+      >
+        “
+      </span>
+
+      {hadith.arabic && (
+        <button
+          type="button"
+          aria-label={`Show ${isArabic ? "English" : "Arabic"} text`}
+          onClick={() => setLang(isArabic ? "en" : "ar")}
+          lang={isArabic ? "en" : "ar"}
+          className="absolute right-5 top-5 rounded-full border border-paper-ink/15 px-3.5 py-1 text-sm text-paper-muted transition-colors hover:bg-paper-ink/5 hover:text-paper-ink"
+        >
+          {isArabic ? "English" : "العربية"}
+        </button>
+      )}
+
+      {hadith.narrator && (
+        <h3 className="mb-6 text-center font-display text-3xl text-paper-ink">
+          {hadith.narrator}
+        </h3>
+      )}
+
+      <div
+        id={`hadith-body-${index}`}
+        style={{ height }}
+        className={`relative overflow-hidden max-w-3xl mx-auto transition-[height] duration-700 motion-reduce:transition-none ${
+          canExpand && !expanded
+            ? "mask-b-from-60% mask-b-to-100%"
+            : ""
+        }`}
+      >
+        <div
+          ref={contentRef}
+          key={lang}
+          lang={isArabic ? "ar" : "en"}
+          dir={isArabic ? "rtl" : "ltr"}
+          className={`animate-[fade-in_0.5s_ease-out] ${
+            isArabic
+              ? "text-right font-arabic text-2xl leading-[2.1] text-paper-ink"
+              : "text-lg leading-[1.95] text-paper-ink/90 md:text-xl"
+          }`}
+        >
+          {paragraphs.map((p, idx) => (
+            <p key={idx} className="mb-6 last:mb-0">
+              {p}
+            </p>
+          ))}
+        </div>
+      </div>
+
+      {canExpand && (
+        <div className="mt-6 flex justify-center">
+          <button
+            type="button"
+            aria-label={`${expanded ? "Collapse" : "Expand"} hadith`}
+            aria-expanded={expanded}
+            aria-controls={`hadith-body-${index}`}
+            onClick={() => setExpanded((v) => !v)}
+            className="grid h-11 w-11 place-items-center rounded-full border border-paper-ink/15 text-paper-ink transition-colors hover:bg-paper-ink/5"
+          >
+            <FiChevronDown
+              size={20}
+              aria-hidden="true"
+              className={`transition-transform duration-500 ${expanded ? "rotate-180" : ""}`}
+            />
+          </button>
+        </div>
+      )}
+
+      {Array.isArray(hadith.sources) && (
+        <div className="mt-8 flex flex-wrap justify-center gap-2">
+          {hadith.sources.map((s) => {
+            const meta = COLLECTION_LABELS[s];
+            const label = meta?.[isArabic ? "ar" : "en"] || s;
+
+            return (
+              <span
+                key={s}
+                className={
+                  meta?.sahihayn
+                    ? "rounded-full bg-[oklch(0.8_0.12_80/0.35)] px-3 py-1 text-xs font-medium text-paper-ink"
+                    : "rounded-full bg-paper-ink/6 px-3 py-1 text-xs font-medium text-paper-muted"
+                }
+              >
+                {label}
+              </span>
+            );
+          })}
+        </div>
+      )}
+
+      <div className="mt-6 flex justify-center">
+        <button
+          type="button"
+          onClick={share}
+          className="inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-sm text-paper-muted transition-colors hover:bg-paper-ink/5 hover:text-paper-ink"
+        >
+          {copied ? <FiCheck aria-hidden="true" /> : <FiShare2 aria-hidden="true" />}
+          <span aria-live="polite">{copied ? "Copied" : "Share"}</span>
+        </button>
+      </div>
+    </article>
+  );
+}
+
+/* `initial` is the first page, rendered on the server so it's in the HTML */
+export default function Hadith({ initial }) {
+  const [hadiths, setHadiths] = useState(initial?.results ?? []);
+  const [total, setTotal] = useState(initial?.total ?? 0);
+  const [loading, setLoading] = useState(!initial);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState(null);
 
-  const [lang, setLang] = useState({});
-  const [expanded, setExpanded] = useState({});
-  const [canExpand, setCanExpand] = useState({});
-
-  const contentRefs = useRef({});
-
-  /* ---------------------------------------------
-     Fetch page
-  --------------------------------------------- */
-  const fetchPage = async (pageIndex = 0, append = false) => {
+  const fetchPage = async (offset) => {
     try {
-      const res = await fetch(
-        `/api/hadith?limit=${PAGE_SIZE}&offset=${pageIndex * PAGE_SIZE}`,
-      );
-
+      const res = await fetch(`/api/hadith?limit=${PAGE_SIZE}&offset=${offset}`);
       const data = await res.json();
-
-      const results = Array.isArray(data)
-        ? data
-        : Array.isArray(data.results)
-          ? data.results
-          : [];
-
+      const results = Array.isArray(data?.results) ? data.results : [];
       if (data.total) setTotal(data.total);
-
-      setHadiths((prev) => (append ? [...prev, ...results] : results));
+      setHadiths((prev) => (offset ? [...prev, ...results] : results));
     } catch (e) {
       setError(e.message);
     }
   };
 
-  /* ---------------------------------------------
-     Initial load
-  --------------------------------------------- */
   useEffect(() => {
-    fetchPage(0, false).finally(() => setLoading(false));
-  }, []);
+    if (initial) return;
+    fetchPage(0).finally(() => setLoading(false));
+  }, [initial]);
 
-  /* ---------------------------------------------
-     Load more
-  --------------------------------------------- */
   const loadMore = async () => {
     if (hadiths.length >= total) return;
-
     setLoadingMore(true);
-    const nextPage = page + 1;
-    await fetchPage(nextPage, true);
-    setPage(nextPage);
+    await fetchPage(hadiths.length);
     setLoadingMore(false);
   };
 
-  /* ---------------------------------------------
-     Expansion detection
-  --------------------------------------------- */
-  useEffect(() => {
-    const next = {};
-    Object.entries(contentRefs.current).forEach(([i, el]) => {
-      if (!el) return;
-      next[i] = el.scrollHeight > PREVIEW_HEIGHT + 8;
-    });
-    setCanExpand(next);
-  }, [hadiths, lang]);
-
-  useEffect(() => {
-    requestAnimationFrame(() => {
-      setExpanded((p) => ({ ...p }));
-    });
-  }, [lang]);
-
-  const toggleLang = (i) =>
-    setLang((p) => ({ ...p, [i]: p[i] === "ar" ? "en" : "ar" }));
-
-  const toggleExpand = (i) => setExpanded((p) => ({ ...p, [i]: !p[i] }));
-
-  /* ---------------------------------------------
-     UI
-  --------------------------------------------- */
   return (
     <section
       id="hadith"
-      className="relative py-20 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto scroll-mt-16"
+      aria-labelledby="hadith-heading"
+      className="relative mx-auto max-w-4xl px-4 py-24 md:py-32"
     >
-      <h2 id="hadith-heading" className="text-4xl md:text-5xl font-semibold text-center mb-14 text-white">
-        Hadith
-      </h2>
+      <SectionHeading
+        id="hadith-heading"
+        eyebrow="Hadith"
+        arabic="الحديث"
+        title="Pearls of Prophetic Wisdom"
+        lede="A selection from the six canonical collections, chosen for the current Hijri month."
+      />
 
       {loading && (
-        <p className="text-white/70 text-center animate-pulse">
-          Loading hadiths…
-        </p>
+        <div aria-hidden="true" className="space-y-10">
+          {[0, 1].map((n) => (
+            <div key={n} className="h-72 animate-pulse rounded-[2rem] bg-surface-2" />
+          ))}
+        </div>
       )}
 
       {error && (
-        <p className="text-red-400 text-center">Failed to load hadiths</p>
+        <p className="text-center text-danger">Failed to load hadiths</p>
       )}
 
-      <div className="flex flex-col gap-14">
-        {hadiths.map((h, i) => {
-          const currentLang = lang[i] || "en";
-          const raw =
-            currentLang === "ar" && h.arabic ? h.arabic : h.content || "";
-
-          const paragraphs = raw
-            .split(/\n{2,}/)
-            .map((p) => p.trim())
-            .filter(Boolean);
-
-          const isExpanded = !!expanded[i];
-          const showArrow = !!canExpand[i];
-
-          return (
-            <motion.article
-              key={`${h.narrator || "hadith"}-${i}`}
-              layout
-              initial={{ opacity: 0, y: 14 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-120px" }}
-              transition={{ duration: 0.35 }}
-              className="relative rounded-2xl px-6 sm:px-10 py-10 bg-teal-200 ring-1 ring-teal-300 shadow-lg"
-            >
-              {h.arabic && (
-                <button
-                  type="button"
-                  aria-label={`Show ${currentLang === "en" ? "Arabic" : "English"} translation`}
-                  onClick={() => toggleLang(i)}
-                  className="absolute top-4 right-4 text-xs font-semibold px-3 py-1 rounded-full bg-teal-900 text-teal-50"
-                >
-                  {currentLang === "en" ? "AR" : "EN"}
-                </button>
-              )}
-
-              {h.narrator && (
-                <h3 className="text-2xl font-semibold text-teal-900 text-center mb-6">
-                  {h.narrator}
-                </h3>
-              )}
-
-              <motion.div
-                layout
-                animate={{
-                  height: isExpanded
-                    ? (contentRefs.current[i]?.scrollHeight ?? "auto")
-                    : PREVIEW_HEIGHT,
-                }}
-                className="overflow-hidden max-w-3xl mx-auto"
-              >
-                <div
-                  ref={(el) => (contentRefs.current[i] = el)}
-                  className={
-                    currentLang === "ar"
-                      ? "text-xl leading-[2.05] font-bold text-teal-900 text-right font-arabic"
-                      : "text-lg leading-[2.15] text-teal-900"
-                  }
-                >
-                  {paragraphs.map((p, idx) => (
-                    <p key={idx} className="mb-6 last:mb-0">
-                      {p}
-                    </p>
-                  ))}
-                </div>
-              </motion.div>
-
-              {showArrow && (
-                <div className="mt-6 flex justify-center">
-                  <button
-                    type="button"
-                    aria-label={`${isExpanded ? "Collapse" : "Expand"} hadith`}
-                    onClick={() => toggleExpand(i)}
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-teal-900 text-teal-50"
-                  >
-                    <motion.span animate={{ rotate: isExpanded ? 180 : 0 }}>
-                      <FiChevronDown size={20} />
-                    </motion.span>
-                  </button>
-                </div>
-              )}
-
-              {Array.isArray(h.sources) && (
-                <div className="mt-8 flex flex-wrap justify-center gap-2">
-                  {h.sources.map((s) => {
-                    const meta = COLLECTION_LABELS[s];
-                    const label = meta?.[currentLang] || s;
-
-                    return (
-                      <span
-                        key={s}
-                        className={
-                          meta?.sahihayn
-                            ? "text-xs px-3 py-1 rounded-full border border-amber-500 bg-amber-400 text-amber-950"
-                            : "text-xs px-3 py-1 rounded-full border border-teal-700 bg-teal-300 text-teal-950"
-                        }
-                      >
-                        {label}
-                      </span>
-                    );
-                  })}
-                </div>
-              )}
-            </motion.article>
-          );
-        })}
+      <div className="flex flex-col gap-10">
+        {hadiths.map((h, i) => (
+          <HadithCard key={`${h.narrator || "hadith"}-${i}`} hadith={h} index={i} />
+        ))}
       </div>
 
-      {/* Load More */}
       {hadiths.length < total && (
         <div className="mt-12 flex justify-center">
           <button
             type="button"
             onClick={loadMore}
             disabled={loadingMore}
-            className="px-6 py-3 rounded-full bg-teal-900 text-teal-50 hover:bg-teal-800 transition"
+            className="rounded-full border border-line-strong px-6 py-3 font-medium text-ink transition-colors hover:bg-surface-2 disabled:opacity-60"
           >
             {loadingMore ? "Loading…" : "Load more"}
           </button>
