@@ -1094,4 +1094,54 @@ export const boycott = [
     reason:
       "Took a $100 million investment from Sequoia Capital, which has financial ties to Kela, an Israeli defence-tech start-up developing military AI systems.",
   },
+  {
+    name: "Tripadvisor",
+    reason:
+      "Listed in the UN database of companies supporting illegal Israeli settlements.",
+  },
+  {
+    name: "Ring",
+    reason:
+      "Owned by Amazon, a BDS pressure target over Project Nimbus and surveillance technology.",
+  },
+  {
+    name: "Waze",
+    reason:
+      "Israeli-incorporated navigation app owned by Google, governed by Israeli law and banned for Malaysian civil servants over security concerns.",
+  },
+  {
+    name: "Tnuva",
+    reason:
+      "Israeli dairy company added to the UN database of companies operating in illegal settlements in 2026.",
+  },
+  {
+    name: "Aroma Espresso Bar",
+    reason:
+      "Israeli coffee chain added to the UN database of companies operating in illegal settlements in 2026.",
+  },
+  {
+    name: "Carmel Winery",
+    reason:
+      "Israeli winery added to the UN database of companies operating in illegal settlements in 2026.",
+  },
+  {
+    name: "Teperberg Winery",
+    reason:
+      "Israeli winery added to the UN database of companies operating in illegal settlements in 2026.",
+  },
+  {
+    name: "Psagot Winery",
+    reason:
+      "Winery based in an illegal settlement, added to the UN settlements database in 2026.",
+  },
+  {
+    name: "Netafim",
+    reason:
+      "Israeli irrigation company added to the UN database of companies operating in illegal settlements in 2026.",
+  },
+  {
+    name: "ADAMA",
+    reason:
+      "Israeli pesticide maker added to the UN database of companies operating in illegal settlements in 2026.",
+  },
 ];
