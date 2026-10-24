@@ -868,7 +868,7 @@ export const boycott = [
   { name: "Sadaf", reason: "Israeli-owned brand." },
   { name: "Sting", reason: "Owned by PepsiCo." },
   { name: "Shams", reason: "An Israeli brand which sells dates." },
-  { name: "Sneakers", reason: "Owned by Mars Inc." },
+  { name: "Snickers", reason: "Owned by Mars Inc." },
   { name: "Star Dates", reason: "Israeli dates." },
   { name: "Stride", reason: "Owned by Mondelez." },
   {
