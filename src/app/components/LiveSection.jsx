@@ -39,9 +39,20 @@ const STREAMS = [
 
 const STREAM_IDS = STREAMS.map((s) => s.id);
 
+// "Fri 23 Oct, 12:11" in the viewer's own timezone
+const formatBroadcastDate = (iso) =>
+  new Intl.DateTimeFormat("en-GB", {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(iso));
+
 export default function LiveSection() {
   const [active, setActive] = useState("makkah");
-  const [videoIds, setVideoIds] = useState({});
+  // Per stream: { videoId, type: "live" | "replay" | "latest", startedAt } or null
+  const [videos, setVideos] = useState({});
   const tabRefs = useRef({});
 
   // #makkah / #madinah / #aqsa deep links select the matching tab
@@ -57,7 +68,7 @@ export default function LiveSection() {
 
   // Look up each stream's video once, the first time its tab is shown
   useEffect(() => {
-    if (active in videoIds) return;
+    if (active in videos) return;
     const stream = STREAMS.find((s) => s.id === active);
     const controller = new AbortController();
 
@@ -65,13 +76,13 @@ export default function LiveSection() {
       signal: controller.signal,
     })
       .then((res) => res.json())
-      .then((data) => setVideoIds((p) => ({ ...p, [active]: data?.videoId || null })))
+      .then((data) => setVideos((p) => ({ ...p, [active]: data?.videoId ? data : null })))
       .catch((err) => {
-        if (err.name !== "AbortError") setVideoIds((p) => ({ ...p, [active]: null }));
+        if (err.name !== "AbortError") setVideos((p) => ({ ...p, [active]: null }));
       });
 
     return () => controller.abort();
-  }, [active, videoIds]);
+  }, [active, videos]);
 
   const onTabKeyDown = (e) => {
     const step = { ArrowRight: 1, ArrowLeft: -1 }[e.key];
@@ -84,8 +95,9 @@ export default function LiveSection() {
   };
 
   const stream = STREAMS.find((s) => s.id === active);
-  const videoId = videoIds[active];
-  const checked = active in videoIds;
+  const video = videos[active];
+  const videoId = video?.videoId;
+  const checked = active in videos;
 
   const activeIndex = STREAM_IDS.indexOf(active);
 
@@ -165,7 +177,25 @@ export default function LiveSection() {
         )}
 
         <div key={active} className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1 px-4 pb-3 pt-5 animate-[fade-in_0.5s_ease-out]">
-          <h3 className="font-display text-2xl text-ink md:text-3xl">{stream.title}</h3>
+          <div>
+            <h3 className="font-display text-2xl text-ink md:text-3xl">{stream.title}</h3>
+            {video && (
+              <p className="mt-1 inline-flex items-center gap-2 text-sm text-ink-muted">
+                {video.type === "live" ? (
+                  <>
+                    <span aria-hidden="true" className="h-2 w-2 animate-pulse rounded-full bg-red-500 motion-reduce:animate-none" />
+                    Live now
+                  </>
+                ) : (
+                  <>
+                    <span aria-hidden="true" className="h-2 w-2 rounded-full bg-ink-subtle" />
+                    {video.type === "replay" ? "Latest broadcast" : "Latest video"}
+                    {video.startedAt && ` · ${formatBroadcastDate(video.startedAt)}`}
+                  </>
+                )}
+              </p>
+            )}
+          </div>
           <p lang="ar" dir="rtl" className="font-arabic-display text-2xl text-ink-muted">
             {stream.arabic}
           </p>
