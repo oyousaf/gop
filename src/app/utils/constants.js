@@ -115,9 +115,8 @@ export const boycott = [
   {
     name: "Barclays",
     reason:
-      "Provides financial services and has investment activities in Israel.",
+      "Provides financial services in Israel and funds billions in arms.",
   },
-  { name: "Barclays Bank", reason: "Funding billions in arms." },
   { name: "Barq’s", reason: "A root beer brand owned by Coca-Cola." },
   {
     name: "Bath & Body Works",
@@ -192,7 +191,6 @@ export const boycott = [
     reason: "Law firm represents Israel-based fintechs.",
   },
   { name: "Cheerios", reason: "Owned by Nestlé." },
-  { name: "Cheetos", reason: "Owned by PepsiCo." },
   {
     name: "Check Point Software Technologies",
     reason: "Headquartered in Tel Aviv.",
@@ -245,7 +243,6 @@ export const boycott = [
     reason: "Cybersecurity company headquartered in Israel.",
   },
   { name: "Daim Bar", reason: "Owned by Mondelez." },
-  { name: "Daimler", reason: "Company with R&D in Tel Aviv." },
   { name: "Dairy Milk", reason: "Owned by Cadbury." },
   { name: "Dasani", reason: "Is a brand of Coca-Cola." },
   { name: "Decathlon", reason: "Company operates stores in Israel." },
@@ -253,7 +250,8 @@ export const boycott = [
   { name: "Delilah", reason: "Is an Israeli dates brand." },
   {
     name: "Dell",
-    reason: "Founder of Dell is a member of the Friends of the IDF.",
+    reason:
+      "Listed by the BDS Movement as a consumer boycott priority target; its founder is a member of the Friends of the IDF.",
   },
   { name: "Delta Galil Industries", reason: "Israeli-based company" },
   { name: "Dettol", reason: "Is a brand of Reckitt Benckiser (RB)." },
@@ -266,7 +264,8 @@ export const boycott = [
   { name: "Dior", reason: "Owner of Dior’s parent company, LVMH." },
   {
     name: "Disney",
-    reason: "Pledging $2m and further initiatives to support Israel.",
+    reason:
+      "Pledged $2m to support Israel; Disney+ is listed by the BDS Movement as a consumer boycott priority target.",
   },
   { name: "DLA Piper", reason: "Provides law firm services to Israel." },
   { name: "Domestos", reason: "Owned by Unilever." },
@@ -304,7 +303,6 @@ export const boycott = [
   { name: "Fancy Medjoul", reason: "Date company with operations in Israel." },
   { name: "Fanta", reason: "Owned by Coca-Cola." },
   { name: "Fairlife", reason: "Owned by Coca-Cola." },
-  { name: "Facebook (Meta)", reason: "Has been censoring neutral content." },
   {
     name: "Ferrero Rocher",
     reason: "Has based its headquarters for Asia in Holon, Israel.",
@@ -328,8 +326,10 @@ export const boycott = [
     name: "Foods Alive",
     reason: "Sells Israeli organic black cumin seed oil.",
   },
-  { name: "Fox Corp", reason: "Parent company of Fox News." },
-  { name: "Fox News", reason: "Biased reporting and support for Israel." },
+  {
+    name: "Fox News",
+    reason: "Owned by Fox Corp; biased reporting and support for Israel.",
+  },
   { name: "Fred Joaillier (Fred Jewellery)", reason: "Owned by LVMH." },
   {
     name: "Frito-Lay (Fritos, Lay's, Cheetos)",
@@ -384,9 +384,9 @@ export const boycott = [
   { name: "Hostess", reason: "Owned by Bimbo." },
   { name: "Hotstar", reason: "Streaming service owned by Disney." },
   {
-    name: "HP (Hewlett-Packard)",
+    name: "HP / HPE (Hewlett-Packard)",
     reason:
-      "Contracted by the Israel Police to provide Data centre Care services.",
+      "Listed by the BDS Movement as a consumer boycott priority target for providing technology to the Israeli military, police, prisons and government.",
   },
   {
     name: "HSBC",
@@ -539,7 +539,6 @@ export const boycott = [
   { name: "Lux", reason: "Owned by Unilever." },
   { name: "LVMH", reason: "Owned by Bernard Arnault." },
   { name: "M&M", reason: "Chocolate brand owned by Mars." },
-  { name: "Maccas", reason: "McDonald’s, known as Maccas in some regions." },
   { name: "Maaza", reason: "Owned by Coca-Cola." },
   { name: "Maggi", reason: "Owned by Nestlé." },
   { name: "Maison Francis Kurkdjian", reason: "Owned by LVMH." },
@@ -572,8 +571,14 @@ export const boycott = [
     reason: "Israeli-based agriculture company exporting produce globally.",
   },
   { name: "Mellow Yellow", reason: "Owned by PepsiCo." },
-  { name: "Mercedes", reason: "Opened a tech hub in Tel Aviv." },
-  { name: "Meta", reason: "Runs Facebook and Instagram." },
+  {
+    name: "Mercedes",
+    reason: "Mercedes-Benz Group (formerly Daimler) opened a tech hub in Tel Aviv.",
+  },
+  {
+    name: "Meta",
+    reason: "Runs Facebook and Instagram, and has been censoring neutral content.",
+  },
   {
     name: "Michael Kors",
     reason: "Owned by Capri Holdings, which has business operations in Israel.",
@@ -765,11 +770,6 @@ export const boycott = [
   { name: "Ruffles", reason: "Owned by PepsiCo." },
   { name: "Ratiopharm", reason: "Owned by Teva." },
   {
-    name: "Range Rover",
-    reason:
-      "Owned by Jaguar Land Rover partners with TCS to launch the Open Innovation Programme in Israel.",
-  },
-  {
     name: "Rove Hotels",
     reason: "Founder Mohamed Ali Alabbar donates to Israel.",
   },
@@ -880,7 +880,6 @@ export const boycott = [
     name: "Stripe",
     reason: "CEO and co-founder Patrick Collison visits Israel.",
   },
-  { name: "SaraLee", reason: "Owned by Bimbo." },
   { name: "Sun Maid", reason: "Owned by Bimbo." },
   { name: "Tang", reason: "Owned by Mondelez." },
   { name: "Tate’s Bake Shop", reason: "Owned by Mondelez." },
@@ -1008,14 +1007,6 @@ export const boycott = [
       "Listed by the BDS Movement as a consumer boycott priority target, including Caltex and Texaco.",
   },
   {
-    name: "Dell Technologies",
-    reason: "Listed by the BDS Movement as a consumer boycott priority target.",
-  },
-  {
-    name: "Disney+",
-    reason: "Listed by the BDS Movement as a consumer boycott priority target.",
-  },
-  {
     name: "Papa John’s",
     reason:
       "Listed by the BDS Movement as an organic grassroots boycott target it actively supports.",
@@ -1029,11 +1020,6 @@ export const boycott = [
     name: "RE/MAX",
     reason:
       "Its Israeli franchise sells and rents properties in illegal Israeli settlements in the occupied West Bank and East Jerusalem.",
-  },
-  {
-    name: "Hewlett Packard Enterprise (HPE)",
-    reason:
-      "Listed by the BDS Movement as a consumer boycott priority target for providing technology to the Israeli military, prisons and government.",
   },
   {
     name: "Xbox",
